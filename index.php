@@ -6,4 +6,6 @@
  $sql = "select * from users";
  $con->consultar($sql);
  
+
+ 
  ?>
