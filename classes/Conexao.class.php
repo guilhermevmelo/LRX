@@ -18,11 +18,25 @@ class Conexao {
 	private $conexao;
 	private $consulta;
 	
-    function __construct($argument) {
+    function __construct() {
     	try {
     		$this->conexao = mysqli_connect(Conexao::SERVIDOR, Conexao::USUARIO, Conexao::SENHA, Conexao::BD);
-		} catch (exception $ex) {
+		} catch (Exception $e) {
 			echo "Não foi possível estabelecer uma conexão com o Banco de dados.";
+		} finally {
+			echo "out";
+		}
+	}
+	
+	function __destruct() {
+		mysqli_close($this->conexao);
+	}
+	
+	function consultar($sql) {
+		try {
+			$this->consulta = mysqli_query($this->conexao, $sql);
+		} catch (Exception $e) {
+			echo "Ocorreu um erro ao tentar realizar a consulta \"$sql\".";
 		}
 	}
 }
