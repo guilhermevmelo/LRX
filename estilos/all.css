@@ -1,0 +1,26 @@
+/**
+ * arquivo: 	estilos/all.css
+ * data:		25/02/2015
+ * autor:		Guilherme Vieira
+ * descrição:	Folha de estilos para mídia=all.
+ */
+
+/** Imports **/
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700);
+@import url(http://fonts.googleapis.com/css?family=PT+Sans);
+
+/** Reseta os estilos nativos do navegador **/
+html, body, p, div, blockquote, article, fieldset {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    font-family: 'PT Sans', sans-serif;
+    letter-spacing: 1px;
+    font-size: 15px;
+}
+
+/** Elementos estruturais **/
+
+/** Estilos compartilhados **/
