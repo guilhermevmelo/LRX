@@ -4,7 +4,7 @@
  * data:		20/02/2015
  * autor:		Guilherme Vieira
  * descrição:	Define a classe Conexao.
- */
+ **/
 
 /**
  * Class Conexao

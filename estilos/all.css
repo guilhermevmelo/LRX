@@ -8,19 +8,294 @@
 /** Imports **/
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700);
 @import url(http://fonts.googleapis.com/css?family=PT+Sans);
+@import url(http://fonts.googleapis.com/css?family=Lato:100,300|Bilbo);
 
 /** Reseta os estilos nativos do navegador **/
-html, body, p, div, blockquote, article, fieldset {
+html, body, p, div, blockquote, article, fieldset, nav, ul, ol, dl {
     padding: 0;
     margin: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+#Pagina {
+    min-height: 100%;
+    position: relative;
+    /*padding-bottom: 120px;*/
 }
 
 body {
     font-family: 'PT Sans', sans-serif;
     letter-spacing: 1px;
     font-size: 15px;
+    
+    background-image: url("../imagens/stardust.png");
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    body {
+        background-image: url("../imagens/stardust@2x.png");
+        background-size: 399px 399px;
+    }
+}
+
+/** Elementos básicos **/
+header {
+    height: 60px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid #dcdcdc;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+main {
+    margin: 0 auto 0 auto;
+    max-width: 1000px;
+    padding: 100px 0 220px;
+}
+
+footer {
+    clear: both;
+    /*background-color: rgba(0, 0, 0, 0.9);*/
+
+    /*
+    background: -moz-linear-gradient(left,  rgba(0,0,0,0) 0%, rgba(0,0,0,0) 34%, rgba(0,0,0,0.84) 100%); //Firefox
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,0,0,0)), color-stop(34%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.84))); // Chrome,Safari4+
+    background: -webkit-linear-gradient(left,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 34%,rgba(0,0,0,0.84) 100%); // Chrome10+,Safari5.1+
+    background: -o-linear-gradient(left,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 34%,rgba(0,0,0,0.84) 100%); // Opera 11.10+
+    background: -ms-linear-gradient(left,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 34%,rgba(0,0,0,0.84) 100%); // IE10+
+    background: linear-gradient(to right,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 34%,rgba(0,0,0,0.84) 100%); // W3C
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#d6000000',GradientType=1 ); // IE6-9
+    */
+
+    color: white;
+    position: absolute;
+    bottom: 0;
+    height: 200px;
+    width: 100%;
+    font-size: 0.8em;
+    text-shadow: 1px 1px 1px #000;
+}
+
+header nav {
+    margin-left: 45px;
+}
+
+header nav ul li {
+    display: inline-block;
+    list-style: none;
+    height: 30px;
+    font-size: 20px;
+    padding: 17px 13px 0;
+    color: #666;
+    font-family: 'Lato', sans-serif;
+}
+
+header nav a {
+    color: #666;
+}
+
+header nav a:hover {
+    color: #dc1f18;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+
+    font-family: 'Lato', sans-serif;
+    font-size: 1em;
+}
+
+h1 {
+    font-size: 2em;
+    margin: 15px 0;
+}
+
+
+a {
+    text-decoration: none;
+    color: #dc8938;
+
+    -webkit-transition: color .5s, text-shadow .5s;
+    -moz-transition: color .5s, text-shadow .5s;
+    -ms-transition: color .5s, text-shadow .5s;
+    -o-transition: color .5s, text-shadow .5s;
+    transition: color .5s, text-shadow .5s;
+}
+
+a:hover{
+    color: #dc1f18;
+}
+
+address {
+    float: right;
+    text-align: right;
+    font-style: normal !important;
+    margin-right: 25px;
+    margin-top: 15px;
+}
+
+p {
+    margin: 0 0 10px 0;
 }
 
 /** Elementos estruturais **/
+.bloco{
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 2px 4px #222;
+}
+
+footer #Fomentadores {
+    float: left;
+    margin-left: 25px;
+    margin-top: 15px;
+}
+
+
+footer nav#MenuRodape {
+    margin: 0 auto;
+    width: 600px;
+}
+#Inicio #DivLogin {
+    float: right;
+    width: 30%;
+    padding: 10px;
+    /*border-left: 2px solid black;*/
+}
+
+#Inicio #Apresentacao {
+    //float: left;
+    margin-right: 30%;
+    width: 65%;
+    padding: 10px;
+}
+
+#DivLogin .container {
+    width: 270px;
+    margin: 0 auto;
+}
+
+header p#BoasVindas {
+    float: right;
+    text-align: right;
+    padding-top: 15px;
+    margin-right: 45px;
+    font-size: 0.8em;
+}
+
+
+/** Estilos específicos **/
+#DivLogin a {
+    font-size: 0.8em;
+}
+
+#_nome { font-weight: bold; }
+
+/** Formulários **/
+label {
+    font-size: 0.8em;
+    display: block;
+    margin-left: 10px;
+    -webkit-transition: color .5s;
+    -moz-transition: color .5s;
+    -ms-transition: color .5s;
+    -o-transition: color .5s;
+    transition: color .5s;
+}
+
+label:hover {
+    cursor: pointer;
+}
+
+input[type="radio"] + label,
+input[type="checkbox"] + label{
+    display: inline-block;
+    margin-left: 0;
+    margin-right: 15px;
+}
+
+input[type="radio"]:checked + label,
+input[type="checkbox"]:checked + label{
+    color: green;
+}
+
+fieldset {
+    margin: 0 0 10px 0;
+    border: 0;
+    /*Debug: border: 1px solid #ff00ff; */
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="email"],
+input[type="date"],
+input[type="file"] {
+    outline: none;
+    margin: 0;
+    padding: 3px;
+    height: 25px;
+    font-size: 20px;
+    letter-spacing: 2px;
+    border: 1px solid #666;
+
+    -webkit-transition: color .5s, border .5s, box-shadow .5s;
+    -moz-transition: color .5s, border .5s, box-shadow .5s;
+    -ms-transition: color .5s, border .5s, box-shadow .5s;
+    -o-transition: color .5s, border .5s, box-shadow .5s;
+    transition: color .5s, border .5s, box-shadow .5s;
+}
+
+input[type="text"]:hover,
+input[type="password"]:hover,
+input[type="number"]:hover,
+input[type="email"]:hover,
+input[type="date"]:hover,
+input[type="file"]:hover {
+    border: 1px solid #2d2fdc;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="date"]:focus,
+input[type="file"]:focus {
+    border: 1px solid #2d2fdc;
+    box-shadow: 0 0 3px #2d2fdc ;
+}
+
+input[type="button"],
+input[type="reset"],
+input[type="submit"],
+.button {
+    padding: 7px;
+    border: 1px solid #666;
+    color: #666;
+    background-color: #eee;
+    /*border-radius: 4px;*/
+    font-size: 0.8em;
+    text-transform: uppercase;
+}
+
+input[type="button"]:hover,
+input[type="reset"]:hover,
+input[type="submit"]:hover,
+.button:hover {
+    cursor: pointer;
+}
 
 /** Estilos compartilhados **/
+.floatRight { float: right; }
+.floatLeft { float: left; }
+.clear { clear: both; }
+
+.alignRight { text-align: right; }
+.alignLeft { text-align: left; }
+.alignCenter { text-align: center; }
+.justify { text-align: justify; }
