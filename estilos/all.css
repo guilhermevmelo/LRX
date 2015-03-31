@@ -34,7 +34,7 @@ body {
     background-image: url("../imagens/stardust.png");
 }
 
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media all and (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
     body {
         background-image: url("../imagens/stardust@2x.png");
         background-size: 399px 399px;

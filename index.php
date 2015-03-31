@@ -1,10 +1,10 @@
-<!--
-  -- arquivo:   index.php
-  -- data:      25/02/2015
-  -- autor:     Guilherme Vieira
-  -- descrição: Página inicial da aplicação.
-  -->
 <!doctype html>
+<!--
+  - - arquivo:   index.php
+  - - data:      25/02/2015
+  - - autor:     Guilherme Vieira
+  - - descrição: Página inicial da aplicação.
+  -->
 <html>
 <head>
     <meta charset="utf-8">
@@ -40,7 +40,7 @@
         <div id="Inicio">
             <div id="DivLogin" class="bloco">
                 <div class="container">
-                    <form id="FormLogin" name="FormLogin">
+                    <form id="FormLogin" name="FormLogin" action="#/Login" method="post">
                         <fieldset>
                             <label for="frm_login_documento">CPF</label>
                             <input type="text" name="frm_login_documento" id="frm_login_documento" maxlength="14">
@@ -54,8 +54,8 @@
                                 <input type="radio" name="frm_login_tipo" id="frm_login_tipo_academico" checked>
                                 <label for="frm_login_tipo_academico">Acadêmico</label>
                                 <br>
-                                <input type="radio" name="frm_login_tipo" id="frm_login_tipo_empresarial">
-                                <label for="frm_login_tipo_empresarial">Empresarial</label>
+                                <input type="radio" name="frm_login_tipo" id="frm_login_tipo_comercial">
+                                <label for="frm_login_tipo_comercial">Comercial</label>
                             </fieldset>
                             <fieldset class="floatRight" style="padding-top: 4px;">
                                 <input type="button" name="frm_login_sbmt" id="frm_login_sbmt" value="Entrar">
