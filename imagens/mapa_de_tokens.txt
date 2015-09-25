@@ -1,0 +1,7 @@
+_cumprimento
+_titulo
+_nome
+_segunda_linha
+_Vocativo
+_vocativo
+_num_amostras
