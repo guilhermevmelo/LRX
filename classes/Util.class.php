@@ -8,11 +8,12 @@
 
 namespace LRX;
 
-
 class Util {
     /**
-     * @param $nome
-     * @return string
+     * Retorna apenas as iniciais de $nome concatenadas em maiúsculo.
+     *
+     * @param $nome     O nome a ter suas iniciais extraidas.
+     * @return string   As iniciais concatenadas em maiúsculo.
      */
     public static function obterIniciais($nome) {
         $pedacos = explode(' ', $nome);

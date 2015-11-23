@@ -23,7 +23,7 @@ class Usuario {
     private $grupo;         // \LRX\Grupo
 
     public function __set($name, $value) {
-        if ($name == 'senhaNaoEncriptada') {
+        if ($name == 'senhaAberta') {
             $value = sha1($value);
             $name = 'senha';
         }
