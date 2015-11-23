@@ -6,6 +6,8 @@
  * descrição:	Define a classe Conexao.
  **/
 
+namespace LRX;
+
 /**
  * Class Conexao
  */

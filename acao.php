@@ -6,12 +6,18 @@
  * descrição:	Manipula requisiçoes da index.
  */
 
+namespace LRX;
+
+session_start();
+
+require_once "classes/Util.class.php";
+
 /** @var  $q guarda a operação a ser executada. Será o conteúdo de uma reqisição GET ou POST; NULL caso não haja requisição */
 $q = isset($_GET["q"])? $_GET["q"] : (isset($_POST["q"]) ? $_POST["q"] : NULL);
 
 if (isset($q) && $q == "login") {
     $documento = addslashes($_POST["frm_login_documento"]);
-    $senha = md5(addslashes($_POST["frm_login_senha"]));
+    $senha = sha1(addslashes($_POST["frm_login_senha"]));
     $tipo = $_POST["frm_login_tipo"];
 
     $uDAO = new UsuarioDAO();
@@ -20,4 +26,10 @@ if (isset($q) && $q == "login") {
     $u = $uDAO->login();
 }
 
+if (isset($q) && $q == 'testarUtils') {
+    echo Util::obterIniciais("Guilherme vieira melo ");
+}
+
+
 ?>
+
