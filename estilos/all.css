@@ -92,6 +92,7 @@ header nav ul li {
     padding: 17px 13px 0;
     color: #666;
     font-family: 'Lato', sans-serif;
+    font-weight: 300;
 }
 
 header nav a {
@@ -100,6 +101,7 @@ header nav a {
 
 header nav a:hover {
     color: #dc1f18;
+    text-shadow: 0 0 15px #dc1f18;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -140,7 +142,7 @@ address {
     margin-top: 15px;
 }
 
-p {
+article p {
     margin: 0 0 10px 0;
 }
 
@@ -148,6 +150,7 @@ p {
 .bloco{
     background-color: rgba(255, 255, 255, 1);
     box-shadow: 0 2px 4px #222;
+    padding: 10px;
 }
 
 footer #Fomentadores {
@@ -164,19 +167,17 @@ footer nav#MenuRodape {
 #Inicio #DivLogin {
     float: right;
     width: 30%;
-    padding: 10px;
     /*border-left: 2px solid black;*/
 }
 
 #Inicio #Apresentacao {
-    //float: left;
+    /*float: left;*/
     margin-right: 30%;
     width: 65%;
-    padding: 10px;
 }
 
 #DivLogin .container {
-    width: 270px;
+    /*width: 270px;*/
     margin: 0 auto;
 }
 
@@ -195,6 +196,17 @@ header p#BoasVindas {
 }
 
 #_nome { font-weight: bold; }
+
+ul.listaSolicitacoes {
+    max-width: 500px;
+    list-style-type: none;
+}
+
+ul.listaSolicitacoes li {
+    border: 1px solid gray;
+    margin: 5px;
+    padding: 3px;
+}
 
 /** Formulários **/
 label {

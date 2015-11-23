@@ -10,6 +10,8 @@
     <meta charset="utf-8">
     <title>Laboratório de Raios-X | Solicitação de Análises</title>
     <link rel="stylesheet" href="estilos/all.css" media="all">
+
+    <script src="js/jquery-1.11.2.js"></script>
     <script src="js/base.js"></script>
     <script src="js/retina.js"></script>
 </head>
@@ -22,7 +24,7 @@
             </span>
             <br>
             <span id="_segunda_linha">
-                <span id="_Vocativo">O sr.</span> <span id="_num_amostras">não possui</span> amostras em processo de análise
+                <span id="_Vocativo">O sr.</span> <span id="_num_amostras">não possui</span> mensagens não lidas.
             </span>
         </p>
         <nav>
@@ -32,18 +34,18 @@
                 <li><a href="#">Sit Amet</a></li>
                 <li><a href="#">Consectectur</a></li>
                 <li><a href="#">Adiscpiscing</a></li>
-                <li><a href="#">Ellit</a></li>
+                <li><a href="#">Ajuda</a></li>
             </ul>
         </nav>
     </header>
     <main role="main">
-        <div id="Inicio">
+        <!--div id="Inicio">
             <div id="DivLogin" class="bloco">
                 <div class="container">
                     <form id="FormLogin" name="FormLogin" action="#/Login" method="post">
                         <fieldset>
-                            <label for="frm_login_documento">CPF</label>
-                            <input type="text" name="frm_login_documento" id="frm_login_documento" maxlength="14">
+                            <label for="frm_login_email">email</label>
+                            <input type="email" name="frm_login_email" id="frm_login_email">
                         </fieldset>
                         <fieldset>
                             <label for="frm_login_senha">Senha</label>
@@ -62,8 +64,8 @@
                             </fieldset>
                         </div>
                         <p class="clear">
-                            <a href="#/RecuperarConta">Esqueci a senha</a><br>
-                            <a href="#/NovoUsuario">Cadastre-se</a>
+                            <a href="#/RecuperarConta">Recuperar senha</a><br>
+                            <a href="#/NovoUsuario">Cadastrar-se</a>
                         </p>
                     </form>
                 </div>
@@ -86,6 +88,34 @@
                     Suspendisse in sollicitudin lorem. Ut pretium non dolor ac tristique. Integer venenatis nulla non tortor convallis tempus non vestibulum nibh.</p>
 
             </div>
+        </div-->
+
+        <div class="bloco">
+            <ul class="listaSolicitacoes">
+                <li>
+                    <span class="button floatRight">Enviar ao LRX</span>
+                    <h3>Nome da amostra</h3>
+                    <p>Aluno: Fulano de tal</p>
+                </li>
+
+                <li>
+                    <span class="button floatRight">Enviar ao LRX</span>
+                    <h3>Nome da amostra</h3>
+                    <p>Aluno: Fulano de tal</p>
+                </li>
+
+                <li>
+                    <span class="button floatRight">Enviar ao LRX</span>
+                    <h3>Nome da amostra</h3>
+                    <p>Aluno: Fulano de tal</p>
+                </li>
+
+                <li>
+                    <span class="button floatRight">Enviar ao LRX</span>
+                    <h3>Nome da amostra</h3>
+                    <p>Aluno: Fulano de tal</p>
+                </li>
+            </ul>
         </div>
     </main>
     <footer role="contentinfo">
@@ -101,8 +131,8 @@
             Caixa Postal 6030<br>
             Campus do Pici<br>
             CEP 60455-970, Fortaleza - Ceara - Brazil<br>
-            Telefone: 55 (0xx85) 3366 9013 (sala 34)<br>
-            Telefone: 55 (0xx85) 3366 9917 (lab.)<br>
+            +55 85 3366 9917<br>
+            +55 85 3366 9013<br>
             FAX: 55 (0xx85) 3366 9450
         </address>
         <nav id="MenuRodape">
