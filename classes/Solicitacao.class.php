@@ -40,6 +40,11 @@ class Solicitacao {
     public function gerarIdentificacao($proprio = true) {
         $identificacao = Util::obterIniciais($this->usuario->nome);
 
+        if (strlen($identificacao) > 3)
+            $identificacao = substr($identificacao, 0, 3);
+
+        // TODO: Adicionar ao identificador os números do usuário e da amostra.
+
         if (!$proprio)
             return $identificacao;
 

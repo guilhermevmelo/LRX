@@ -11,6 +11,7 @@ namespace LRX;
 session_start();
 
 require_once "classes/Util.class.php";
+require_once "classes/Cupom.class.php";
 
 /** @var  $q guarda a operação a ser executada. Será o conteúdo de uma reqisição GET ou POST; NULL caso não haja requisição */
 $q = isset($_GET["q"])? $_GET["q"] : (isset($_POST["q"]) ? $_POST["q"] : NULL);
@@ -27,7 +28,13 @@ if (isset($q) && $q == "login") {
 }
 
 if (isset($q) && $q == 'testarUtils') {
-    echo Util::obterIniciais("Guilherme vieira melo ");
+    $s = new Solicitacao();
+}
+
+if (isset($q) && $q == 'testarCupom') {
+    $c =  Cupom::getCupom();
+    echo $c->getCodigo();
+
 }
 
 
