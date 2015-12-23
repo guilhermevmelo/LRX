@@ -30,14 +30,20 @@ class Solicitacao {
     private $toxico;        // bool
     private $corrosivo;     // bool
     private $higroscopico;   // bool
-    private $reuranca_outro;
+    private $seguranca_outro;
     private $observacoes;
 
+    public function __construct() { }
+
+    public function __set($name, $value) {
+        $this->$name = $value;
+    }
+
     /**
-     * @param bool|true $proprio    Diz ao método se deve retornar a identificação ou setar ao objeto.
-     * @return null|string          A identificação gerada, caso o parâmetro $proprio seja false.
+     * @param bool|true $retornar    Diz ao método se deve retornar a identificação ou setar ao objeto.
+     * @return null|string           A identificação gerada, caso o parâmetro $proprio seja true.
      */
-    public function gerarIdentificacao($proprio = true) {
+    public function gerarIdentificacao($retornar = false) {
         $identificacao = Util::obterIniciais($this->usuario->nome);
 
         if (strlen($identificacao) > 3)
@@ -45,10 +51,9 @@ class Solicitacao {
 
         // TODO: Adicionar ao identificador os números do usuário e da amostra.
 
-        if (!$proprio)
-            return $identificacao;
-
         $this->identificacao_da_amostra = $identificacao;
+        if ($retornar)
+            return $identificacao;
         return null;
     }
 
