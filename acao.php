@@ -8,15 +8,14 @@
 
 namespace LRX;
 
+require_once "classes/autoload.php";
+
 session_start();
 
-require_once "classes/Util.class.php";
-require_once "classes/Usuario.class.php";
-require_once "classes/Cupom.class.php";
-require_once "classes/Solicitacao.class.php";
-
 /** @var  $q guarda a operação a ser executada. Será o conteúdo de uma reqisição GET ou POST; NULL caso não haja requisição */
-$q = isset($_GET["q"])? $_GET["q"] : (isset($_POST["q"]) ? $_POST["q"] : NULL);
+//$q = isset($_GET["q"])? $_GET["q"] : (isset($_POST["q"]) ? $_POST["q"] : NULL);
+$q = $_GET["q"] ?? $_POST["q"] ?? NULL;
+
 
 if (isset($q) && $q == "login") {
     $documento = addslashes($_POST["frm_login_documento"]);
@@ -35,14 +34,13 @@ if (isset($q) && $q == 'testarUtils') {
     $u->nome = "Guilherme Vieira Melo";
     $s->usuario = $u;
     echo $s->gerarIdentificacao(true);
-    $u->nome = "Barbara MArques Alves\n";
+    $u->nome = "Barbara Marques Alves";
     echo $s->gerarIdentificacao(true);
-
 
 }
 
 if (isset($q) && $q == 'testarCupom') {
-    $c =  Cupom::getCupom();
+    $c = Cupom::getCupom(0.3);
     echo $c->getCodigo();
 
 }
@@ -50,6 +48,3 @@ if (isset($q) && $q == 'testarCupom') {
 if (isset($q) && $q == "pdo") {
     print_r(\PDO::getAvailableDrivers());
 }
-
-?>
-

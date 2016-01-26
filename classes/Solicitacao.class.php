@@ -8,7 +8,7 @@
 
 namespace LRX;
 
-require_once 'Util.class.php';
+require_once "autoload.php";
 
 class Solicitacao {
     private $id_solicitacao;
@@ -41,7 +41,7 @@ class Solicitacao {
 
     /**
      * @param bool|true $retornar    Diz ao método se deve retornar a identificação ou setar ao objeto.
-     * @return null|string           A identificação gerada, caso o parâmetro $proprio seja true.
+     * @return null|string           A identificação gerada, caso o parâmetro $retornar seja true.
      */
     public function gerarIdentificacao($retornar = false) {
         $identificacao = Util::obterIniciais($this->usuario->nome);

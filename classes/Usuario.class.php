@@ -8,6 +8,7 @@
 
 namespace LRX;
 
+require_once "autoload.php";
 
 class Usuario {
     private $id_usuario;
@@ -22,17 +23,17 @@ class Usuario {
     private $limite;
     private $grupo;         // \LRX\Grupo
 
-    public function __set($name, $value) {
-        if ($name == 'senhaAberta') {
-            $value = sha1($value);
-            $name = 'senha';
+    public function __set($atributo, $valor) {
+        if ($atributo == 'senhaAberta') {
+            $valor = sha1($valor);
+            $atributo = 'senha';
         }
 
-        $this->$name = $value;
+        $this->$atributo = $valor;
     }
 
-    public function __get($name) {
-        return $this->$name;
+    public function __get($atributo) {
+        return $this->$atributo;
     }
 
 }

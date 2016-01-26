@@ -18,7 +18,7 @@ class Cupom {
         $this->percentage = $percentage;
     }
 
-    public static function getCupom($percentage) {
+    public static function getCupom(float $percentage) {
         return new Cupom($percentage);
     }
 
