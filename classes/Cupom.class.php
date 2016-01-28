@@ -11,15 +11,15 @@ namespace LRX;
 
 class Cupom {
     private $codigo = null;
-    private $percentage;
+    private $desconto;
 
-    private function __construct($percentage) {
-        $this->codigo = strtoupper(uniqid());
-        $this->percentage = $percentage;
+    private function __construct(float $desconto, string $codigo = null) {
+        $this->codigo = $codigo ?? strtoupper(uniqid());
+        $this->desconto = $desconto;
     }
 
-    public static function getCupom(float $percentage) {
-        return new Cupom($percentage);
+    public static function generateCupom(float $desconto) {
+        return new Cupom($desconto);
     }
 
     public function getCodigo() {

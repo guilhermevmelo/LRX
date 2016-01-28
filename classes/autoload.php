@@ -1,10 +1,10 @@
 <?php
 /**
- * An example of a project-specific implementation.
+ * PSR-4 Complient Autoloader adapted from their examples
  *
  * After registering this autoload function with SPL, the following line
- * would cause the function to attempt to load the \Foo\Bar\Baz\Qux class
- * from /path/to/project/src/Baz/Qux.php:
+ * would cause the function to attempt to load the \LRX\Qux class
+ * from /path/to/project/class/Qux.class.php:
  *
  *      new \Foo\Bar\Baz\Qux;
  *
@@ -32,12 +32,18 @@ spl_autoload_register(function ($class) {
     // replace the namespace prefix with the base directory, replace namespace
     // separators with directory separators in the relative class name, append
     // with .php
-    $file = $base_dir . str_replace('\\', '/', $relative_class) . '.class.php';
+    $fileClass     = $base_dir . str_replace('\\', '/', $relative_class) . '.class.php';
+    $fileInterface = $base_dir . str_replace('\\', '/', $relative_class) . '.interface.php';
+    $fileException = $base_dir . str_replace('\\', '/', $relative_class) . '.exception.php';
 
     // echo $file;
 
     // if the file exists, require it
-    if (file_exists($file)) {
-        require_once $file;
+    if (file_exists($fileClass)) {
+        require_once $fileClass;
+    } else if (file_exists($fileInterface)) {
+        require_once $fileInterface;
+    } else if (file_exists($fileException)) {
+        require_once $fileException;
     }
 });

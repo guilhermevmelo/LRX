@@ -11,27 +11,27 @@ namespace LRX;
 require_once "autoload.php";
 
 class Solicitacao {
-    private $id_solicitacao;
-    private $usuario;       // \LRX\Usuario
-    private $equipamento;   // \LRX\Equipamento
-    private $fenda;         // \LRX\Fenda
-    private $resultado;     // \LRX\Resultado
-    private $data_solicitacao;
-    private $data_conclusao;
-    private $status;
-    private $configuracao;  // array(=>)
-    private $identificacao_da_amostra;
-    private $composicao;
-    private $tipo;
-    private $tipo_outro;
-    private $data_recebimento;
-    private $inflamavel;    // bool
-    private $radioativo;    // bool
-    private $toxico;        // bool
-    private $corrosivo;     // bool
-    private $higroscopico;   // bool
-    private $seguranca_outro;
-    private $observacoes;
+    protected $id;
+    protected $usuario;       // \LRX\Usuario
+    protected $equipamento;   // \LRX\Equipamento
+    protected $fenda;         // \LRX\Fenda
+    protected $resultado;     // \LRX\Resultado
+    protected $data_solicitacao;
+    protected $data_conclusao;
+    protected $status;
+    protected $configuracao;  // array(=>)
+    protected $identificacao_da_amostra;
+    protected $composicao;
+    protected $tipo;
+    protected $tipo_outro;
+    protected $data_recebimento;
+    protected $inflamavel;    // bool
+    protected $radioativo;    // bool
+    protected $toxico;        // bool
+    protected $corrosivo;     // bool
+    protected $higroscopico;  // bool
+    protected $seguranca_outro;
+    protected $observacoes;
 
     public function __construct() { }
 

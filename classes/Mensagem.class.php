@@ -2,21 +2,20 @@
 /**
  * Created by PhpStorm.
  * User: guilherme
- * Date: 23/11/15
- * Time: 15:35
+ * Date: 1/27/16
+ * Time: 18:51
  */
 
 namespace LRX;
 
 require_once "autoload.php";
 
-class Grupo {
-    protected $id;
-    protected $criador;
-    protected $responsaveis;
-    protected $membros;
-    protected $nome;
-    protected $sigla;
+class Mensagem {
+    private $id;
+    private $remetente;
+    private $data_envio;
+    private $corpo;
+    private $lida;
 
     public function __set($atributo, $valor) {
         $this->$atributo = $valor;

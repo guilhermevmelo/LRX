@@ -2,21 +2,19 @@
 /**
  * Created by PhpStorm.
  * User: guilherme
- * Date: 23/11/15
- * Time: 15:35
+ * Date: 1/27/16
+ * Time: 18:56
  */
 
 namespace LRX;
 
 require_once "autoload.php";
 
-class Grupo {
+abstract class Resultado {
     protected $id;
-    protected $criador;
-    protected $responsaveis;
-    protected $membros;
-    protected $nome;
-    protected $sigla;
+    protected $operador;
+    protected $data_envio;
+    protected $url_arquivo;
 
     public function __set($atributo, $valor) {
         $this->$atributo = $valor;
@@ -25,4 +23,6 @@ class Grupo {
     public function __get($atributo) {
         return $this->$atributo;
     }
+
+    public abstract function analisarArquivo();
 }

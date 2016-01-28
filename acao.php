@@ -30,7 +30,7 @@ if (isset($q) && $q == "login") {
 
 if (isset($q) && $q == 'testarUtils') {
     $s = new Solicitacao();
-    $u = new Usuario();
+    $u = new Aluno();
     $u->nome = "Guilherme Vieira Melo";
     $s->usuario = $u;
     echo $s->gerarIdentificacao(true);

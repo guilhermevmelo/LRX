@@ -10,18 +10,17 @@ namespace LRX;
 
 require_once "autoload.php";
 
-class Usuario {
-    private $id_usuario;
-    private $cpf;
-    private $nome;
-    private $email;
-    private $senha;         // Hash SHA1
-    private $telefone;
-    private $nivel_acesso;
-    private $confirmado;
-    private $uid;
-    private $limite;
-    private $grupo;         // \LRX\Grupo
+abstract class Usuario {
+    protected $id;
+    protected $documento;   // CPF ou CNPJ
+    protected $nome;
+    protected $email;
+    protected $senha;       // Hash SHA1
+    protected $telefone;
+    protected $nivel_acesso;
+    protected $confirmado;
+    protected $uid;
+    protected $mensagens;
 
     public function __set($atributo, $valor) {
         if ($atributo == 'senhaAberta') {

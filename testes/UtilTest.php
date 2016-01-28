@@ -21,8 +21,12 @@ class UtilTest extends \PHPUnit_Framework_TestCase {
         $s->usuario = $u;
         $s->gerarIdentificacao(false);
         $this->assertEquals("GVM", $s->gerarIdentificacao(true));
-        $u->nome = "Barbara MArques Alves";
+
+        $u->nome = "Barbara Marques Alves";
         $this->assertEquals("BMA", $s->gerarIdentificacao(true));
+
+        $u->nome = "";
+        $this->assertEquals("", $s->gerarIdentificacao(true));
     }
 
 }
