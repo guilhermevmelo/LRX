@@ -10,6 +10,6 @@ namespace LRX;
 
 require_once "autoload.php";
 
-class UsuarioComercial extends Usuario {
+abstract class UsuarioComercial extends Usuario {
 
 }

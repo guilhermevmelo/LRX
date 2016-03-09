@@ -12,7 +12,7 @@ require_once "autoload.php";
 
 interface DAO {
     public function criar($objeto);
-    public function ler($id);
+    public function obter($id);
     public function atualizar($objeto);
     public function deletar($id);
 

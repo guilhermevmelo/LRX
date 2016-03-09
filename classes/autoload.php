@@ -1,4 +1,10 @@
 <?php
+
+namespace LRX;
+
+require_once "configuracao.php";
+require_once "functions.php";
+
 /**
  * PSR-4 Complient Autoloader adapted from their examples
  *

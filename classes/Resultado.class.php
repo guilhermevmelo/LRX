@@ -15,6 +15,7 @@ abstract class Resultado {
     protected $operador;
     protected $data_envio;
     protected $url_arquivo;
+    protected $arquivo;
 
     public function __set($atributo, $valor) {
         $this->$atributo = $valor;
@@ -23,6 +24,8 @@ abstract class Resultado {
     public function __get($atributo) {
         return $this->$atributo;
     }
+
+    public abstract function carregarArquivo($arquivo = null);
 
     public abstract function analisarArquivo();
 }
