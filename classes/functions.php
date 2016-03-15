@@ -44,7 +44,7 @@ function tratarErro($ex) {
 /**
  * Adiciona a função tratarExpection como o manipulador padrão de exceções
  */
-set_exception_handler('LRX\tratarErro');
+//set_exception_handler('LRX\tratarErro');
 
 function print_p($expression) {
     //echo "<pre>";

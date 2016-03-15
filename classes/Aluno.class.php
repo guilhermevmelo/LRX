@@ -12,6 +12,49 @@ namespace LRX;
 require_once "autoload.php";
 
 class Aluno extends UsuarioAcademico {
-    private $professor; // LRX\Professor
-    private $vinculo;
+    private $professor = null;  // LRX\Professor
+    private $vinculo = 1;       // 1 - IC | 2 - Mestrado | 3 - Doutorado | 4 - Técnico | 5 - Pesquisador
+
+    public function __construct($nome, $email, $documento, Professor $professor, $vinculo = 1, $limite = 4, $uid =
+    null, $id = null) {
+        $this->id           = $id;
+        $this->nome         = $nome;
+        $this->email        = $email;
+        $this->documento    = $documento;
+        $this->professor    = $professor;
+        $this->limite       = $limite;
+        $this->vinculo      = $vinculo;
+        $this->uid          = $uid ?? $this->gerarUid();
+        $this->nivel_acesso = 1;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVinculo() {
+        return $this->vinculo;
+    }
+
+    /**
+     * @param int $vinculo
+     */
+    public function setVinculo(int $vinculo) {
+        $this->vinculo = $vinculo;
+    }
+
+    /**
+     * @return Professor | null
+     */
+    public function getProfessor() {
+        return $this->professor;
+    }
+
+    /**
+     * @param Professor $professor
+     */
+    public function setProfessor(Professor $professor) {
+        $this->professor = $professor;
+    }
+
+
 }

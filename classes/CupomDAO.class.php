@@ -14,7 +14,7 @@ require_once "autoload.php";
  * Class CupomDAO Gerencia as transações no banco de dados para a classe LRX\Cupom.
  * @package LRX
  */
-class CupomDAO /*implements DAO*/ {
+class CupomDAO /*extends DAO*/ {
     /**
      * @var null|\PDO uma instância de conexão com o banco de dados.
      */

@@ -18,11 +18,89 @@ class Grupo {
     protected $nome;
     protected $sigla;
 
-    public function __set($atributo, $valor) {
-        $this->$atributo = $valor;
+    /**
+     * @return mixed
+     */
+    public function getId() {
+        return $this->id;
     }
 
-    public function __get($atributo) {
-        return $this->$atributo;
+    /**
+     * @param mixed $id
+     */
+    public function setId($id) {
+        $this->id = $id;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCriador() {
+        return $this->criador;
+    }
+
+    /**
+     * @param mixed $criador
+     */
+    public function setCriador($criador) {
+        $this->criador = $criador;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResponsaveis() {
+        return $this->responsaveis;
+    }
+
+    /**
+     * @param mixed $responsaveis
+     */
+    public function setResponsaveis($responsaveis) {
+        $this->responsaveis = $responsaveis;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMembros() {
+        return $this->membros;
+    }
+
+    /**
+     * @param mixed $membros
+     */
+    public function setMembros($membros) {
+        $this->membros = $membros;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNome() {
+        return $this->nome;
+    }
+
+    /**
+     * @param mixed $nome
+     */
+    public function setNome($nome) {
+        $this->nome = $nome;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSigla() {
+        return $this->sigla;
+    }
+
+    /**
+     * @param mixed $sigla
+     */
+    public function setSigla($sigla) {
+        $this->sigla = $sigla;
+    }
+
+
 }

@@ -264,6 +264,12 @@ input[type="checkbox"]:checked + label{
     color: green;
 }
 
+input[type="radio"]:disabled + label,
+input[type="checkbox"]:disabled + label{
+    color: gray;
+    text-decoration: line-through;
+}
+
 fieldset {
     margin: 0 0 10px 0;
     border: 0;
