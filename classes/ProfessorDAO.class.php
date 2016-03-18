@@ -31,9 +31,11 @@ class ProfessorDAO /*extends DAO*/ {
         $this->uaDAO = new UsuarioAcademicoDAO();
     }
 
+
     /**
      * @param Professor $professor
      * @param bool $novo_usuario
+     * @return bool
      */
     public function criar(Professor $professor, bool $novo_usuario = true) {
         if ($this->existeDocumento($professor->getDocumento()))
@@ -67,6 +69,10 @@ class ProfessorDAO /*extends DAO*/ {
         }
     }
 
+    /**
+     * @param $documento
+     * @return bool
+     */
     public function existeDocumento($documento) {
         $sql = sprintf("select * from usuarios u, professores p where u.cpf = :documento and p.id_professor = u.id_usuario");
         $consulta = $this->conexao->prepare($sql);
@@ -78,6 +84,7 @@ class ProfessorDAO /*extends DAO*/ {
             return false;
         return true;
     }
+
 
     /**
      * @param int $id

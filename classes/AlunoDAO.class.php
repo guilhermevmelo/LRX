@@ -108,6 +108,32 @@ class AlunoDAO /*extends DAO*/ {
     }
 
     public function obterTodos() {
-        // TODO: Implement obterTodos() method.
+        $sql = sprintf("select u.*, a.id_grupo, a.id_professor, a.vinculo
+                        from usuarios u, alunos a
+                        where a.id_aluno = u.id_usuario
+                        order by u.id_usuario desc");
+
+        $alunos = array();
+
+        foreach ($this->conexao->query($sql) as $tupla) {
+            $a = new Aluno($tupla['nome'], $tupla['email'], $tupla['cpf'], $this->pDAO->obter($tupla['id_professor']),
+                $tupla['vinculo'], (int) $tupla['limite'], $tupla['uid'], (int) $tupla['id_usuario']);
+            $a->setConfirmado($tupla['confirmado'] == 1 ? true : false);
+            $a->setCidade($tupla['cidade']);
+            $a->setEstado($tupla['estado']);
+            $a->setSenha($tupla['senha']);
+            $a->setAreaDePesquisa($tupla['area_de_pesquisa']);
+            $a->setDepartamento($tupla['departamento']);
+            $a->setLaboratorio($tupla['laboratorio']);
+            $a->setEmailAlternativo($tupla['email_alternativo']);
+            $a->setNivelAcesso((int) $tupla['nivel_acesso']);
+            $a->setGenero((int) $tupla['genero']);
+            $a->setTelefone($tupla['telefone']);
+            $a->setTitulo((int) $tupla['titulo']);
+
+            array_push($alunos, $a);
+        }
+
+        return $alunos;
     }
 }

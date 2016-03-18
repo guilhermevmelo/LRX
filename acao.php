@@ -19,14 +19,90 @@ $q = $_GET["q"] ?? $_POST["q"] ?? NULL;
 
 
 if (isset($q) && $q == "login") {
-    $documento = addslashes($_POST["frm_login_documento"]);
-    $senha = sha1(addslashes($_POST["frm_login_senha"]));
-    $tipo = $_POST["frm_login_tipo"];
+//    $email = "guilhermevmelo@gmail.com";
+//    $senha = sha1("iqh5riv9");
+    $email = addslashes($_POST['email']);
+    $senha = addslashes($_POST['senha']);
 
-    $uDAO = new UsuarioAcademicoDAO();
+    $u = UsuarioDAO::login($email, $senha);
+
+    if ($u === null) {
+        Erro::lancarErro(array("codigo" => 1001, "mensagem" => "Usuário não Encontrado"));
+    } else {
+        header('Content-Type: application/json');
+        $resposta = array(
+            "codigo" => 200,
+            "id_usuario" => $u->getId(),
+            "documento" => $u->getDocumento(),
+            "nome" => $u->getNome(),
+            "email" => $u->getEmail(),
+            "email_alternativo" => $u->getEmailAlternativo(),
+            "titulo" => $u->getTitulo(),
+            "genero" => $u->getGenero(),
+            "telefone" => $u->getTelefone(),
+            "nivel_acesso" => $u->getNivelAcesso(),
+            "confirmado" => $u->confirmado(),
+            "email_confirmado" => $u->emailConfirmado(),
+            "uid" => $u->getUid(),
+            "mensagens" => $u->getMensagens(),
+            "estado" => $u->getEstado(),
+            "cidade" => $u->getCidade()
+        );
+
+        echo json_encode($resposta);
+    }
+
+    //print_p($u);
+
+    //$tipo = $_POST["frm_login_tipo"];
+
+   // $uDAO = new UsuarioAcademicoDAO();
 
     /** @var  $u Usuario caso dê certo; null caso não dê */
-    $u = $uDAO->login();
+    //$u = $uDAO->login();
+}
+
+if (isset($q) && $q == "loginDireto") {
+//    $email = "guilhermevmelo@gmail.com";
+//    $senha = sha1("iqh5riv9");
+    $uid = addslashes($_POST['uid']);
+
+    $u = UsuarioDAO::obterPorUid($uid);
+
+    if ($u === null) {
+        Erro::lancarErro(array("codigo" => 1001, "mensagem" => "Usuário não Encontrado"));
+    } else {
+        header('Content-Type: application/json');
+        $resposta = array(
+            "codigo" => 200,
+            "id_usuario" => $u->getId(),
+            "documento" => $u->getDocumento(),
+            "nome" => $u->getNome(),
+            "email" => $u->getEmail(),
+            "email_alternativo" => $u->getEmailAlternativo(),
+            "titulo" => $u->getTitulo(),
+            "genero" => $u->getGenero(),
+            "telefone" => $u->getTelefone(),
+            "nivel_acesso" => $u->getNivelAcesso(),
+            "confirmado" => $u->confirmado(),
+            "email_confirmado" => $u->emailConfirmado(),
+            "uid" => $u->getUid(),
+            "mensagens" => $u->getMensagens(),
+            "estado" => $u->getEstado(),
+            "cidade" => $u->getCidade()
+        );
+
+        echo json_encode($resposta);
+    }
+
+    //print_p($u);
+
+    //$tipo = $_POST["frm_login_tipo"];
+
+    // $uDAO = new UsuarioAcademicoDAO();
+
+    /** @var  $u Usuario caso dê certo; null caso não dê */
+    //$u = $uDAO->login();
 }
 
 if (isset($q) && $q == 'testarUtils') {
@@ -83,7 +159,7 @@ if (isset($q) && $q == "usuarios") {
 
     $profs = $pDAO->obterTodos();
 
-    print_p($profs);
+    //print_p($profs);
 
     //$profs[0]->setNome("Guilherme Vieira Melo");
 
@@ -107,7 +183,7 @@ if (isset($q) && $q == "usuarios") {
 //    $a->setEmailAlternativo("oproprio@guilhermevieira.com.br");
 
     $aDAO = new AlunoDAO();
-    $a = $aDAO->obter(21);
+    $a = $aDAO->obterTodos();
 //
 //    //print_p($p);
     print_p($a);

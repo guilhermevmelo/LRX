@@ -10,8 +10,11 @@
     <meta charset="utf-8">
     <title>Laboratório de Raios-X | Solicitação de Análises</title>
     <link rel="stylesheet" href="estilos/all.css" media="all">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 
     <script src="js/jquery-1.11.2.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/sha_dev.js"></script>
     <script src="js/main.js"></script>
     <script src="js/retina.js"></script>
 </head>
@@ -24,19 +27,24 @@
     </div>
 </noscript>
 <div id="Pagina">
+    <div id="DivErro">
+        <div id="Erro">
+            <p id="ErroP"></p>
+        </div>
+    </div>
     <header role="presentation">
         <p id="BoasVindas">
             <span id="_cumprimento">
-                Olá <span id="_titulo">Dr.</span> <span id="_nome">José Marcos Sasaki</span>.
+                Olá <span id="_titulo"></span> <span id="_nome"></span> (<a href="#/Sair">sair</a>).
             </span>
             <br>
             <span id="_segunda_linha">
-                <span id="_Vocativo">O sr.</span> <span id="_num_mensagens">não possui</span> mensagens não lidas.
+                <span id="_Vocativo"></span> <span id="_possui_mensagens"></span> não lidas.
             </span>
         </p>
         <nav>
             <ul>
-                <li><a href="#">Lorem Ipsum</a></li>
+                <li><a href="#">Solicitações</a></li>
                 <li><a href="#">Dolor</a></li>
                 <li><a href="#">Sit Amet</a></li>
                 <li><a href="#">Consectectur</a></li>
@@ -59,6 +67,7 @@
                             <input type="password" name="frm_login_senha" id="frm_login_senha">
                         </fieldset>
                         <div>
+
                             <fieldset class="floatLeft">
                                 <input type="radio" name="frm_login_tipo" id="frm_login_tipo_academico" checked>
                                 <label for="frm_login_tipo_academico">Acadêmico</label>
@@ -66,8 +75,13 @@
                                 <input type="radio" name="frm_login_tipo" id="frm_login_tipo_comercial" disabled>
                                 <label for="frm_login_tipo_comercial">Comercial</label>
                             </fieldset>
+                            <fieldset class="floatLeft">
+                                <input type="checkbox" name="frm_login_manter_logado" id="frm_login_manter_logado"
+                                       value="1" checked>
+                                <label for="frm_login_manter_logado">Permanecer</label>
+                            </fieldset>
                             <fieldset class="floatRight" style="padding-top: 4px;">
-                                <input type="button" name="frm_login_sbmt" id="frm_login_sbmt" value="Entrar">
+                                <input type="submit" name="frm_login_sbmt" id="frm_login_sbmt" value="Entrar">
                             </fieldset>
                         </div>
                         <p class="clear">
@@ -79,20 +93,12 @@
             </div>
             <div id="Apresentacao" class="bloco">
                 <h1>Sistema de Solicitação de Análises de Raios-X</h1>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec dui a elit consectetur tincidunt vel rutrum enim.
-                    Sed in fermentum eros, in bibendum sem. In consectetur, nunc et dapibus hendrerit, nulla nisl suscipit lorem, vel tincidunt turpis ante ac dolor.
-                    Integer tincidunt, dolor eget rhoncus rutrum, ipsum nulla molestie nunc, ac tincidunt ante odio sit amet metus.
-                    Nunc luctus, orci vitae hendrerit imperdiet, quam felis pellentesque turpis, eget consectetur ex orci eget arcu.
-                    Phasellus fringilla vel metus sed ullamcorper. Sed vehicula ultrices ipsum id suscipit.
-                    Nunc maximus, mauris sed sodales placerat, erat magna euismod leo, sed porta nibh tortor sit amet orci.
-                    Suspendisse in sollicitudin lorem. Ut pretium non dolor ac tristique. Integer venenatis nulla non tortor convallis tempus non vestibulum nibh.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec dui a elit consectetur tincidunt vel rutrum enim.
-                    Sed in fermentum eros, in bibendum sem. In consectetur, nunc et dapibus hendrerit, nulla nisl suscipit lorem, vel tincidunt turpis ante ac dolor.
-                    Integer tincidunt, dolor eget rhoncus rutrum, ipsum nulla molestie nunc, ac tincidunt ante odio sit amet metus.
-                    Nunc luctus, orci vitae hendrerit imperdiet, quam felis pellentesque turpis, eget consectetur ex orci eget arcu.
-                    Phasellus fringilla vel metus sed ullamcorper. Sed vehicula ultrices ipsum id suscipit.
-                    Nunc maximus, mauris sed sodales placerat, erat magna euismod leo, sed porta nibh tortor sit amet orci.
-                    Suspendisse in sollicitudin lorem. Ut pretium non dolor ac tristique. Integer venenatis nulla non tortor convallis tempus non vestibulum nibh.</p>
+                <p>O Laboratório de Raios X do Departamento de Física da Universidade Federal do Ceará disponibiliza à comunidade
+                acadêmica seus equipamentos para análises. Essas análises devem ser solicitadas por meio desse
+                sistema de solicitações. Cada professor pode ter apenas 20 amostras em processo de análise
+                simultaneamente, somando-se as suas e as de seus alunos, então saiba priorizar!</p>
+                <p>Alunos devem ser cadastrados por seus professores. <span class="vermelho">Não solicite
+                    cadastro caso não seja um professor de IES.</span> </p>
 
             </div>
         </div>

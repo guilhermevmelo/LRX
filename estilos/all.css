@@ -181,6 +181,10 @@ footer nav#MenuRodape {
     margin: 0 auto;
 }
 
+header {
+    display: none;
+}
+
 header p#BoasVindas {
     float: right;
     text-align: right;
@@ -336,7 +340,44 @@ input[type="submit"]:hover,
     cursor: pointer;
 }
 
+#DivErro {
+    position: fixed;
+    display: none;
+    margin: 0;
+    padding: 0;
+
+    top: 0;
+    left: 0;
+
+    z-index: 99;
+
+    width: 100%;
+}
+
+#Erro:hover {
+    cursor: pointer;
+}
+
+#Erro {
+    max-width: 450px;
+    /*border-radius: 5px;*/
+    color: #dc1f18;
+    border: 1px solid #dc1f18;
+    background-color: #ffd8dc;
+    margin: 25px auto;
+    padding: 10px;
+    box-shadow: 0 3px 5px #333;
+}
+
+#ErroP {
+    text-align: center;
+}
+
 /** Estilos compartilhados **/
+.bloco {
+    display: none;
+}
+
 .floatRight { float: right; }
 .floatLeft { float: left; }
 .clear { clear: both; }
@@ -345,3 +386,5 @@ input[type="submit"]:hover,
 .alignLeft { text-align: left; }
 .alignCenter { text-align: center; }
 .justify { text-align: justify; }
+
+.vermelho { color: #dc1f18; }
