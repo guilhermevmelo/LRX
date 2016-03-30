@@ -36,6 +36,6 @@ define("USUARIO", $configuracoes['BANCO_DE_DADOS']['usuario']);
 define("SENHA", $configuracoes['BANCO_DE_DADOS']['senha']);
 
 /**
- * DSN string A string DSN a ser utilizada pela extensão PDO.
+ * DSN string A string DSN a ser utilizada pela extensão PDO.   
  */
 define("DSN", SGBD.":host=".SERVIDOR.";port=".PORTA.";dbname=".BANCO);

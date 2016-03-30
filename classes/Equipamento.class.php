@@ -11,28 +11,105 @@ namespace LRX;
 require_once "autoload.php";
 
 class Equipamento {
-    private $id;
+    private $id = null;
     private $nome;
     private $tipo;      // [FRX, DRX]
     private $tubo;      // [Cu, Co, Pd]
-    private $status;    // [0 => indisponível, 1 => disponível]
+    private $disponivel = false;    // [false => indisponível, true => disponível]
     private $servicos;
 
-    public function __construct($id = null, $nome = null, $tipo = null, $tubo = null, $status = null, $servicos =
+    public function __construct($id = null, $nome = null, $tipo = null, $tubo = null, $disponivel = null, $servicos =
     null) {
         $this->id = $id;
         $this->nome = $nome;
         $this->tipo = $tipo;
         $this->tubo = $tubo;
-        $this->status = $status;
+        $this->disponivel = $disponivel;
         $this->servicos = $servicos;
     }
 
-    public function __set($atributo, $valor) {
-        $this->$atributo = $valor;
+    /**
+     * @return null
+     */
+    public function getId() {
+        return $this->id;
     }
 
-    public function __get($atributo) {
-        return $this->$atributo;
+    /**
+     * @param null $id
+     */
+    public function setId($id) {
+        $this->id = $id;
     }
+
+    /**
+     * @return null
+     */
+    public function getNome() {
+        return $this->nome;
+    }
+
+    /**
+     * @param null $nome
+     */
+    public function setNome($nome) {
+        $this->nome = $nome;
+    }
+
+    /**
+     * @return null
+     */
+    public function getTipo() {
+        return $this->tipo;
+    }
+
+    /**
+     * @param null $tipo
+     */
+    public function setTipo($tipo) {
+        $this->tipo = $tipo;
+    }
+
+    /**
+     * @return null
+     */
+    public function getTubo() {
+        return $this->tubo;
+    }
+
+    /**
+     * @param null $tubo
+     */
+    public function setTubo($tubo) {
+        $this->tubo = $tubo;
+    }
+
+    /**
+     * @return null
+     */
+    public function disponivel() {
+        return $this->disponivel;
+    }
+
+    /**
+     * @param null $disponivel
+     */
+    public function disponibilizar() {
+        $this->disponivel = true;
+    }
+
+    /**
+     * @return null
+     */
+    public function getServicos() {
+        return $this->servicos;
+    }
+
+    /**
+     * @param null $servicos
+     */
+    public function setServicos($servicos) {
+        $this->servicos = $servicos;
+    }
+
 }

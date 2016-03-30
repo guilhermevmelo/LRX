@@ -58,7 +58,8 @@ function atualizarTokens() {
     tokens.genero = usuario.genero;
     switch(usuario.titulo) {
         case 0:
-            tokens.titulo = usuario.genero == 1 ? "Sr. " : "Sra. ";
+            //tokens.titulo = usuario.genero == 1 ? "Sr. " : "Sra. ";
+            tokens.titulo = "";
             break;
         case 1:
             tokens.titulo = usuario.genero == 1 ? "Profº. " : "Profª. ";
@@ -133,8 +134,8 @@ function apresentarErro(erro) {
 
 function exibirSecao() {
     var hash = window.location.hash;
-
-    $('.bloco:not(.fixo)').fadeOut('slow');
+    var estadoAtual = $('.estadoAtual');
+    console.log("aqui com hash ", hash);
 
     switch (hash) {
         case '#/Inicio':
@@ -142,11 +143,21 @@ function exibirSecao() {
                 location.hash = '#/Dashboard';
                 break;
             }
-            $('#DivLogin').fadeIn('slow');
-            $('#Apresentacao').fadeIn('slow');
-        break;
+            estadoAtual.fadeOut('slow', function () {
+                $(this).removeClass('estadoAtual');
+                $('#Inicio').fadeIn('slow', function () {
+                    $(this).addClass('estadoAtual');
+                });
+            });
+            break;
 
         case '#/Dashboard':
+            estadoAtual.fadeOut('slow', function () {
+                $(this).removeClass('estadoAtual');
+                $('#Dashboard').fadeIn('slow', function () {
+                    $(this).addClass('estadoAtual');
+                });
+            });
             break;
 
         case '#/Sair':
@@ -200,10 +211,8 @@ function iniciarAplicacao() {
             }
         });
 
-        exibirSecao();
-    } else {
-        location.hash = '#/Inicio';
     }
+    exibirSecao();
 }
 
 $(document).ready(function () {
@@ -223,6 +232,11 @@ $(document).ready(function () {
     $('#FormLogin').submit(function (evento) {
         evento.stopPropagation();
         evento.preventDefault();
+
+        //$('#frm_login_sbmt').setAttribute('disabled', 'disabled');
+
+        clearTimeout(timeoutErro);
+        $('#DivErro').fadeOut('slow');
 
         var shaObj = new jsSHA("SHA-1", "TEXT");
         shaObj.update($('#frm_login_senha').val());
@@ -270,7 +284,7 @@ $(document).ready(function () {
                 $('#frm_login_senha').val('');
 
                 location.hash = '#/Dashboard';
-                //$('#DivLogin').fadeOut('slow');
+                $('#Inicio').fadeOut('slow');
                 $('header').toggle('drop', {direction:"up"});
             }
         });

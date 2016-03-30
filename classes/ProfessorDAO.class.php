@@ -49,8 +49,7 @@ class ProfessorDAO /*extends DAO*/ {
 
             $sql = sprintf("insert into professores values (:id_professor, :id_grupo)");
             $consulta = $this->conexao->prepare($sql);
-
-
+            
             $consulta->bindValue(':id_professor', $professor->getId());
             $valor_id_grupo = $professor->getGrupo() != null ? $professor->getGrupo()->getId() : null;
             $consulta->bindValue(':id_grupo', $valor_id_grupo);

@@ -118,6 +118,15 @@ h1 {
     margin: 15px 0;
 }
 
+h3 {
+    font-size: 1.5em;
+}
+
+h3.cabecalho {
+    padding: 10px;
+    color: #666;
+    border-bottom: 2px solid #dedede;
+}
 
 a {
     text-decoration: none;
@@ -176,9 +185,45 @@ footer nav#MenuRodape {
     width: 65%;
 }
 
-#DivLogin .container {
+#DivLogin .conteiner {
     /*width: 270px;*/
     margin: 0 auto;
+}
+
+#Dashboard #DivMenuLateral {
+    width: 32%;
+    float: left;
+}
+
+#Dashboard #Principal {
+    float: right;
+    width: 65%;
+}
+
+#DivMenuLateral {
+    padding: 0;
+}
+
+#MenuLateral {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#MenuLateral li {
+    display: block;
+    padding: 5px 10px;
+
+    -webkit-transition: background-color .5s;
+    -moz-transition: background-color .5s;
+    -ms-transition: background-color .5s;
+    -o-transition: background-color .5s;
+    transition: background-color .5s;
+}
+
+#MenuLateral li:hover {
+    background-color: rgba(220, 31, 24, 0.12);
+    cursor: pointer;
 }
 
 header {
@@ -362,7 +407,7 @@ input[type="submit"]:hover,
     max-width: 450px;
     /*border-radius: 5px;*/
     color: #dc1f18;
-    border: 1px solid #dc1f18;
+    /*border: 1px solid #dc1f18;*/
     background-color: #ffd8dc;
     margin: 25px auto;
     padding: 10px;
@@ -373,10 +418,13 @@ input[type="submit"]:hover,
     text-align: center;
 }
 
-/** Estilos compartilhados **/
-.bloco {
+
+.secao {
     display: none;
 }
+
+/** Estilos compartilhados **/
+
 
 .floatRight { float: right; }
 .floatLeft { float: left; }

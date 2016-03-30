@@ -12,7 +12,7 @@ require_once "autoload.php";
 
 class Solicitacao {
     protected $id;
-    protected $usuario;       // \LRX\Usuario
+    protected $solicitante;       // \LRX\Usuario
     protected $equipamento;   // \LRX\Equipamento
     protected $fenda;         // \LRX\Fenda
     protected $resultado;     // \LRX\Resultado
@@ -52,15 +52,15 @@ class Solicitacao {
     /**
      * @return mixed
      */
-    public function getUsuario() {
-        return $this->usuario;
+    public function getSolicitante() {
+        return $this->solicitante;
     }
 
     /**
-     * @param mixed $usuario
+     * @param mixed $solicitante
      */
-    public function setUsuario($usuario) {
-        $this->usuario = $usuario;
+    public function setSolicitante($solicitante) {
+        $this->solicitante = $solicitante;
     }
 
     /**
@@ -329,14 +329,12 @@ class Solicitacao {
         $this->observacoes = $observacoes;
     }
 
-
-
     /**
      * @param bool|true $retornar    Diz ao método se deve retornar a identificação ou setar ao objeto.
      * @return null|string           A identificação gerada, caso o parâmetro $retornar seja true.
      */
     public function gerarIdentificacao($retornar = false) {
-        $identificacao = obterIniciais($this->usuario->nome);
+        $identificacao = obterIniciais($this->solicitante->nome);
 
         if (strlen($identificacao) > 3)
             $identificacao = substr($identificacao, 0, 3);
@@ -348,6 +346,4 @@ class Solicitacao {
             return $identificacao;
         return null;
     }
-
-
 }

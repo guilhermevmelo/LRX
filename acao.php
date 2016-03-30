@@ -17,7 +17,9 @@ session_start();
 //$q = isset($_GET["q"])? $_GET["q"] : (isset($_POST["q"]) ? $_POST["q"] : NULL);
 $q = $_GET["q"] ?? $_POST["q"] ?? NULL;
 
-
+/**
+ *
+ */
 if (isset($q) && $q == "login") {
 //    $email = "guilhermevmelo@gmail.com";
 //    $senha = sha1("iqh5riv9");
@@ -62,6 +64,9 @@ if (isset($q) && $q == "login") {
     //$u = $uDAO->login();
 }
 
+/**
+ *
+ */
 if (isset($q) && $q == "loginDireto") {
 //    $email = "guilhermevmelo@gmail.com";
 //    $senha = sha1("iqh5riv9");
@@ -105,11 +110,13 @@ if (isset($q) && $q == "loginDireto") {
     //$u = $uDAO->login();
 }
 
+
+/********** TESTES **********/
 if (isset($q) && $q == 'testarUtils') {
     $s = new Solicitacao();
     $u = new Aluno();
     $u->setNome("Guilherme Vieira Melo");
-    $s->setUsuario($u);
+    $s->setSolicitante($u);
     echo $s->gerarIdentificacao(true);
     $u->setNome("Barbara Marques Alves");
     echo $s->gerarIdentificacao(true);
@@ -188,4 +195,16 @@ if (isset($q) && $q == "usuarios") {
 //    //print_p($p);
     print_p($a);
 
+}
+
+if (isset($q) && $q == 'equipamentos') {
+    $eDAO =  new EquipamentoDAO();
+
+    $e = new Equipamento(null, 'Não Existente', 'FRX', 'Co', false);
+
+    //$eDAO->criar($e);
+    print_p($eDAO->obterTodos());
+
+    //$eDAO->deletar(5);
+    print_p($eDAO->obterTodos());
 }

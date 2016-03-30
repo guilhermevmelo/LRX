@@ -10,43 +10,168 @@ namespace LRX;
 
 require_once "autoload.php";
 
-class EquipamentoDAO implements DAO {
-    private $equipamento = null;
-    private $conexao = null;
+/**
+ * Class EquipamentoDAO
+ * @package LRX
+ */
+class EquipamentoDAO /*extends DAO*/ {
+    /**
+     * @var \PDO
+     */
+    private $conexao;
 
+    /**
+     * EquipamentoDAO constructor.
+     */
     public function __construct() {
         $this->conexao = new \PDO(DSN, USUARIO, SENHA);
     }
 
-    public function criar($equipamento) {
-        if ($this->conexao === null)
-            return null;
+    /**
+     * @param Equipamento $equipamento
+     * @return bool|null
+     */
+    public function criar(Equipamento $equipamento) {
+        if ($this->existe($equipamento->getId()))
+            return false;
 
-        $sql = sprintf("insert into equipamentos values(null, :nome, :tipo, :tubo, :status)");
-        $preparedStatement = $this->conexao->prepare($sql);
-        $preparedStatement->bindParam(':nome', $equipamento->nome);
-        $preparedStatement->bindParam(':tipo', $equipamento->tipo);
-        $preparedStatement->bindParam(':tubo', $equipamento->tubo);
-        $preparedStatement->bindParam(':status', $equipamento->status);
+        try {
+            $this->conexao->beginTransaction();
+            
+            $sql = sprintf("insert into equipamentos values(null, :nome, :tipo, :tubo, :disponivel)");
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(':nome', $equipamento->getNome());
+            $consulta->bindValue(':tipo', $equipamento->getTipo());
+            $consulta->bindValue(':tubo', $equipamento->getTubo());
+            $consulta->bindValue(':disponivel', $equipamento->disponivel(), \PDO::PARAM_BOOL);
 
+            $consulta->execute();
 
+            print_p($consulta->errorInfo());
 
+            $this->conexao->commit();
+            return true;
+        } catch (\Exception $pdoe) {
+            $this->conexao->rollBack();
+            Erro::lancarErro(array('codigo'    =>  $pdoe->getCode(),
+                                   'mensagem'  =>  $pdoe->getMessage()));
+            return false;
+        }
 
     }
 
-    public function obter($id) {
-        // TODO: Implement ler() method.
+    /**
+     * @param $id_equipamento
+     * @return bool|Equipamento
+     */
+    public function obter($id_equipamento) {
+        $sql = sprintf("select * from equipamentos where id_equipamento = :id_equipamento limit 1");
+        $consulta = $this->conexao->prepare($sql);
+
+        $consulta->bindValue(':id_equipamento', $id_equipamento);
+        $consulta->execute();
+        
+        $tupla = $consulta->fetch(\PDO::FETCH_ASSOC);
+        
+        if ($tupla === false)
+            return false;
+
+        // TODO: Adicionar os serviços direto no construtor
+
+        $e = new Equipamento($tupla['id_equipamento'], $tupla['nome'], $tupla['tipo'], $tupla['tubo']);
+        if ($tupla['disponivel'] == 1)
+            $e->disponibilizar();
+
+        return $e;
+        
     }
 
-    public function atualizar($equipamento) {
-        // TODO: Implement atualizar() method.
+    /**
+     * @param Equipamento $equipamento
+     * @return bool
+     */
+    public function atualizar(Equipamento $equipamento) {
+        $equipamento_antigo = $this->obter($equipamento->getId());
+        if ($equipamento_antigo === false)
+            return false;
+
+        try {
+            $this->conexao->beginTransaction();
+
+            $sql = sprintf("update equipamentos set nome = :nome, tipo = :tipo, tubo = :tubo, disponivel = :disponivel where id_equipamento = :id");
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(':nome', $equipamento->getNome());
+            $consulta->bindValue(':tipo', $equipamento->getTipo());
+            $consulta->bindValue(':tubo', $equipamento->getTubo());
+            $consulta->bindValue(':disponivel', $equipamento->disponivel(), \PDO::PARAM_BOOL);
+
+            $consulta->execute();
+
+            print_p($consulta->errorInfo());
+
+            $this->conexao->commit();
+        } catch (\Exception $pdoe) {
+            $this->conexao->rollBack();
+            Erro::lancarErro(array('codigo'    =>  $pdoe->getCode(),
+                                   'mensagem'  =>  $pdoe->getMessage()));
+            return false;
+        }
     }
 
+    /**
+     * @param $id
+     */
     public function deletar($id) {
-        // TODO: Implement deletar() method.
+        try {
+            $this->conexao->beginTransaction();
+            $sql = sprintf("DELETE FROM equipamentos WHERE id_equipamento = :id LIMIT 1");
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindParam(':id', $id);
+            $consulta->execute();
+
+            $this->conexao->commit();
+        }catch (\Exception $pdoe) {
+            $this->conexao->rollBack();
+            Erro::lancarErro(array('codigo'    =>  $pdoe->getCode(),
+                                   'mensagem'  =>  $pdoe->getMessage()));
+        }
     }
 
-    public function obterTodos() {
-        // TODO: Implement obterTodos() method.
+    /**
+     * @param bool $apenas_disponiveis
+     * @return array
+     */
+    public function obterTodos($apenas_disponiveis = false) {
+        $sql = sprintf("select * from equipamentos ");
+        if ($apenas_disponiveis)
+            $sql .= sprintf("where disponivel = 1 ");
+        $sql .= sprintf("order by id_equipamento asc");
+        $equipamentos = array();
+
+        foreach ($this->conexao->query($sql) as $tupla) {
+            $e = new Equipamento((int) $tupla['id_equipamento'], $tupla['nome'], $tupla['tipo'],
+                $tupla['tubo'], $tupla['disponivel'] == 1 ? true : false);
+
+            // TODO: Adicionar os serviços
+            array_push($equipamentos, $e);
+        }
+
+        return $equipamentos;
+    }
+
+    /**
+     * @param $id
+     * @return bool
+     */
+    public function existe($id) {
+        $sql = sprintf("select * from equipamentos where id_equipamento = :id");
+        $consulta = $this->conexao->prepare($sql);
+        $consulta->bindParam(':id', $id);
+
+        $consulta->execute();
+
+        if ($consulta->fetch() === false)
+            return false;
+        return true;
     }
 }
