@@ -17,4 +17,5 @@ abstract class DAO {
     public abstract function deletar($id);
 
     public abstract function obterTodos();
+    public abstract function existe();
 }

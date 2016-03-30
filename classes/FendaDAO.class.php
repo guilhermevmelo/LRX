@@ -2,48 +2,44 @@
 /**
  * Created by PhpStorm.
  * User: guilherme
- * Date: 2/15/16
- * Time: 14:51
+ * Date: 3/30/16
+ * Time: 14:00
  */
 
 namespace LRX;
 
-require_once "autoload.php";
 
 /**
- * Class EquipamentoDAO
+ * Class FendaDAO
  * @package LRX
  */
-class EquipamentoDAO /*extends DAO*/ {
+class FendaDAO /*extends DAO*/ {
     /**
      * @var \PDO
      */
     private $conexao;
 
     /**
-     * EquipamentoDAO constructor.
+     * FendaDAO constructor.
      */
     public function __construct() {
         $this->conexao = new \PDO(DSN, USUARIO, SENHA);
     }
 
     /**
-     * @param Equipamento $equipamento
-     * @return bool|null
+     * @param Fenda $fenda
+     * @return bool
      */
-    public function criar(Equipamento $equipamento) {
-        if ($this->existe($equipamento->getId()))
+    public function criar(Fenda $fenda) {
+        if ($this->existe($fenda->getId()))
             return false;
 
         try {
             $this->conexao->beginTransaction();
-            
-            $sql = sprintf("insert into equipamentos values(null, :nome, :tipo, :tubo, :disponivel)");
+            $sql = sprintf("inset into fendas values (null, :nome, :disponivel)");
             $consulta = $this->conexao->prepare($sql);
-            $consulta->bindValue(':nome', $equipamento->getNome());
-            $consulta->bindValue(':tipo', $equipamento->getTipo());
-            $consulta->bindValue(':tubo', $equipamento->getTubo());
-            $consulta->bindValue(':disponivel', $equipamento->disponivel(), \PDO::PARAM_BOOL);
+            $consulta->bindValue(':nome', $fenda->getNome());
+            $consulta->bindValue(':disponivel', $fenda->disponivel(), \PDO::PARAM_BOOL);
             $consulta->execute();
             print_p($consulta->errorInfo());
 
@@ -55,52 +51,44 @@ class EquipamentoDAO /*extends DAO*/ {
                                    'mensagem'  =>  $pdoe->getMessage()));
             return false;
         }
-
     }
 
     /**
-     * @param $id_equipamento
-     * @return bool|Equipamento
+     * @param $id
+     * @return bool|Fenda
      */
-    public function obter($id_equipamento) {
-        $sql = sprintf("select * from equipamentos where id_equipamento = :id_equipamento limit 1");
+    public function obter($id) {
+        $sql = sprintf("select * from fendas where id_fenda = :id");
         $consulta = $this->conexao->prepare($sql);
-
-        $consulta->bindValue(':id_equipamento', $id_equipamento);
+        $consulta->bindValue(':id', $id);
         $consulta->execute();
-        
+
         $tupla = $consulta->fetch(\PDO::FETCH_ASSOC);
-        
+
         if ($tupla === false)
             return false;
 
-        // TODO: Adicionar os serviços direto no construtor
-
-        $e = new Equipamento($tupla['id_equipamento'], $tupla['nome'], $tupla['tipo'], $tupla['tubo']);
-        if ($tupla['disponivel'] == 1)
-            $e->disponibilizar();
-
-        return $e;
+        $f = new Fenda($tupla['nome'], $tupla['disponivel'] == 1 ? true : false, $tupla['id_fenda']);
+        return $f;
     }
 
     /**
-     * @param Equipamento $equipamento
+     * @param Fenda $fenda
      * @return bool
      */
-    public function atualizar(Equipamento $equipamento) {
-        $equipamento_antigo = $this->obter($equipamento->getId());
-        if ($equipamento_antigo === false)
+    public function atualizar(Fenda $fenda) {
+        $fenda_antiga = $this->obter($fenda->getId());
+        if ($fenda_antiga === false)
             return false;
 
         try {
             $this->conexao->beginTransaction();
 
-            $sql = sprintf("update equipamentos set nome = :nome, tipo = :tipo, tubo = :tubo, disponivel = :disponivel where id_equipamento = :id");
+            $sql = sprintf("update fendas set nome = :nome, disponivel = :disponivel where id_fenda = :id");
             $consulta = $this->conexao->prepare($sql);
-            $consulta->bindValue(':nome', $equipamento->getNome());
-            $consulta->bindValue(':tipo', $equipamento->getTipo());
-            $consulta->bindValue(':tubo', $equipamento->getTubo());
-            $consulta->bindValue(':disponivel', $equipamento->disponivel(), \PDO::PARAM_BOOL);
+            $consulta->bindValue(':nome', $fenda->getNome());
+            $consulta->bindValue(':id', $fenda->getId());
+            $consulta->bindValue(':disponivel', $fenda->disponivel(), \PDO::PARAM_BOOL);
 
             $consulta->execute();
             print_p($consulta->errorInfo());
@@ -121,7 +109,7 @@ class EquipamentoDAO /*extends DAO*/ {
     public function deletar($id) {
         try {
             $this->conexao->beginTransaction();
-            $sql = sprintf("DELETE FROM equipamentos WHERE id_equipamento = :id LIMIT 1");
+            $sql = sprintf("delete from fendas where id_fenda = :id");
             $consulta = $this->conexao->prepare($sql);
             $consulta->bindParam(':id', $id);
             $consulta->execute();
@@ -138,21 +126,18 @@ class EquipamentoDAO /*extends DAO*/ {
      * @return array
      */
     public function obterTodos($apenas_disponiveis = false) {
-        $sql = sprintf("select * from equipamentos");
+        $sql = sprintf("select * from fendas");
         if ($apenas_disponiveis)
-            $sql .= sprintf(" where disponivel = 1");
-        $sql .= sprintf(" order by id_equipamento asc");
-        $equipamentos = array();
+            $sql .= sprintf(" where disponivel = true");
+        $sql .= sprintf(" order by id_fenda asc");
+        $fendas = array();
 
         foreach ($this->conexao->query($sql) as $tupla) {
-            $e = new Equipamento((int) $tupla['id_equipamento'], $tupla['nome'], $tupla['tipo'],
-                $tupla['tubo'], $tupla['disponivel'] == 1 ? true : false);
-
-            // TODO: Adicionar os serviços
-            array_push($equipamentos, $e);
+            $f = new Fenda($tupla['nome'], $tupla['disponivel'] == 1 ? true : false, $tupla['id_fenda']);
+            array_push($fendas, $f);
         }
 
-        return $equipamentos;
+        return $fendas;
     }
 
     /**
@@ -160,7 +145,7 @@ class EquipamentoDAO /*extends DAO*/ {
      * @return bool
      */
     public function existe($id) {
-        $sql = sprintf("select * from equipamentos where id_equipamento = :id");
+        $sql = sprintf("select * from fendas where id_fenda = :id");
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindParam(':id', $id);
 
