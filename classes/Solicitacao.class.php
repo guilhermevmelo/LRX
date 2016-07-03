@@ -11,29 +11,49 @@ namespace LRX;
 require_once "autoload.php";
 
 class Solicitacao {
+    const TIPO_PO = 1;
+    const TIPO_FILME = 2;
+    const TIPO_PASTILHA = 3;
+    const TIPO_ELETRODO = 4;
+    const TIPO_OUTRO = 5;
+
+    const STATUS_AGUARDANDO_AUTORIZACAO = 1;
+    const STATUS_AGUARDANDO_APROVACAO = 2;
+    const STATUS_AGUARDAND_CONFIRMACAO = 3;
+    const STATUS_NA_FILA = 4;
+    const STATUS_EM_ANALISE = 5;
+    const STATUS_ANALISE_CONCLUIDA = 6;
+    const STATUS_FINALIZADA = 7;
+    const STATUS_CACELADA_RESPONSAVEL = -1;
+    const STATUS_CANCELADA_OPERADOR = -2;
+    const STATUS_CANCELADA_AMOSTRA_NAO_ENTREGUE = -3;
+
     protected $id;
-    protected $solicitante;       // \LRX\Usuario
+    
     protected $equipamento;   // \LRX\Equipamento
     protected $fenda;         // \LRX\Fenda
     protected $resultado;     // \LRX\Resultado
     protected $data_solicitacao;
     protected $data_conclusao;
-    protected $status;
-    protected $configuracao;  // array(=>)
-    protected $identificacao_da_amostra;
-    protected $composicao;
-    protected $tipo;
+    protected $status = Solicitacao::STATUS_AGUARDANDO_AUTORIZACAO;
+    protected $configuracao = array();  // array(=>)
+    protected $identificacao_da_amostra = null;
+    protected $composicao = "";
+    protected $tipo = Solicitacao::TIPO_PO;
     protected $tipo_outro;
     protected $data_recebimento;
-    protected $inflamavel;    // bool
-    protected $radioativo;    // bool
-    protected $toxico;        // bool
-    protected $corrosivo;     // bool
-    protected $higroscopico;  // bool
+    protected $inflamavel = false;    // bool
+    protected $radioativo = false;    // bool
+    protected $toxico = false;        // bool
+    protected $corrosivo = false;     // bool
+    protected $higroscopico = false;  // bool
     protected $seguranca_outro;
     protected $observacoes;
 
-    public function __construct() { }
+    public function __construct(Equipamento $equipamento) {
+        $this->equipamento = $equipamento;
+        $this->data_solicitacao = date('Y-m-d h:i:s');
+    }
 
     /**
      * @return mixed
@@ -47,20 +67,6 @@ class Solicitacao {
      */
     public function setId($id) {
         $this->id = $id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSolicitante() {
-        return $this->solicitante;
-    }
-
-    /**
-     * @param mixed $solicitante
-     */
-    public function setSolicitante($solicitante) {
-        $this->solicitante = $solicitante;
     }
 
     /**
@@ -329,21 +335,5 @@ class Solicitacao {
         $this->observacoes = $observacoes;
     }
 
-    /**
-     * @param bool|true $retornar    Diz ao método se deve retornar a identificação ou setar ao objeto.
-     * @return null|string           A identificação gerada, caso o parâmetro $retornar seja true.
-     */
-    public function gerarIdentificacao($retornar = false) {
-        $identificacao = obterIniciais($this->solicitante->nome);
-
-        if (strlen($identificacao) > 3)
-            $identificacao = substr($identificacao, 0, 3);
-
-        // TODO: Adicionar ao identificador os números do usuário e da amostra.
-
-        $this->identificacao_da_amostra = $identificacao;
-        if ($retornar)
-            return $identificacao;
-        return null;
-    }
+    
 }

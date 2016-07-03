@@ -29,6 +29,7 @@
 <div id="Pagina">
     <div id="DivErro">
         <div id="Erro">
+            <span id="ErroCronometro">5</span>
             <p id="ErroP"></p>
         </div>
     </div>
@@ -44,7 +45,7 @@
         </p>
         <nav>
             <ul>
-                <li><a href="#">Solicitações</a></li>
+                <li><a href="#/Dashboard">Solicitações</a></li>
                 <li><a href="#">Resultados</a></li>
                 <li><a href="#">Alunos</a></li>
                 <li><a href="#">Consectectur</a></li>
@@ -93,12 +94,31 @@
             </div>
             <div id="Apresentacao" class="bloco">
                 <h1>Sistema de Solicitação de Análises de Raios-X</h1>
-                <p>O Laboratório de Raios X do Departamento de Física da Universidade Federal do Ceará disponibiliza à comunidade
-                acadêmica seus equipamentos para análises. Essas análises devem ser solicitadas por meio desse
-                sistema de solicitações. Cada professor pode ter apenas 20 amostras em processo de análise
-                simultaneamente, somando-se as suas e as de seus alunos, então saiba priorizar!</p>
-                <p>Alunos devem ser cadastrados por seus professores. <span class="vermelho">Não solicite
-                    cadastro caso não seja um professor de IES.</span> </p>
+                <p>A fluorescência de raios-X é uma das técnicas mais eficientes, não destrutiva e precisas na detecção e quantificação
+                de elementos químicos nas mais variadas formas (materiais sólidos, líquidos, tecidos, plásticos,
+                etc.), também podendo detectar baixas concentrações de elementos pesados, da ordem de ppm (parte por
+                pmilhões). Desse modo, um equipamento de fluorescência pode ser empregado em várias situações ligadas
+                à indústria eletro-metal-mecânico, tais como: </p>
+                <ul>
+                    <li>determinação de impurezas presentes nas ligas metálicas e eletrocerâmicas;</li>
+                    <li>determinação de composição de ligas metálicas e sua estequiometria;</li>
+                    <li>certificação da matéria prima usadas em toda cadeia produtiva ;</li>
+                    <li>certificação dos produtos industrializados (dando concentrações de elementos químicos cobrindo
+                        do Fluor ao Urânio);</li>
+                    <li>acompanhamento dos rejeitos dentro de toda cadeia produtiva e as possíveis contaminações.</li>
+                </ul>
+                <p>A difratometria de pó por raios-X é uma técnica não destrutiva e largamente utilizada na
+                identificação de materiais cristalinos e pode ser empregada para determinar a composição química
+                de substâncias. De uma medida de difração de amostras policristalinas pode-se determinar experimentalmente
+                os espaçamentos interplanares dos planos cristalinos e as intensidades relativas das reflexões.
+                Essa medida que também é chamada de padrão de difração é característico de uma determinada substância cristalina,
+                ou seja, cada substância tem o seu registro próprio que é diferente de outras substâncias.
+                As intensidades das reflexões têm sua importância na determinação de estruturas e na identificação de
+                substâncias que pode ser feita pela comparação do padrão de difração medido com o padrão de difração que
+                se encontra catalogado no banco de dados chamado de ICDD.</p>
+                <p>Na indústria, a técnica de difração em amostras policristalinas é uma poderosa ferramenta para
+                controle de qualidade de produtos, na investigação e manufatura de uma variedade de materiais tais como:
+                cerâmicos, metálicos, farmacêuticos, minerais, corrosivos, pigmentos, gemas, soldas, etc.</p>
 
             </div>
         </section>
@@ -115,15 +135,146 @@
                 </nav>
 
             </div>
-            <div id="Principal" class="bloco">
-                <h1>Lista de solicitações</h1>
-                <p>O Laboratório de Raios X do Departamento de Física da Universidade Federal do Ceará disponibiliza à comunidade
-                    acadêmica seus equipamentos para análises. Essas análises devem ser solicitadas por meio desse
-                    sistema de solicitações. Cada professor pode ter apenas 20 amostras em processo de análise
-                    simultaneamente, somando-se as suas e as de seus alunos, então saiba priorizar!</p>
-                <p>Alunos devem ser cadastrados por seus professores. <span class="vermelho">Não solicite
-                    cadastro caso não seja um professor de IES.</span> </p>
+            <div id="Detalhe">
+                <div class="bloco relativo">
+                    <span class="solicitacaoMenuFlutuante floatRight"><a>excluir</a> </span>
+                    <h3 class="solicitacaoIdentificacao" id="detalhe_Identificacao">GVM001D001</h3>
+                    <h4 id="detalhe_Status">Aguardando autorização do professor</h4>
+                    <p>
+                    Criada em <span id="detalhe_DataSolicitacao">14 de Abril</span><br>
+                    <span id="detalhe_DataRecebimento">Entregue em 15 de Abril</span>
+                    </p>
+                    <p class="alignCenter"><span class="bandeiraEquipamentoDetalhe panalytical"></span></p>
 
+
+                </div>
+            </div>
+            <div id="Principal">
+                <ul class="listaSolicitacoes">
+                    <!--<li class="bloco relativo">-->
+                        <!--<span class="solicitacaoMenuFlutuante floatRight"><a href="#/Dashboard/E/1">excluir</a> </span>-->
+                        <!--<h3 class="solicitacaoIdentificacao">GVM001D001</h3>-->
+                        <!--<h4 class="vermelho">Aguardando autorização do professor</h4>-->
+                        <!--<p>-->
+                            <!--Criada em <span class="solicitacaoDataSolicitacao">14 de Abril</span><br>-->
+                            <!--<span class="solicitacaoDataSolicitacao">Entregue em 15 de Abril</span>-->
+                        <!--</p>-->
+                        <!--<div class="bandeiraEquipamento panalytical"></div>-->
+                    <!--</li>-->
+                </ul>
+
+                <div id="NovaSolicitacao">
+                    <h2>Nova Solicitação</h2>
+
+                </div>
+            </div>
+
+
+
+
+        </section>
+
+        <section id="NovoUsuario" class="secao">
+            <div id="NovoUsuarioPasso1" class="bloco passoAtual">
+                <h1>Informações Pessoais</h1>
+                <form name="frmNovoUsuarioPasso1" id="frmNovoUsuarioPasso1">
+                    <fieldset>
+                        <label for="frm_novo_usuario_documento">CPF</label>
+                        <input type="text" id="frm_novo_usuario_documento" name="frm_novo_usuario_documento"
+                               placeholder="000.000.000-00">
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_nome">Nome</label>
+                        <input type="text" id="frm_novo_usuario_nome" name="frm_novo_usuario_nome"
+                               placeholder="Nome Completo" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_genero">Gênero</label>
+                        <select id="frm_novo_usuario_genero" name="frm_novo_usuario_genero">
+                            <option name="frm_novo_usuario_genero_masculino" value="1">Masculino</option>
+                            <option name="frm_novo_usuario_genero_feminino" value="2">Feminino</option>
+                        </select>
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_email">Email</label>
+                        <input type="email" id="frm_novo_usuario_email" name="frm_novo_usuario_email"
+                               placeholder="rietveld@fisica.ufc.br" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_email_alternativo">Email Alternativo</label>
+                        <input type="email" id="frm_novo_usuario_email_alternativo" name="frm_novo_usuario_email_alternativo"
+                               placeholder="rietveld@fisica.ufc.br">
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_cidade">Cidade</label>
+                        <input type="text" id="frm_novo_usuario_cidade" name="frm_novo_usuario_cidade"
+                               placeholder="Fortaleza">
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_estado">Estado</label>
+                        <input type="text" id="frm_novo_usuario_estado" name="frm_novo_usuario_estado"
+                               placeholder="Ceará">
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_telefone">Telefone</label>
+                        <input type="tel" id="frm_novo_usuario_telefone" name="frm_novo_usuario_telefone"
+                               placeholder="(85) 99999999">
+                    </fieldset>
+                    <fieldset>
+                        <input type="button" value="Próximo passo" id="btnNovoUsuarioPasso1" name="btnNovoUsuarioPasso1">
+                    </fieldset>
+                </form>
+            </div>
+
+            <div id="NovoUsuarioPasso2" class="bloco">
+                <h1>Informações Acadêmcias</h1>
+                <form name="frmNovoUsuarioPasso2" id="frmNovoUsuarioPasso2">
+                    <fieldset>
+                        <label for="frm_novo_usuario_documento">CPF</label>
+                        <input type="text" id="frm_novo_usuario_documento" name="frm_novo_usuario_documento"
+                               placeholder="000.000.000-00">
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_nome">Nome</label>
+                        <input type="text" id="frm_novo_usuario_nome" name="frm_novo_usuario_nome"
+                               placeholder="Nome Completo" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_genero">Gênero</label>
+                        <select id="frm_novo_usuario_genero" name="frm_novo_usuario_genero">
+                            <option name="frm_novo_usuario_genero_masculino" value="1">Masculino</option>
+                            <option name="frm_novo_usuario_genero_feminino" value="2">Feminino</option>
+                        </select>
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_email">Email</label>
+                        <input type="email" id="frm_novo_usuario_email" name="frm_novo_usuario_email"
+                               placeholder="rietveld@fisica.ufc.br" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_email_alternativo">Email Alternativo</label>
+                        <input type="email" id="frm_novo_usuario_email_alternativo" name="frm_novo_usuario_email_alternativo"
+                               placeholder="rietveld@fisica.ufc.br">
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_cidade">Cidade</label>
+                        <input type="text" id="frm_novo_usuario_cidade" name="frm_novo_usuario_cidade"
+                               placeholder="Fortaleza">
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_estado">Estado</label>
+                        <input type="text" id="frm_novo_usuario_estado" name="frm_novo_usuario_estado"
+                               placeholder="Ceará">
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_telefone">Telefone</label>
+                        <input type="tel" id="frm_novo_usuario_telefone" name="frm_novo_usuario_telefone"
+                               placeholder="(85) 99999999">
+                    </fieldset>
+                    <fieldset>
+                        <input type="button" value="Próximo passo" id="btnNovoUsuarioPasso1" name="btnNovoUsuarioPasso1">
+                    </fieldset>
+                </form>
             </div>
         </section>
 
@@ -154,6 +305,7 @@
                 </li>
             </ul>
         </div-->
+        <div class="clear"> </div>
     </main>
     <footer role="contentinfo">
         <p id="Fomentadores">
@@ -167,7 +319,7 @@
             Bloco 928, sala 34<br>
             Caixa Postal 6030<br>
             Campus do Pici<br>
-            CEP 60455-970, Fortaleza - Ceara - Brazil<br>
+            CEP 60455-970, Fortaleza - Ceará - Brazil<br>
             +55 85 3366 9917<br>
             +55 85 3366 9013<br>
             FAX: 55 (0xx85) 3366 9450

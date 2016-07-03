@@ -18,7 +18,7 @@ session_start();
 $q = $_GET["q"] ?? $_POST["q"] ?? NULL;
 
 /**
- *
+ *  
  */
 if (isset($q) && $q == "login") {
 //    $email = "guilhermevmelo@gmail.com";
@@ -110,17 +110,83 @@ if (isset($q) && $q == "loginDireto") {
     //$u = $uDAO->login();
 }
 
+/**
+ *
+ */
+if (isset($q) && $q == "obterListaSolicitacoes") {
+    $id = addslashes($_GET["id"]);
+    $tipoSistema = $_GET['tipoSistema'];
+
+    header('Content-Type: application/json');
+
+    if ($tipoSistema == 1) {
+        $saDAO = new SolicitacaoAcademicaDAO();
+        $resposta = $saDAO->obterTodosPorUsuario($id);
+
+        echo json_encode(array("codigo" => 200, "solicitacoes" => $resposta));
+        
+    } else if ($tipoSistema == 2) {
+        // TODO: implementar comercial
+    }
+}
+
+
+/**
+ *
+ */
+if (isset($q) && $q == "obterDetalhesSolicitacao") {
+    $id = addslashes($_GET["id_solicitacao"]);
+    $tipoSistema = $_GET['tipoSistema'];
+
+    header('Content-Type: application/json');
+
+    if ($tipoSistema == 1) {
+        $saDAO = new SolicitacaoAcademicaDAO();
+        $resposta = $saDAO->obter($id, true);
+
+        echo json_encode(array("codigo" => 200, "solicitacao" => $resposta));
+
+    } else if ($tipoSistema == 2) {
+        // TODO: implementar comercial
+    }
+}
+
+/********* PREAMBULO ********/
+//echo date_default_timezone_get();
 
 /********** TESTES **********/
-if (isset($q) && $q == 'testarUtils') {
-    $s = new Solicitacao();
-    $u = new Aluno();
-    $u->setNome("Guilherme Vieira Melo");
-    $s->setSolicitante($u);
-    echo $s->gerarIdentificacao(true);
-    $u->setNome("Barbara Marques Alves");
-    echo $s->gerarIdentificacao(true);
+if (isset($q) && $q == 'testarSoliDAO') {
+    $saDAO = new SolicitacaoAcademicaDAO();
+    $s = $saDAO->obter(5);
 
+    print_p($s);
+
+}
+
+if (isset($q) && $q == 'testarSoli') {
+    $eDAO = new EquipamentoDAO();
+    $panalytical = $eDAO->obter(2);
+    $uDAO = new ProfessorDAO();
+    $u = $uDAO->obter(1);
+    $s = new SolicitacaoAcademica($u, $panalytical);
+    $fDAO = new FendaDAO();
+    $s->setFenda($fDAO->obter(2));
+
+    $saDAO = new SolicitacaoAcademicaDAO();
+
+    print_p($s);
+
+    $saDAO->criar($s);
+
+    print_p($s);
+}
+
+if (isset($q) && $q == 'testarFenda') {
+//    $f = new Fenda('1/32', true);
+    $fDAO = new FendaDAO();
+//    $fDAO->criar($f);
+
+    print_p($fDAO->obterTodos());
 }
 
 if (isset($q) && $q == 'testarCupom') {

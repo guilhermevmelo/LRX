@@ -27,7 +27,7 @@ class UsuarioAcademicoDAO {
     /**
      * @param Usuario $usuario
      */
-    public function criar(UsuarioAcademico $usuario) {
+    public function criar(UsuarioAcademico &$usuario) {
 
         if ($this->existeDocumento($usuario->getDocumento()))
             return false;
@@ -64,12 +64,13 @@ class UsuarioAcademicoDAO {
             $sql2 = sprintf("select max(id_usuario) from usuarios");
             $consulta2 = $this->conexao->query($sql2);
 
-            $novoId = $consulta2->fetchColumn(0);
+            $novoId = (int) $consulta2->fetchColumn(0);
 
             //print_p($consulta->errorInfo());
+            $usuario->setId($novoId);
 
             $this->conexao->commit();
-            return $novoId;
+            return true;
         } catch (\Exception $pdoe) {
             $this->conexao->rollBack();
             Erro::lancarErro(array('codigo'    =>  $pdoe->getCode(),

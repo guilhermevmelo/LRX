@@ -36,7 +36,7 @@ class FendaDAO /*extends DAO*/ {
 
         try {
             $this->conexao->beginTransaction();
-            $sql = sprintf("inset into fendas values (null, :nome, :disponivel)");
+            $sql = sprintf("insert into fendas values (null, :nome, :disponivel)");
             $consulta = $this->conexao->prepare($sql);
             $consulta->bindValue(':nome', $fenda->getNome());
             $consulta->bindValue(':disponivel', $fenda->disponivel(), \PDO::PARAM_BOOL);

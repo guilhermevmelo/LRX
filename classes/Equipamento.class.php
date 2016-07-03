@@ -11,6 +11,15 @@ namespace LRX;
 require_once "autoload.php";
 
 class Equipamento {
+    const TODOS = 'TODOS';
+
+    const TIPO_DIFRATOMETRO = 'DRX';
+    const TIPO_FLUORESCENCIA = 'FRX';
+
+    const TUBO_CU = 'Cu';
+    const TUBO_CO = 'Co';
+    const TUBO_PD = 'Pd';
+
     private $id = null;
     private $nome;
     private $tipo;      // [FRX, DRX]

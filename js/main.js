@@ -2,12 +2,14 @@
  * Created by guilherme on 3/4/15.
  */
 
-window.onhashchange = exibirSecao;
-window.onload = iniciarAplicacao;
-
 var tokens = [];
 var usuario = null;
+var tipo_sistema = null;
 var timeoutErro = null;
+var timeoutCronometroErro = null;
+
+window.onload = iniciarAplicacao;
+window.onhashchange = exibirSecao;
 
 /**
  * Função obitida de http://www.quirksmode.org/js/cookies.html
@@ -120,10 +122,22 @@ function atualizarCampos() {
     }
 }
 
+function reiniciarContadorErro(tempo) {
+    if (tempo < 0) return;
+
+    $('#ErroCronometro').html(tempo);
+
+    timeoutCronometroErro = setTimeout(function () {
+        reiniciarContadorErro(tempo - 1);
+    }, 1000);
+}
+
 function apresentarErro(erro) {
     clearTimeout(timeoutErro);
+    clearTimeout(timeoutCronometroErro);
     $('#DivErro').fadeOut('slow', function () {
         $('#ErroP').html(erro.mensagem);
+        reiniciarContadorErro(6);
         $(this).fadeIn('slow');
 
         timeoutErro = setTimeout(function () {
@@ -132,36 +146,225 @@ function apresentarErro(erro) {
     })
 }
 
+function dataPhpParaJs(data) {
+    var d = new Date(data);
+    return d.toDateString();
+}
+
+function obterDetalhesSolicitacao(id) {
+
+    $('#Detalhe').fadeOut('slow', function () {
+        $.ajax({
+            url: 'acao.php',
+            type: 'get',
+            data: {
+                q: 'obterDetalhesSolicitacao',
+                id_solicitacao: id,
+                tipoSistema: tipo_sistema
+            }
+        }).done(function (r) {
+            if (r.codigo !== 200) {
+                apresentarErro(r);
+            } else {
+                $('#detalhe_Identificacao').html(r.solicitacao.identificacao);
+                //$('#detalhe_Status').html();
+                $('#detalhe_DataSolicitacao').html(dataPhpParaJs(r.solicitacao.data_solicitacao));
+                if (r.solicitacao.data_entrega === null) {
+                    $('#detalhe_DataRecebimento').html("A Amostra ainda não foi entregue.");
+                } else {
+                    $('#detalhe_DataRecebimento').html(dataPhpParaJs(r.solicitacao.data_recebiento));
+                }
+
+                $('#Detalhe').fadeIn('slow');
+            }
+        }); 
+    });
+
+
+}
+
+function preencherSolicitacoes() {
+    $(".listaSolicitacoes").empty();
+    $.ajax({
+        url: 'acao.php',
+        type: 'get',
+        data: {
+            q: 'obterListaSolicitacoes',
+            id: usuario.id,
+            tipoSistema: tipo_sistema
+        }
+    }).done(function (r) {
+        if (r.codigo !== 200) {
+            apresentarErro(r);
+        } else {
+            var  n = 0;
+            r.solicitacoes.forEach(function(_s) {
+
+                // var elementoLi = "<li class=\"bloco relativo escondido\"><span class=\"solicitacaoMenuFlutuante floatRight\"><a" +
+                //     " href=\"#/Dashboard/E/"+_s.id_solicitacao+"\">excluir</a> </span><h3" +
+                // " class=\"solicitacaoIdentificacao\">"+_s.identificacao+"</h3>";
+                //
+                // elementoLi += "<h4 class=\"vermelho\">Aguardando autorização do professor</h4>";
+                //
+                //
+                // elementoLi += "<p>Criada em <span class=\"solicitacaoDataSolicitacao\">"+_s.data_solicitacao+"</span><br>";
+                // elementoLi += "<span class=\"solicitacaoDataSolicitacao\">Entregue em 15 de Abril</span>";
+                // elementoLi += "</p></li>";
+
+                var elementoLi = document.createElement('li');
+                elementoLi.classList.add('bloco');
+                elementoLi.classList.add('relativo');
+                elementoLi.classList.add('escondido');
+
+                elementoLi.id = "_sol" + _s.id_solicitacao;
+
+                var identificacaoH3 = document.createElement('h3');
+                identificacaoH3.classList.add('solicitacaoIdentificacao');
+                identificacaoH3.innerHTML = _s.identificacao;
+                elementoLi.appendChild(identificacaoH3);
+
+                var statusH4 = document.createElement('h4');
+                switch (_s.status) {
+                    case 1:
+                        statusH4.classList.add('cinza');
+                        statusH4.innerHTML = 'Aguardando autorização do professor.';
+                        break;
+
+                    case 2:
+                        statusH4.classList.add('cinza');
+                        statusH4.innerHTML = 'Aguardando aprovação do laboratório.';
+                        break;
+
+                    case 3:
+                        statusH4.classList.add('amarela');
+                        statusH4.innerHTML = 'Aguardando confirmação de entrega da amostra';
+                        break;
+
+                    case 4:
+                        statusH4.classList.add('amarela');
+                        statusH4.innerHTML = 'Na fila do equipamento';
+                        break;
+
+                    case 5:
+                        statusH4.classList.add('amarela');
+                        statusH4.innerHTML = 'Em processo de análise.';
+                        break;
+
+                    case 6:
+                        statusH4.classList.add('azul');
+                        statusH4.innerHTML = 'Análise Concluída. Aguardando recolhimento da amostra.';
+                        break;
+
+                    case 7:
+                        statusH4.classList.add('verde');
+                        statusH4.innerHTML = 'Solicitação Finalizada.';
+                        break;
+
+                    case -1:
+                        statusH4.classList.add('vermelha');
+                        statusH4.innerHTML = 'Cancelada pelo usuário.';
+                        break;
+
+                    case -2:
+                        statusH4.classList.add('vermelha');
+                        statusH4.innerHTML = 'Cancelada pelo operador.';
+                        break;
+
+                    case -3:
+                        statusH4.classList.add('vermelha');
+                        statusH4.innerHTML = 'Cancelada por falta de entrega da amostra.';
+                        break;
+                }
+                elementoLi.appendChild(statusH4);
+
+                var bandeiraDiv = document.createElement('div');
+                bandeiraDiv.classList.add('bandeiraEquipamento');
+                switch (_s.id_equipamento) {
+                    case 2:
+                        bandeiraDiv.classList.add('panalytical');
+                        break;
+                    case 1:
+                        bandeiraDiv.classList.add('rigakudrx');
+                        break;
+                    case 3:
+                        // bandeiraDiv.classList.add('rigakufrx');
+                        break;
+                }
+                elementoLi.appendChild(bandeiraDiv);
+
+                var jElementoLi = $(elementoLi);
+
+                jElementoLi.click(function() {
+                    console.log('Click na solicitação', _s.id_solicitacao);
+                    obterDetalhesSolicitacao(_s.id_solicitacao);
+                    //$('.solicitacaoEmDetalhe').removeClass('solicitacaoEmDetalhe');
+                    //$(this).addClass('solicitacaoEmDetalhe');
+                });
+
+                $(".listaSolicitacoes").append(elementoLi);
+
+                setTimeout(function(){
+                    $(elementoLi).fadeIn('slow').removeClass('escondido');
+                }, 100*n++);
+
+            });
+        }
+    });
+}
+
 function exibirSecao() {
     var hash = window.location.hash;
     var estadoAtual = $('.estadoAtual');
-    console.log("aqui com hash ", hash);
+    console.log("aqui com hash ", hash, usuario);
 
     switch (hash) {
         case '#/Inicio':
             if (usuario !== null) {
                 location.hash = '#/Dashboard';
                 break;
-            }
+            } else {
             estadoAtual.fadeOut('slow', function () {
                 $(this).removeClass('estadoAtual');
                 $('#Inicio').fadeIn('slow', function () {
                     $(this).addClass('estadoAtual');
                 });
             });
-            break;
+            break;}
 
         case '#/Dashboard':
+            if (usuario === null) {
+                location.hash = '#/Inicio';
+                break;
+            } else {
             estadoAtual.fadeOut('slow', function () {
                 $(this).removeClass('estadoAtual');
+
                 $('#Dashboard').fadeIn('slow', function () {
+                    $(this).addClass('estadoAtual');
+                    preencherSolicitacoes();
+                });
+            });
+            break;}
+
+        case '#/NovoUsuario':
+            // TODO: Terminar
+            estadoAtual.fadeOut('slow', function () {
+                $(this).removeClass('estadoAtual');
+                $('#NovoUsuario').fadeIn('slow', function () {
                     $(this).addClass('estadoAtual');
                 });
             });
             break;
 
+        case '#/NovaSolicitacao':
+            $('#Principal, #Detalhe').fadeOut('slow', function () {
+                $('#NovaSolicitacao').fadeIn('slow');
+            });
+            break;
+
         case '#/Sair':
             apagarCookie('uid');
+            apagarCookie('tipoSistema');
             usuario = null;
             $('header').effect('drop', {direction: 'up'});
             location.hash = '#/Inicio';
@@ -175,13 +378,16 @@ function exibirSecao() {
 function iniciarAplicacao() {
     var _uid = lerCookie('uid');
     if (_uid !== null) {
+        tipo_sistema = lerCookie('tipoSistema');
         $.ajax({
             url: 'acao.php',
             type: 'post',
             data: {
                 q: 'loginDireto',
                 uid: _uid,
-            }
+                tipoSistema: tipo_sistema
+            },
+            async: false
         }).done(function (r) {
             if (r.codigo !== 200) {
                 apresentarErro(r);
@@ -211,6 +417,8 @@ function iniciarAplicacao() {
             }
         });
 
+    } else {
+        usuario = null;
     }
     exibirSecao();
 }
@@ -243,6 +451,7 @@ $(document).ready(function () {
         var _senha = shaObj.getHash("HEX");
         var _email = $('#frm_login_email').val();
         var _permanecer = $('#frm_login_manter_logado').is(':checked');
+        tipo_sistema = $('#frm_login_tipo_academico').is(':checked') ? 1 : 2;
 
         $.ajax({
             url: 'acao.php',
@@ -250,7 +459,8 @@ $(document).ready(function () {
             data: {
                 q: 'login',
                 email: _email,
-                senha: _senha
+                senha: _senha,
+                tipoSistema: tipo_sistema
             }
         }).done(function (r) {
             if (r.codigo !== 200) {
@@ -278,6 +488,7 @@ $(document).ready(function () {
 
                 if (_permanecer === true) {
                     criarCookie('uid', usuario.uid, 3/24);
+                    criarCookie('tipoSistema', tipo_sistema, 3/24);
                 }
 
                 $('#frm_login_email').val('');

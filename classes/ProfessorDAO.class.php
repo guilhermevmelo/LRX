@@ -43,7 +43,7 @@ class ProfessorDAO /*extends DAO*/ {
 
         try {
             if ($novo_usuario)
-                $professor->setId($this->uaDAO->criar($professor));
+                $this->uaDAO->criar($professor);
 
             $this->conexao->beginTransaction();
 
