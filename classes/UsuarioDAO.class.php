@@ -74,7 +74,7 @@ class UsuarioDAO {
         return null;
     }
 
-        public function atualizar($objeto) {
+    public function atualizar($objeto) {
         // TODO: Implement atualizar() method.
     }
 

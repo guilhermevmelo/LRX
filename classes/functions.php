@@ -44,7 +44,7 @@ function tratarErro($ex) {
 
 function print_p($expression) {
     //echo "<pre>";
-    var_dump($expression);
+    //var_dump($expression);
     //echo "</pre>";
 }
 

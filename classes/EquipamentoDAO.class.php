@@ -137,7 +137,7 @@ class EquipamentoDAO /*extends DAO*/ {
      * @param bool $apenas_disponiveis
      * @return array
      */
-    public function obterTodos($apenas_disponiveis = false) {
+    public function obterTodos($apenas_disponiveis = false, $em_array = false) {
         $sql = sprintf("select * from equipamentos");
         if ($apenas_disponiveis)
             $sql .= sprintf(" where disponivel = 1");
@@ -145,11 +145,21 @@ class EquipamentoDAO /*extends DAO*/ {
         $equipamentos = array();
 
         foreach ($this->conexao->query($sql) as $tupla) {
-            $e = new Equipamento((int) $tupla['id_equipamento'], $tupla['nome'], $tupla['tipo'],
-                $tupla['tubo'], $tupla['disponivel'] == 1 ? true : false);
+            if (!$em_array) {
+                $e = new Equipamento((int)$tupla['id_equipamento'], $tupla['nome'], $tupla['tipo'],
+                    $tupla['tubo'], $tupla['disponivel'] == 1 ? true : false);
 
-            // TODO: Adicionar os serviços
+                // TODO: Adicionar os serviços
+            } else {
+                $e = array(
+                    'id_equipamento'    => intval($tupla['id_equipamento']),
+                    'nome'              => $tupla['nome'],
+                    'tubo'              => $tupla['tubo'],
+                    'disponivel'        =>$tupla['disponivel'] == 1 ? true : false
+                );
+            }
             array_push($equipamentos, $e);
+
         }
 
         return $equipamentos;

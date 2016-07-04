@@ -18,7 +18,7 @@ session_start();
 $q = $_GET["q"] ?? $_POST["q"] ?? NULL;
 
 /**
- *  
+ *
  */
 if (isset($q) && $q == "login") {
 //    $email = "guilhermevmelo@gmail.com";
@@ -115,21 +115,58 @@ if (isset($q) && $q == "loginDireto") {
  */
 if (isset($q) && $q == "obterListaSolicitacoes") {
     $id = addslashes($_GET["id"]);
+    $nivel_acesso = intval($_GET['nivel_acesso']);
     $tipoSistema = $_GET['tipoSistema'];
 
     header('Content-Type: application/json');
 
     if ($tipoSistema == 1) {
         $saDAO = new SolicitacaoAcademicaDAO();
-        $resposta = $saDAO->obterTodosPorUsuario($id);
+
+        // TODO implemntar demais niveis
+        switch ($nivel_acesso) {
+            case 5:
+                $resposta = $saDAO->obterTodasIncompletas();
+                break;
+
+            default:
+                $resposta = $saDAO->obterTodosPorUsuario($id);
+        }
 
         echo json_encode(array("codigo" => 200, "solicitacoes" => $resposta));
-        
+
     } else if ($tipoSistema == 2) {
         // TODO: implementar comercial
     }
 }
 
+if (isset($q) && $q == "obterListaSolicitacoesConcluidas") {
+    $id = addslashes($_GET["id"]);
+    $nivel_acesso = intval($_GET['nivel_acesso']);
+    $tipoSistema = $_GET['tipoSistema'];
+
+    header('Content-Type: application/json');
+
+    if ($tipoSistema == 1) {
+        $saDAO = new SolicitacaoAcademicaDAO();
+
+
+        // TODO implementar demais niveis
+        switch ($nivel_acesso) {
+            case 5:
+                $resposta = $saDAO->obterTodasConcluidas();
+                break;
+
+            default:
+                $resposta = $saDAO->obterTodasConcluidasPorUsuario($id);
+        }
+
+        echo json_encode(array("codigo" => 200, "solicitacoes" => $resposta));
+
+    } else if ($tipoSistema == 2) {
+        // TODO: implementar comercial
+    }
+}
 
 /**
  *
@@ -149,6 +186,93 @@ if (isset($q) && $q == "obterDetalhesSolicitacao") {
     } else if ($tipoSistema == 2) {
         // TODO: implementar comercial
     }
+}
+
+/**
+ *
+ */
+if (isset($q) && $q == "obterListaEquipamentos") {
+    header('Content-Type: application/json');
+
+    $eDAO = new EquipamentoDAO();
+    $resposta = $eDAO->obterTodos(true, true);
+
+    echo json_encode(array("codigo" => 200, "equipamentos" => $resposta));
+}
+
+/**
+ *
+ */
+if (isset($q) && $q == "novaSolicitacaoAcademica") {
+    header('Content-Type: application/json');
+
+    $eDAO = new EquipamentoDAO();
+    $equipamento = $eDAO->obter(intval($_POST['id_equipamento']));
+
+    //TODO separar caso seja aluno
+    $uDAO = new ProfessorDAO();
+    $u = $uDAO->obter(intval($_POST['id_usuario']));
+
+    $s = new SolicitacaoAcademica($u, $equipamento);
+    $fDAO = new FendaDAO();
+    $s->setFenda($fDAO->obter(2));
+
+    $s->setComposicao(addslashes($_POST['composicao']));
+    $config = array(
+        '2theta_inicial' => intval($_POST['dois_theta_inicial']),
+        '2theta_final' => intval($_POST['dois_theta_final']),
+    );
+
+    $s->setConfiguracao($config);
+
+    $s->setInflamavel(boolval($_POST['inflamavel']));
+    $s->setRadioativo(boolval($_POST['radioativo']));
+    $s->setHigroscopico(boolval($_POST['higroscopico']));
+    $s->setToxico(boolval($_POST['toxico']));
+    $s->setCorrosivo(boolval($_POST['corrosivo']));
+
+    $saDAO = new SolicitacaoAcademicaDAO();
+
+    //print_p($s);
+
+    $saDAO->criar($s);
+
+    $r = array(
+        "codigo" => 200,
+        "identificacao" => $s->getIdentificacaoDaAmostra()
+    );
+
+    echo json_encode($r);
+
+}
+
+
+if (isset($q) && $q == "cancelarSolicitacao") {
+    //header('Content-Type: application/json');
+
+    // TODO adicionar verificacao de uid
+
+    $saDAO = new SolicitacaoAcademicaDAO();
+    //$sDAO = new SolicitacaoDAO();
+
+    $s = $saDAO->obter(intval($_GET['id']), false);
+
+
+    $s->setDataConclusao(new \DateTime());
+    $s->setDataRecebimento(null);
+
+    if (intval($_GET['nivel_acesso']) == 5)
+        $s->setStatus(-2);
+    else
+        $s->setStatus(-1);
+    $saDAO->atualizar($s);
+
+    $r = array(
+        "codigo" => 200
+    );
+
+    echo json_encode($r);
+
 }
 
 /********* PREAMBULO ********/
@@ -274,3 +398,6 @@ if (isset($q) && $q == 'equipamentos') {
     //$eDAO->deletar(5);
     print_p($eDAO->obterTodos());
 }
+
+//for ($i = 3; $i <= 119; $i++)
+//    echo "&lt;option value=\"$i\"&gt;$i&amp;deg;&lt;/option&gt;<br>";

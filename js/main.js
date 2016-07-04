@@ -174,14 +174,42 @@ function obterDetalhesSolicitacao(id) {
                 } else {
                     $('#detalhe_DataRecebimento').html(dataPhpParaJs(r.solicitacao.data_recebiento));
                 }
+                $('#detalhe_Tipo').html(r.solicitacao.tipo_equipamento);
+                $('#detalhe_Equipamento').html(r.solicitacao.equipamento);
 
-                $('#Detalhe').fadeIn('slow');
+                $('#detalhe_Cancelar').click(function() {
+                    //TODO adicionar confirmacao
+                    $(this).off('click');
+                    $('#Detalhe').removeClass('ativo').fadeOut('slow');
+                    $('#_sol' + r.solicitacao.id_solicitacao).effect('blind');
+
+                    $.ajax({
+                        url: 'acao.php',
+                        type: 'get',
+                        data: {
+                            q: 'cancelarSolicitacao',
+                            id: r.solicitacao.id_solicitacao,
+                            uid: usuario.uid,
+                            nivel_acesso: usuario.nivel_acesso
+                        }
+                    }).done(function (re) {
+                        if (re.codigo !== 200)
+                            apresentarErro(re);
+                    });
+                });
+
+                $('#detalhe_Configuracao').html(r.solicitacao.configuracao);
+
+                $('#Detalhe').fadeIn('slow').addClass('ativo');
+
             }
         }); 
     });
 
 
 }
+
+// TODO fundir as duas funcoes e uma só
 
 function preencherSolicitacoes() {
     $(".listaSolicitacoes").empty();
@@ -191,6 +219,7 @@ function preencherSolicitacoes() {
         data: {
             q: 'obterListaSolicitacoes',
             id: usuario.id,
+            nivel_acesso: usuario.nivel_acesso,
             tipoSistema: tipo_sistema
         }
     }).done(function (r) {
@@ -262,7 +291,137 @@ function preencherSolicitacoes() {
 
                     case -1:
                         statusH4.classList.add('vermelha');
-                        statusH4.innerHTML = 'Cancelada pelo usuário.';
+                        statusH4.innerHTML = 'Cancelada pelo responsável.';
+                        break;
+
+                    case -2:
+                        statusH4.classList.add('vermelha');
+                        statusH4.innerHTML = 'Cancelada pelo operador.';
+                        break;
+
+                    case -3:
+                        statusH4.classList.add('vermelha');
+                        statusH4.innerHTML = 'Cancelada por falta de entrega da amostra.';
+                        break;
+                }
+                elementoLi.appendChild(statusH4);
+
+                var bandeiraDiv = document.createElement('div');
+                bandeiraDiv.classList.add('bandeiraEquipamento');
+                switch (_s.id_equipamento) {
+                    case 2:
+                        bandeiraDiv.classList.add('panalytical');
+                        break;
+                    case 1:
+                        bandeiraDiv.classList.add('rigakudrx');
+                        break;
+                    case 3:
+                        // bandeiraDiv.classList.add('rigakufrx');
+                        break;
+                }
+                elementoLi.appendChild(bandeiraDiv);
+
+                var jElementoLi = $(elementoLi);
+
+                jElementoLi.click(function() {
+                    console.log('Click na solicitação', _s.id_solicitacao);
+                    obterDetalhesSolicitacao(_s.id_solicitacao);
+                    //$('.solicitacaoEmDetalhe').removeClass('solicitacaoEmDetalhe');
+                    //$(this).addClass('solicitacaoEmDetalhe');
+                });
+
+                $(".listaSolicitacoes").append(elementoLi);
+
+                setTimeout(function(){
+                    $(elementoLi).fadeIn('slow').removeClass('escondido');
+                }, 100*n++);
+
+            });
+        }
+    });
+}
+
+function preencherSolicitacoesConcluidas() {
+    $(".listaSolicitacoes").empty();
+    $.ajax({
+        url: 'acao.php',
+        type: 'get',
+        data: {
+            q: 'obterListaSolicitacoesConcluidas',
+            id: usuario.id,
+            nivel_acesso: usuario.nivel_acesso,
+            tipoSistema: tipo_sistema
+        }
+    }).done(function (r) {
+        if (r.codigo !== 200) {
+            apresentarErro(r);
+        } else {
+            var  n = 0;
+            r.solicitacoes.forEach(function(_s) {
+
+                // var elementoLi = "<li class=\"bloco relativo escondido\"><span class=\"solicitacaoMenuFlutuante floatRight\"><a" +
+                //     " href=\"#/Dashboard/E/"+_s.id_solicitacao+"\">excluir</a> </span><h3" +
+                // " class=\"solicitacaoIdentificacao\">"+_s.identificacao+"</h3>";
+                //
+                // elementoLi += "<h4 class=\"vermelho\">Aguardando autorização do professor</h4>";
+                //
+                //
+                // elementoLi += "<p>Criada em <span class=\"solicitacaoDataSolicitacao\">"+_s.data_solicitacao+"</span><br>";
+                // elementoLi += "<span class=\"solicitacaoDataSolicitacao\">Entregue em 15 de Abril</span>";
+                // elementoLi += "</p></li>";
+
+                var elementoLi = document.createElement('li');
+                elementoLi.classList.add('bloco');
+                elementoLi.classList.add('relativo');
+                elementoLi.classList.add('escondido');
+
+                elementoLi.id = "_sol" + _s.id_solicitacao;
+
+                var identificacaoH3 = document.createElement('h3');
+                identificacaoH3.classList.add('solicitacaoIdentificacao');
+                identificacaoH3.innerHTML = _s.identificacao;
+                elementoLi.appendChild(identificacaoH3);
+
+                var statusH4 = document.createElement('h4');
+                switch (_s.status) {
+                    case 1:
+                        statusH4.classList.add('cinza');
+                        statusH4.innerHTML = 'Aguardando autorização do professor.';
+                        break;
+
+                    case 2:
+                        statusH4.classList.add('cinza');
+                        statusH4.innerHTML = 'Aguardando aprovação do laboratório.';
+                        break;
+
+                    case 3:
+                        statusH4.classList.add('amarela');
+                        statusH4.innerHTML = 'Aguardando confirmação de entrega da amostra';
+                        break;
+
+                    case 4:
+                        statusH4.classList.add('amarela');
+                        statusH4.innerHTML = 'Na fila do equipamento';
+                        break;
+
+                    case 5:
+                        statusH4.classList.add('amarela');
+                        statusH4.innerHTML = 'Em processo de análise.';
+                        break;
+
+                    case 6:
+                        statusH4.classList.add('azul');
+                        statusH4.innerHTML = 'Análise Concluída. Aguardando recolhimento da amostra.';
+                        break;
+
+                    case 7:
+                        statusH4.classList.add('verde');
+                        statusH4.innerHTML = 'Solicitação Finalizada.';
+                        break;
+
+                    case -1:
+                        statusH4.classList.add('vermelha');
+                        statusH4.innerHTML = 'Cancelada pelo responsável.';
                         break;
 
                     case -2:
@@ -341,6 +500,8 @@ function exibirSecao() {
 
                 $('#Dashboard').fadeIn('slow', function () {
                     $(this).addClass('estadoAtual');
+                    $('#ListaSolicitacoes').addClass('ativo');
+
                     preencherSolicitacoes();
                 });
             });
@@ -501,5 +662,105 @@ $(document).ready(function () {
         });
     });
 
+
+    $('#linkNovaSolicitacao').click(function () {
+        $('.ativo').removeClass('ativo').fadeOut('slow', function () {
+            var options = document.getElementById('frm_nova_solicitacao_equipamento');
+            /* Limpa os equipamentos listados */
+            $(options).empty();
+
+            /* Obtém os equipamentos disponíveis */
+
+            $.ajax({
+                url: 'acao.php',
+                type: 'get',
+                async: false,
+                data: {
+                    q: 'obterListaEquipamentos'
+                }
+            }).done(function (r) {
+
+                r.equipamentos.forEach(function (_e) {
+                    var e = document.createElement('option');
+                    e.value = _e.id_equipamento;
+                    e.innerHTML = _e.nome;
+
+                    options.appendChild(e);
+                });
+            });
+
+            $('#FormNovaSolicitacao').trigger('reset');
+
+            $('#NovaSolicitacao').fadeIn('slow').addClass('ativo');
+        });
+    });
+
+    $('#linkListarSolicitacoesAbertas').click(function () {
+        $('.ativo').removeClass('ativo').fadeOut('slow', function () {
+            $('#ListaSolicitacoes').addClass('ativo').fadeIn('slow');
+            preencherSolicitacoes();
+        });
+    });
+
+    $('#linkListarSolicitacoesConcluidas').click(function () {
+        $('.ativo').removeClass('ativo').fadeOut('slow', function () {
+            $('#ListaSolicitacoes').addClass('ativo').fadeIn('slow');
+            preencherSolicitacoesConcluidas();
+        });
+    });
+
+    $('#FormNovaSolicitacao').submit(function (evento) {
+        evento.stopPropagation();
+        evento.preventDefault();
+
+        clearTimeout(timeoutErro);
+        $('#DivErro').fadeOut('slow');
+
+
+        var _tipo_analise = $('#frm_nova_solicitacao_tipo_analise_drx').is(':checked') ? 'drx' : 'frx';
+        var _id_equipamento = $('#frm_nova_solicitacao_equipamento').val();
+        var _dois_theta_inicial = $('#frm_nova_solicitacao_2theta_inicial').val();
+        var _dois_theta_final = $('#frm_nova_solicitacao_2theta_final').val();
+        var _composicao = $('#frm_nova_solicitacao_composicao').val();
+        var _inflamavel = $('#frm_nova_solicitacao_seguranca_inflamavel').is('checked');
+        var _corrosivo = $('#frm_nova_solicitacao_seguranca_corrosivo').is('checked');
+        var _toxico = $('#frm_nova_solicitacao_seguranca_toxico').is('checked');
+        var _higroscopico = $('#frm_nova_solicitacao_seguranca_higroscopico').is('checked');
+        var _radioativo = $('#frm_nova_solicitacao_seguranca_radioativo').is('checked');
+        var _observacoes = $('#frm_nova_solicitacao_observacoes').val();
+
+        $.ajax({
+            url: 'acao.php',
+            type: 'post',
+            data: {
+                q: 'novaSolicitacaoAcademica',
+                id_usuario: usuario.id,
+                nivel_acesso: usuario.nivel_acesso,
+                tipo_analise: _tipo_analise,
+                id_equipamento: _id_equipamento,
+                dois_theta_inicial: _dois_theta_inicial,
+                dois_theta_final: _dois_theta_final,
+                composicao: _composicao,
+                inflamavel: _inflamavel,
+                corrosivo: _corrosivo,
+                toxico: _toxico,
+                higroscopico: _higroscopico,
+                radioativo: _radioativo,
+                observacoes: _observacoes
+            }
+        }).done(function (r) {
+            if (r.codigo !== 200) {
+                apresentarErro(r);
+            } else {
+                $('#NovaSolicitacao').removeClass('ativo').fadeOut('slow', function () {
+                    $('.identificadorAmostra').html(r.identificacao);
+
+                    $('#NovaSolicitacaoIdentificador').fadeIn('slow').addClass('ativo');
+                });
+            }
+        });
+
+
+    });
 
 });

@@ -128,7 +128,8 @@ h3.cabecalho {
     border-bottom: 2px solid #dedede;
 }
 
-a {
+a/*,
+nav ul li */{
     text-decoration: none;
     color: #dc8938;
 
@@ -139,8 +140,10 @@ a {
     transition: color .5s, text-shadow .5s;
 }
 
-a:hover{
+a:hover,
+nav ul li:hover {
     color: #dc1f18;
+    cursor: pointer;
 }
 
 address {
@@ -213,6 +216,11 @@ footer nav#MenuRodape {
     width: calc(30% - 10px);
     margin-left: 10px;
     display: none;
+}
+
+#Detalhe h4 {
+    font-size: 1.1em;
+    padding: 10px 0;
 }
 
 #DivMenuLateral {
@@ -493,7 +501,14 @@ input[type="submit"]:hover,
     float: right;
 }
 
-.secao {
+.identificadorAmostra {
+    font-size: 1.3em;
+    text-align: center;
+    font-weight: bold;
+}
+
+.secao,
+#NovaSolicitacaoIdentificador {
     display: none;
 }
 
