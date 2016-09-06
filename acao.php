@@ -280,6 +280,24 @@ if (isset($q) && $q == "cancelarSolicitacao") {
 
 }
 
+/**
+ *
+ */
+if (isset($q) && $q == "verificarDocumento") {
+    header('Content-Type: application/json');
+
+    $cpf = addslashes($_GET['documento']);
+    $cpf = desformatarCPF($cpf);
+
+    $documentoExiste = UsuarioDAO::existeDocumento($cpf);
+
+    $r = array(
+        "codigo" => 200,
+        "existeDocumento" => $documentoExiste
+    );
+    echo json_encode($r);
+}
+
 /********* PREAMBULO ********/
 //echo date_default_timezone_get();
 

@@ -7,6 +7,7 @@ var usuario = null;
 var tipo_sistema = null;
 var timeoutErro = null;
 var timeoutCronometroErro = null;
+var telJaTem14 = false;
 
 window.onload = iniciarAplicacao;
 window.onhashchange = exibirSecao;
@@ -209,7 +210,7 @@ function obterDetalhesSolicitacao(id) {
 
 }
 
-// TODO fundir as duas funcoes e uma só
+// TODO fundir as duas funções em uma só
 
 function preencherSolicitacoes() {
     $(".listaSolicitacoes").empty();
@@ -584,8 +585,20 @@ function iniciarAplicacao() {
     exibirSecao();
 }
 
+function definirMascaras() {
+    $('#frm_novo_usuario_documento').mask('000.000.000-00', {reverse: true});
+    var options =  {onKeyPress: function(tel, e, field, options){
+        var masks = ['(00) 00000-0000', '(00) 0000-00009'];
+        mask = (tel.length>14) ? masks[0] : masks[1];
+        $('#frm_novo_usuario_telefone').mask(mask, options);
+    }};
+
+    $('#frm_novo_usuario_telefone').mask('(00) 0000-00009', options);
+}
+
 $(document).ready(function () {
     atualizarCampos();
+    definirMascaras();
 
     /**
      * Adiciona um gatilho para dispensar a mensagem de erro ao clique.
@@ -658,6 +671,40 @@ $(document).ready(function () {
                 location.hash = '#/Dashboard';
                 $('#Inicio').fadeOut('slow');
                 $('header').toggle('drop', {direction:"up"});
+            }
+        });
+    });
+
+    /**
+     * Cadastro
+     */
+    $('#frmNovoUsuarioPasso1').submit(function (evento) {
+        evento.stopPropagation();
+        evento.preventDefault();
+
+        var sbmtNovoUsuarioPasso1 = $('#sbmtNovoUsuarioPasso1');
+        sbmtNovoUsuarioPasso1.attr('disabled', 'disabled');
+
+        var _documento = $('#frm_novo_usuario_documento').val();
+
+        $.ajax({
+            url: 'acao.php',
+            type: 'get',
+            data: {
+                q: 'verificarDocumento',
+                documento: _documento
+            }
+        }).done(function (r) {
+            if (r.codigo == 200) {
+                console.log(r);
+                if (r.existeDocumento) {
+                    apresentarErro({mensagem:"Esse documento já está cadastrado. Caso não lembre sua senha, clique <a href=\"#/RecuperarConta\">aqui</a>."});
+                    sbmtNovoUsuarioPasso1.removeAttr('disabled');
+                } else {
+                    $("#NovoUsuarioPasso1").fadeOut('slow', function () {
+                        $("#NovoUsuarioPasso2").fadeIn("slow");
+                    })
+                }
             }
         });
     });

@@ -14,6 +14,7 @@
 
     <script src="js/jquery-1.11.2.js"></script>
     <script src="js/jquery-ui.js"></script>
+    <script src="js/jquery.mask.js"></script>
     <script src="js/sha_dev.js"></script>
     <script src="js/main.js"></script>
     <script src="js/retina.js"></script>
@@ -83,7 +84,7 @@
                                 <label for="frm_login_manter_logado">Permanecer</label>
                             </fieldset>
                             <fieldset class="floatRight" style="padding-top: 4px;">
-                                <input type="submit" name="frm_login_sbmt" id="frm_login_sbmt" value="Entrar">
+                                <input type="submit" class="verde" name="frm_login_sbmt" id="frm_login_sbmt" value="Entrar">
                             </fieldset>
                         </div>
                         <p class="clear">
@@ -507,64 +508,24 @@
 
         <section id="NovoUsuario" class="secao">
             <div id="NovoUsuarioPasso1" class="bloco passoAtual">
-                <h1>Informações Pessoais</h1>
+                <h1>Documento Individual</h1>
                 <form name="frmNovoUsuarioPasso1" id="frmNovoUsuarioPasso1">
+                    <p>Verificaremos se seu <span id="_documento">CPF</span> já está cadastrado no sistema.</p>
                     <fieldset>
                         <label for="frm_novo_usuario_documento">CPF</label>
                         <input type="text" id="frm_novo_usuario_documento" name="frm_novo_usuario_documento"
-                               placeholder="000.000.000-00">
+                               placeholder="000.000.000-00" size="15" maxlength="15">
                     </fieldset>
                     <fieldset>
-                        <label for="frm_novo_usuario_nome">Nome</label>
-                        <input type="text" id="frm_novo_usuario_nome" name="frm_novo_usuario_nome"
-                               placeholder="Nome Completo" required>
-                    </fieldset>
-                    <fieldset>
-                        <label for="frm_novo_usuario_genero">Gênero</label>
-                        <select id="frm_novo_usuario_genero" name="frm_novo_usuario_genero">
-                            <option name="frm_novo_usuario_genero_masculino" value="1">Masculino</option>
-                            <option name="frm_novo_usuario_genero_feminino" value="2">Feminino</option>
-                        </select>
-                    </fieldset>
-                    <fieldset>
-                        <label for="frm_novo_usuario_email">Email</label>
-                        <input type="email" id="frm_novo_usuario_email" name="frm_novo_usuario_email"
-                               placeholder="rietveld@fisica.ufc.br" required>
-                    </fieldset>
-                    <fieldset>
-                        <label for="frm_novo_usuario_email_alternativo">Email Alternativo</label>
-                        <input type="email" id="frm_novo_usuario_email_alternativo" name="frm_novo_usuario_email_alternativo"
-                               placeholder="rietveld@fisica.ufc.br">
-                    </fieldset>
-                    <fieldset>
-                        <label for="frm_novo_usuario_cidade">Cidade</label>
-                        <input type="text" id="frm_novo_usuario_cidade" name="frm_novo_usuario_cidade"
-                               placeholder="Fortaleza">
-                    </fieldset>
-                    <fieldset>
-                        <label for="frm_novo_usuario_estado">Estado</label>
-                        <input type="text" id="frm_novo_usuario_estado" name="frm_novo_usuario_estado"
-                               placeholder="Ceará">
-                    </fieldset>
-                    <fieldset>
-                        <label for="frm_novo_usuario_telefone">Telefone</label>
-                        <input type="tel" id="frm_novo_usuario_telefone" name="frm_novo_usuario_telefone"
-                               placeholder="(85) 99999999">
-                    </fieldset>
-                    <fieldset>
-                        <input type="button" value="Próximo passo" id="btnNovoUsuarioPasso1" name="btnNovoUsuarioPasso1">
+                        <a href="#/Inicio" title="Voltar à tela inicial" class="botao vermelho">Voltar à tela inicial</a>
+                        <input type="submit" value="Próximo passo" class="verde" id="sbmtNovoUsuarioPasso1" name="smbtNovoUsuarioPasso1">
                     </fieldset>
                 </form>
             </div>
 
             <div id="NovoUsuarioPasso2" class="bloco">
-                <h1>Informações Acadêmcias</h1>
-                <form name="frmNovoUsuarioPasso2" id="frmNovoUsuarioPasso2">
-                    <fieldset>
-                        <label for="frm_novo_usuario_documento">CPF</label>
-                        <input type="text" id="frm_novo_usuario_documento" name="frm_novo_usuario_documento"
-                               placeholder="000.000.000-00">
-                    </fieldset>
+                    <h1>Informações Pessoais</h1>
+                    <form name="frmNovoUsuarioPasso1" id="frmNovoUsuarioPasso2">
                     <fieldset>
                         <label for="frm_novo_usuario_nome">Nome</label>
                         <input type="text" id="frm_novo_usuario_nome" name="frm_novo_usuario_nome"
@@ -600,10 +561,61 @@
                     <fieldset>
                         <label for="frm_novo_usuario_telefone">Telefone</label>
                         <input type="tel" id="frm_novo_usuario_telefone" name="frm_novo_usuario_telefone"
+                               placeholder="(85) 99999-9999">
+                    </fieldset>
+                    <fieldset>
+                        <input type="submit" value="Próximo passo" id="btnNovoUsuarioPasso1" name="btnNovoUsuarioPasso1">
+                    </fieldset>
+                </form>
+            </div>
+
+            <div id="NovoUsuarioPasso3" class="bloco">
+                <h1>Informações Acadêmcias</h1>
+                <form name="frmNovoUsuarioPasso3" id="frmNovoUsuarioPasso3">
+                    <fieldset>
+                        <label for="frm_novo_usuario_documento">CPF</label>
+                        <input type="text" id="frm_novo_usuario_documento2" name="frm_novo_usuario_documento"
+                               placeholder="000.000.000-00">
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_nome">Nome</label>
+                        <input type="text" id="frm_novo_usuario_nome2" name="frm_novo_usuario_nome"
+                               placeholder="Nome Completo" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_genero">Gênero</label>
+                        <select id="frm_novo_usuario_genero2" name="frm_novo_usuario_genero">
+                            <option name="frm_novo_usuario_genero_masculino" value="1">Masculino</option>
+                            <option name="frm_novo_usuario_genero_feminino" value="2">Feminino</option>
+                        </select>
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_email">Email</label>
+                        <input type="email" id="frm_novo_usuario_email2" name="frm_novo_usuario_email"
+                               placeholder="rietveld@fisica.ufc.br" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_email_alternativo">Email Alternativo</label>
+                        <input type="email" id="frm_novo_usuario_email_alternativo2" name="frm_novo_usuario_email_alternativo"
+                               placeholder="rietveld@fisica.ufc.br">
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_cidade">Cidade</label>
+                        <input type="text" id="frm_novo_usuario_cidade2" name="frm_novo_usuario_cidade"
+                               placeholder="Fortaleza">
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_estado">Estado</label>
+                        <input type="text" id="frm_novo_usuario_estado2" name="frm_novo_usuario_estado"
+                               placeholder="Ceará">
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_novo_usuario_telefone">Telefone</label>
+                        <input type="tel" id="frm_novo_usuario_telefone2" name="frm_novo_usuario_telefone"
                                placeholder="(85) 99999999">
                     </fieldset>
                     <fieldset>
-                        <input type="button" value="Próximo passo" id="btnNovoUsuarioPasso1" name="btnNovoUsuarioPasso1">
+                        <input type="button" value="Próximo passo" id="btnNovoUsuarioPasso3" name="btnNovoUsuarioPasso3">
                     </fieldset>
                 </form>
             </div>
