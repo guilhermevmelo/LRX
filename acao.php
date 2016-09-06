@@ -140,6 +140,9 @@ if (isset($q) && $q == "obterListaSolicitacoes") {
     }
 }
 
+/**
+ *
+ */
 if (isset($q) && $q == "obterListaSolicitacoesConcluidas") {
     $id = addslashes($_GET["id"]);
     $nivel_acesso = intval($_GET['nivel_acesso']);
@@ -246,7 +249,9 @@ if (isset($q) && $q == "novaSolicitacaoAcademica") {
 
 }
 
-
+/**
+ *
+ */
 if (isset($q) && $q == "cancelarSolicitacao") {
     //header('Content-Type: application/json');
 
