@@ -686,25 +686,94 @@ $(document).ready(function () {
         sbmtNovoUsuarioPasso1.attr('disabled', 'disabled');
 
         var _documento = $('#frm_novo_usuario_documento').val();
+        var _email = $('#frm_novo_usuario_email').val();
 
         $.ajax({
             url: 'acao.php',
             type: 'get',
             data: {
                 q: 'verificarDocumento',
-                documento: _documento
+                documento: _documento,
+                email: _email
             }
         }).done(function (r) {
             if (r.codigo == 200) {
                 console.log(r);
-                if (r.existeDocumento) {
-                    apresentarErro({mensagem:"Esse documento já está cadastrado. Caso não lembre sua senha, clique <a href=\"#/RecuperarConta\">aqui</a>."});
+                if (r.existeDocumento || r.existeEmail) {
+                    apresentarErro({mensagem:"Esse "+ (r.existeDocumento?'documento':'email') + " já está cadastrado. Caso não lembre sua senha, clique <a href=\"#/RecuperarConta\">aqui</a>."});
                     sbmtNovoUsuarioPasso1.removeAttr('disabled');
-                } else {
+                } else{
                     $("#NovoUsuarioPasso1").fadeOut('slow', function () {
-                        $("#NovoUsuarioPasso2").fadeIn("slow");
+                        $('.passoAtual').removeClass('passoAtual');
+                        $("#NovoUsuarioPasso2").fadeIn("slow").addClass('passoAtual');
                     })
                 }
+            }
+        });
+    });
+
+    $('#frmNovoUsuarioPasso2').submit(function (evento) {
+        evento.stopPropagation();
+        evento.preventDefault();
+
+        $("#NovoUsuarioPasso2").fadeOut('slow', function () {
+            $('.passoAtual').removeClass('passoAtual');
+            $("#NovoUsuarioPasso3").fadeIn("slow").addClass('passoAtual');
+        });
+    });
+
+    $('#frmNovoUsuarioPasso3').submit(function (evento) {
+        evento.stopPropagation();
+        evento.preventDefault();
+
+        var sbmtNovoUsuarioFinalizar = $('#btnNovoUsuarioFinalizar');
+        sbmtNovoUsuarioFinalizar.attr('disabled', 'disabled');
+
+        $("#NovoUsuarioPasso3").fadeOut('slow', function () {
+            $('.passoAtual').removeClass('passoAtual');
+            $("#NovoUsuarioPassoFinal").fadeIn("slow").addClass('passoAtual');
+        });
+
+        var _documento = $('#frm_novo_usuario_documento').val();
+        var _email = $('#frm_novo_usuario_email').val();
+        var _nome = $('#frm_novo_usuario_nome').val();
+        var _genero = $('#frm_novo_usuario_genero').val();
+        var _email_alternativo = $('#frm_novo_usuario_email_alternativo').val();
+        var _cidade = $('#frm_novo_usuario_cidade').val();
+        var _estado = $('#frm_novo_usuario_estado').val();
+        var _telefone = $('#frm_novo_usuario_telefone').val();
+        var _ies = $('#frm_novo_usuario_ies').val();
+        var _departamento = $('#frm_novo_usuario_departamento').val();
+        var _laboratorio = $('#frm_novo_usuario_laboratorio').val();
+        var _area_de_pesquisa = $('#frm_novo_usuario_area_de_pesquisa').val();
+        var _titulo = $('#frm_novo_usuario_titulo').val();
+
+        $.ajax({
+            url: 'acao.php',
+            type: 'get',
+            data: {
+                q: 'cadastrarUsuario',
+                documento: _documento,
+                email: _email,
+                nome : _nome,
+                genero:_genero,
+                email_alternativo: _email_alternativo,
+                cidade:_cidade,
+                estado: _estado,
+                telefo:_telefone,
+                ies:_ies,
+                departamento:_departamento,
+                laboratorio:_laboratorio,
+                area_de_pesquisa:_area_de_pesquisa,
+                titulo:_titulo
+            }
+        }).done(function (r) {
+            if (r.codigo == 200) {
+                console.log(r);
+                $('#NovoUsuarioFinalh1').val('Cadastro concluído');
+                $('#NovoUsuarioFinalP').val('Sua solicitação de cadastro foi enviada com sucesso. Verifique seu email para informações adicionais.');
+            } else {
+                apresentarErro(r.mensagem);
             }
         });
     });

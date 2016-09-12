@@ -7,8 +7,29 @@
   -->
 <html>
 <head>
-    <meta charset="utf-8">
     <title>Laboratório de Raios-X | Solicitação de Análises</title>
+
+    <!--<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">-->
+    <link rel="apple-touch-icon" sizes="57x57" href="apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="manifest.json">
+
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="favicons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <meta charset="utf-8">
+
     <link rel="stylesheet" href="estilos/all.css" media="all">
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 
@@ -517,6 +538,11 @@
                                placeholder="000.000.000-00" size="15" maxlength="15">
                     </fieldset>
                     <fieldset>
+                        <label for="frm_novo_usuario_email">Email</label>
+                        <input type="email" id="frm_novo_usuario_email" name="frm_novo_usuario_email"
+                               placeholder="rietveld@fisica.ufc.br" required>
+                    </fieldset>
+                    <fieldset>
                         <a href="#/Inicio" title="Voltar à tela inicial" class="botao vermelho">Voltar à tela inicial</a>
                         <input type="submit" value="Próximo passo" class="verde" id="sbmtNovoUsuarioPasso1" name="smbtNovoUsuarioPasso1">
                     </fieldset>
@@ -525,7 +551,7 @@
 
             <div id="NovoUsuarioPasso2" class="bloco">
                     <h1>Informações Pessoais</h1>
-                    <form name="frmNovoUsuarioPasso1" id="frmNovoUsuarioPasso2">
+                    <form name="frmNovoUsuarioPasso2" id="frmNovoUsuarioPasso2">
                     <fieldset>
                         <label for="frm_novo_usuario_nome">Nome</label>
                         <input type="text" id="frm_novo_usuario_nome" name="frm_novo_usuario_nome"
@@ -538,16 +564,13 @@
                             <option name="frm_novo_usuario_genero_feminino" value="2">Feminino</option>
                         </select>
                     </fieldset>
-                    <fieldset>
-                        <label for="frm_novo_usuario_email">Email</label>
-                        <input type="email" id="frm_novo_usuario_email" name="frm_novo_usuario_email"
-                               placeholder="rietveld@fisica.ufc.br" required>
-                    </fieldset>
+
                     <fieldset>
                         <label for="frm_novo_usuario_email_alternativo">Email Alternativo</label>
                         <input type="email" id="frm_novo_usuario_email_alternativo" name="frm_novo_usuario_email_alternativo"
                                placeholder="rietveld@fisica.ufc.br">
                     </fieldset>
+
                     <fieldset>
                         <label for="frm_novo_usuario_cidade">Cidade</label>
                         <input type="text" id="frm_novo_usuario_cidade" name="frm_novo_usuario_cidade"
@@ -564,60 +587,57 @@
                                placeholder="(85) 99999-9999">
                     </fieldset>
                     <fieldset>
-                        <input type="submit" value="Próximo passo" id="btnNovoUsuarioPasso1" name="btnNovoUsuarioPasso1">
+                        <input type="submit" value="Próximo passo" id="btnNovoUsuarioPasso2" name="btnNovoUsuarioPasso2">
                     </fieldset>
                 </form>
             </div>
 
             <div id="NovoUsuarioPasso3" class="bloco">
-                <h1>Informações Acadêmcias</h1>
+                <h1>Informações Acadêmicas</h1>
                 <form name="frmNovoUsuarioPasso3" id="frmNovoUsuarioPasso3">
                     <fieldset>
-                        <label for="frm_novo_usuario_documento">CPF</label>
-                        <input type="text" id="frm_novo_usuario_documento2" name="frm_novo_usuario_documento"
-                               placeholder="000.000.000-00">
+                        <label for="frm_novo_usuario_ies">IES</label>
+                        <input type="text" id="frm_novo_usuario_ies" name="frm_novo_usuario_ies"
+                               placeholder="Universidade Federal do Ceará - UFC">
                     </fieldset>
                     <fieldset>
-                        <label for="frm_novo_usuario_nome">Nome</label>
-                        <input type="text" id="frm_novo_usuario_nome2" name="frm_novo_usuario_nome"
-                               placeholder="Nome Completo" required>
+                        <label for="frm_novo_usuario_departamento">Departamento</label>
+                        <input type="text" id="frm_novo_usuario_departamento" name="frm_novo_usuario_departamento"
+                               placeholder="Departamento de Física" required>
+                    </fieldset>
+
+                    <fieldset>
+                        <label for="frm_novo_usuario_laboratorio">Laboratório (sigla)</label>
+                        <input type="email" id="frm_novo_usuario_laboratorio" name="frm_novo_usuario_laboratorio"
+                               placeholder="LRX" required>
                     </fieldset>
                     <fieldset>
-                        <label for="frm_novo_usuario_genero">Gênero</label>
-                        <select id="frm_novo_usuario_genero2" name="frm_novo_usuario_genero">
-                            <option name="frm_novo_usuario_genero_masculino" value="1">Masculino</option>
-                            <option name="frm_novo_usuario_genero_feminino" value="2">Feminino</option>
-                        </select>
+                        <label for="frm_novo_usuario_area_de_pesquisa">Área de pesquisa</label>
+                        <input type="email" id="frm_novo_usuario_area_de_pesquisa" name="frm_novo_usuario_area_de_pesquisa"
+                               placeholder="">
                     </fieldset>
                     <fieldset>
-                        <label for="frm_novo_usuario_email">Email</label>
-                        <input type="email" id="frm_novo_usuario_email2" name="frm_novo_usuario_email"
-                               placeholder="rietveld@fisica.ufc.br" required>
+                        <label for="frm_novo_usuario_titulo">Título</label>
+                        <select id="frm_novo_usuario_titulo" name="frm_novo_usuario_titulo">
+                            <option value="0">Graduando</option>
+                            <option value="1">Graduado</option>
+                            <option value="2">Especializando</option>
+                            <option value="3">Especialista</option>
+                            <option value="4">Mestrando</option>
+                            <option value="5">Mestre</option>
+                            <option value="6">Doutorando</option>
+                            <option value="7">Doutor</option>
+                       </select>
                     </fieldset>
                     <fieldset>
-                        <label for="frm_novo_usuario_email_alternativo">Email Alternativo</label>
-                        <input type="email" id="frm_novo_usuario_email_alternativo2" name="frm_novo_usuario_email_alternativo"
-                               placeholder="rietveld@fisica.ufc.br">
-                    </fieldset>
-                    <fieldset>
-                        <label for="frm_novo_usuario_cidade">Cidade</label>
-                        <input type="text" id="frm_novo_usuario_cidade2" name="frm_novo_usuario_cidade"
-                               placeholder="Fortaleza">
-                    </fieldset>
-                    <fieldset>
-                        <label for="frm_novo_usuario_estado">Estado</label>
-                        <input type="text" id="frm_novo_usuario_estado2" name="frm_novo_usuario_estado"
-                               placeholder="Ceará">
-                    </fieldset>
-                    <fieldset>
-                        <label for="frm_novo_usuario_telefone">Telefone</label>
-                        <input type="tel" id="frm_novo_usuario_telefone2" name="frm_novo_usuario_telefone"
-                               placeholder="(85) 99999999">
-                    </fieldset>
-                    <fieldset>
-                        <input type="button" value="Próximo passo" id="btnNovoUsuarioPasso3" name="btnNovoUsuarioPasso3">
+                        <input type="submit" value="Finalizar" id="btnNovoUsuarioFinalizar" name="btnNovoUsuarioFinalizar">
                     </fieldset>
                 </form>
+            </div>
+
+            <div id="NovoUsuarioPassoFinal" class="bloco">
+                <h1 id="NovoUsuarioFinalh1">Aguarde um instante</h1>
+                <p id="NovoUsuarioFinalP"></p>
             </div>
         </section>
 

@@ -286,14 +286,17 @@ if (isset($q) && $q == "cancelarSolicitacao") {
 if (isset($q) && $q == "verificarDocumento") {
     header('Content-Type: application/json');
 
+    $email = addslashes($_GET['email']);
     $cpf = addslashes($_GET['documento']);
     $cpf = desformatarCPF($cpf);
 
     $documentoExiste = UsuarioDAO::existeDocumento($cpf);
+    $emailExiste = UsuarioDAO::existeEmail($email);
 
     $r = array(
         "codigo" => 200,
-        "existeDocumento" => $documentoExiste
+        "existeDocumento" => $documentoExiste,
+        "existeEmail" => $emailExiste
     );
     echo json_encode($r);
 }
