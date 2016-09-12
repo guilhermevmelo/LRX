@@ -28,6 +28,7 @@ abstract class Usuario {
     protected $mensagens = array();   // array de mensagens
     protected $estado;
     protected $cidade;
+    protected $saudacao = 0;
 
 
     /**
@@ -275,5 +276,19 @@ abstract class Usuario {
 
     public function confirmarEmail() {
         $this->email_confirmado = true;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSaudacao() {
+        return $this->saudacao;
+    }
+
+    /**
+     * @param mixed $saudacao
+     */
+    public function setSaudacao($saudacao) {
+        $this->saudacao = $saudacao;
     }
 }

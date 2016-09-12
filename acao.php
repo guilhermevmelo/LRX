@@ -301,6 +301,62 @@ if (isset($q) && $q == "verificarDocumento") {
     echo json_encode($r);
 }
 
+/**
+ *
+ */
+if (isset($q) && $q == "cadastrarUsuario") {
+    header('Content-Type: application/json');
+
+    $email = addslashes($_POST['email']);
+    $cpf = addslashes($_POST['documento']);
+    $cpf = desformatarCPF($cpf);
+    $nome = addslashes($_POST['nome']);
+    $genero = addslashes($_POST['genero']);
+    $email_alternativo = addslashes($_POST['email_alternativo']);
+    $cidade = addslashes($_POST['cidade']);
+    $estado = addslashes($_POST['estado']);
+    $telefone = addslashes($_POST['telefone']);
+    $ies = addslashes($_POST['ies']);
+    $departamento = addslashes($_POST['departamento']);
+    $laboratorio = addslashes($_POST['laboratorio']);
+    $area_de_pesquisa = addslashes($_POST['area_de_pesquisa']);
+    $titulo = addslashes(intval($_POST['titulo']));
+
+
+    $p = new Professor($nome, $email, $cpf);
+    $p->setAreaDePesquisa($area_de_pesquisa);
+    $p->setCidade($cidade);
+    $p->setEstado("CE"); //TODO transformar em dropdown
+    $p->setConfirmado(false);
+    $p->setGenero($genero);
+    $p->setDepartamento($departamento);
+    $senha = uniqid();
+    $p->setSenhaAberta($senha);
+
+    $p->setTitulo(intval($titulo));
+    $p->setTelefone("85 999999999"); //TODO remover a mascara
+    $p->setLaboratorio($laboratorio);
+    $p->setEmailAlternativo($email_alternativo);
+    $p->setIes($ies);
+
+    $pDAO = new ProfessorDAO();
+    try {
+        $pDAO->criar($p);
+        $r = array(
+            "codigo" => 200
+        );
+    } catch (\Exception $ex) {
+        Erro::lancarErro($ex->getMessage());
+        $r = array(
+            "codigo" => 3,
+            "mensagem" => $ex->getMessage()
+        );
+    }
+
+
+    echo json_encode($r);
+}
+
 /********* PREAMBULO ********/
 //echo date_default_timezone_get();
 
@@ -382,7 +438,7 @@ if (isset($q) && $q == "usuarios") {
 
     $profs = $pDAO->obterTodos();
 
-    //print_p($profs);
+    print_p($profs);
 
     //$profs[0]->setNome("Guilherme Vieira Melo");
 
@@ -409,7 +465,7 @@ if (isset($q) && $q == "usuarios") {
     $a = $aDAO->obterTodos();
 //
 //    //print_p($p);
-    print_p($a);
+    //print_p($a);
 
 }
 

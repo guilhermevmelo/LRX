@@ -750,7 +750,7 @@ $(document).ready(function () {
 
         $.ajax({
             url: 'acao.php',
-            type: 'get',
+            type: 'post',
             data: {
                 q: 'cadastrarUsuario',
                 documento: _documento,
@@ -760,7 +760,7 @@ $(document).ready(function () {
                 email_alternativo: _email_alternativo,
                 cidade:_cidade,
                 estado: _estado,
-                telefo:_telefone,
+                telefone:_telefone,
                 ies:_ies,
                 departamento:_departamento,
                 laboratorio:_laboratorio,
@@ -772,6 +772,7 @@ $(document).ready(function () {
                 console.log(r);
                 $('#NovoUsuarioFinalh1').val('Cadastro concluído');
                 $('#NovoUsuarioFinalP').val('Sua solicitação de cadastro foi enviada com sucesso. Verifique seu email para informações adicionais.');
+                $('#NovoUsuarioPassoFinal').append('<a href="#/Inicio" title="Voltar à tela inicial" class="botao vermelho">Voltar à tela inicial</a>');
             } else {
                 apresentarErro(r.mensagem);
             }

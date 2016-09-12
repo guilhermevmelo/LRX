@@ -36,7 +36,7 @@ class UsuarioAcademicoDAO {
             $this->conexao->beginTransaction();
             $sql = sprintf("insert into usuarios values (null, :cpf, :nome, :email, :senha, :estado, :cidade, :departamento, :laboratorio,
 :area_de_pesquisa, :telefone, :email_alternativo, :nivel_acesso, :uid, :confirmado, 0, :titulo, :genero,
-:limite)");
+:limite, :ies, :saudacao)");
             $consulta = $this->conexao->prepare($sql);
 
             $consulta->bindValue(':cpf', $usuario->getDocumento());
@@ -56,10 +56,12 @@ class UsuarioAcademicoDAO {
             $consulta->bindValue(':titulo', $usuario->getTitulo(), \PDO::PARAM_INT);
             $consulta->bindValue(':genero', $usuario->getGenero() == "M" ? 1 : 2, \PDO::PARAM_INT);
             $consulta->bindValue(':limite', $usuario->getLimite(), \PDO::PARAM_INT);
+            $consulta->bindValue(':ies', $usuario->getIes());
+            $consulta->bindValue(':saudacao', $usuario->getSaudacao(), \PDO::PARAM_INT);
 
             $consulta->execute();
 
-            //print_p($consulta->errorInfo());
+            print_p($consulta->errorInfo());
 
             $sql2 = sprintf("select max(id_usuario) from usuarios");
             $consulta2 = $this->conexao->query($sql2);
@@ -155,7 +157,7 @@ class UsuarioAcademicoDAO {
             departamento = :departamento, laboratorio = :laboratorio, area_de_pesquisa = :area_de_pesquisa, telefone
             = :telefone, email_alternativo = :email_alternativo, nivel_acesso = :nivel_acesso, uid = :uid, confirmado
              = :confirmado, titulo = :titulo, genero = :genero, limite =
-             :limite where id_usuario = :id_usuario limit 1");
+             :limite, ies = :ies, saudacao = :saudacao where id_usuario = :id_usuario limit 1");
             $consulta = $this->conexao->prepare($sql);
 
             $consulta->bindValue(':id_usuario', $usuario->getId(), \PDO::PARAM_INT);
@@ -177,6 +179,8 @@ class UsuarioAcademicoDAO {
             $consulta->bindValue(':titulo', $usuario->getTitulo(), \PDO::PARAM_INT);
             $consulta->bindValue(':genero', $usuario->getGenero() == "M" ? 1 : 2, \PDO::PARAM_INT);
             $consulta->bindValue(':limite', $usuario->getLimite(), \PDO::PARAM_INT);
+            $consulta->bindValue(':ies', $usuario->getIes());
+            $consulta->bindValue(':saudacao', $usuario->getSaudacao(), \PDO::PARAM_INT);
 
             $consulta->execute();
 
