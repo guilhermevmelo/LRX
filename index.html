@@ -27,6 +27,7 @@
     <script src="js/jquery-1.11.2.js"></script>
     <script src="js/jquery-ui.js"></script>
     <script src="js/jquery.mask.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
     <script src="js/sha_dev.js"></script>
     <script src="js/main.js"></script>
     <script src="js/retina.js"></script>
@@ -569,8 +570,35 @@
                     </fieldset>
                     <fieldset>
                         <label for="frm_novo_usuario_estado">Estado</label>
-                        <input type="text" id="frm_novo_usuario_estado" name="frm_novo_usuario_estado"
-                               placeholder="Ceará">
+                        <select id="frm_novo_usuario_estado" name="frm_novo_usuario_estado">
+                            <option value="AC">Acre</option>
+                            <option value="AL">Alagoas</option>
+                            <option value="AP">Amapá</option>
+                            <option value="AM">Amazonas</option>
+                            <option value="BA">Bahia</option>
+                            <option value="CE" selected>Ceará</option>
+                            <option value="DF">Distrito Federal</option>
+                            <option value="ES">Espirito Santo</option>
+                            <option value="GO">Goiás</option>
+                            <option value="MA">Maranhão</option>
+                            <option value="MS">Mato Grosso do Sul</option>
+                            <option value="MT">Mato Grosso</option>
+                            <option value="MG">Minas Gerais</option>
+                            <option value="PA">Pará</option>
+                            <option value="PB">Paraíba</option>
+                            <option value="PR">Paraná</option>
+                            <option value="PE">Pernambuco</option>
+                            <option value="PI">Piauí</option>
+                            <option value="RJ">Rio de Janeiro</option>
+                            <option value="RN">Rio Grande do Norte</option>
+                            <option value="RS">Rio Grande do Sul</option>
+                            <option value="RO">Rondônia</option>
+                            <option value="RR">Roraima</option>
+                            <option value="SC">Santa Catarina</option>
+                            <option value="SP">São Paulo</option>
+                            <option value="SE">Sergipe</option>
+                            <option value="TO">Tocantins</option>
+                        </select>
                     </fieldset>
                     <fieldset>
                         <label for="frm_novo_usuario_telefone">Telefone</label>
@@ -599,12 +627,12 @@
 
                     <fieldset>
                         <label for="frm_novo_usuario_laboratorio">Laboratório (sigla)</label>
-                        <input type="email" id="frm_novo_usuario_laboratorio" name="frm_novo_usuario_laboratorio"
+                        <input type="text" id="frm_novo_usuario_laboratorio" name="frm_novo_usuario_laboratorio"
                                placeholder="LRX" required>
                     </fieldset>
                     <fieldset>
                         <label for="frm_novo_usuario_area_de_pesquisa">Área de pesquisa</label>
-                        <input type="email" id="frm_novo_usuario_area_de_pesquisa" name="frm_novo_usuario_area_de_pesquisa"
+                        <input type="text" id="frm_novo_usuario_area_de_pesquisa" name="frm_novo_usuario_area_de_pesquisa"
                                placeholder="">
                     </fieldset>
                     <fieldset>

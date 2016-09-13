@@ -577,6 +577,19 @@ input[type="submit"]:disabled:hover,
     background-color: #eee !important;
 }
 
+.error {
+    border-color: #dc1f18;
+    color: #dc1f18;
+}
+
+.valid {
+    border-color: #2ad038 !important;
+    color: #2ad038;
+}
+
+.helpe-block {
+    color: #dc1f18;
+}
 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
     .panalytical {

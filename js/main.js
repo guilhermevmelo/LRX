@@ -600,6 +600,53 @@ $(document).ready(function () {
     atualizarCampos();
     definirMascaras();
 
+
+    /**
+     * Adiciona gatilhos de validação dos formulários
+     */
+    $.validate({
+        modules: 'jsconf, security, html5, toggleDisabled, brazil',
+        onModulesLoaded: function () {
+            $.setupValidation({
+                lang: 'pt',
+                form: '#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3',
+                validate: {
+                    '#frm_novo_usuario_documento': {
+                        validation: 'required, cpf'
+                    },
+                    '#frm_novo_usuario_email': {
+                        validation: 'required, email'
+                    },
+                    '#frm_novo_usuario_nome': {
+                        validation: 'required'
+                    },
+                    '#frm_novo_usuario_email_alternativo': {
+                        validation: 'email',
+                        optional: true
+                    },
+                    '#frm_novo_usuario_cidade': {
+                        validation: 'required'
+                    },
+                    '#frm_novo_usuario_telefone': {
+                        validation: 'required, brphone'
+                    },
+                    '#frm_novo_usuario_ies': {
+                        validation: 'required'
+                    },
+                    '#frm_novo_usuario_departamento': {
+                        validation: 'required'
+                    },
+                    '#frm_novo_usuario_laboratorio': {
+                        validation: 'required'
+                    },
+                    '#frm_novo_usuario_area_de_pesquisa': {
+                        validation: 'required'
+                    }
+                }
+            });
+        }
+    });
+
     /**
      * Adiciona um gatilho para dispensar a mensagem de erro ao clique.
      */
