@@ -600,6 +600,66 @@ $(document).ready(function () {
     atualizarCampos();
     definirMascaras();
 
+    /**
+     *  Função de validação de CPF
+     *  obtida de http://www.geradordecpf.org/funcao-javascript-validar-cpf.html em 13/09/2016
+     */
+    function validaCPF(cpf)
+    {
+        var numeros, digitos, soma, i, resultado, digitos_iguais;
+        digitos_iguais = 1;
+        if (cpf.length < 11)
+            return false;
+        for (i = 0; i < cpf.length - 1; i++)
+            if (cpf.charAt(i) != cpf.charAt(i + 1))
+            {
+                digitos_iguais = 0;
+                break;
+            }
+        if (!digitos_iguais)
+        {
+            numeros = cpf.substring(0,9);
+            digitos = cpf.substring(9);
+            soma = 0;
+            for (i = 10; i > 1; i--)
+                soma += numeros.charAt(10 - i) * i;
+            resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+            if (resultado != digitos.charAt(0))
+                return false;
+            numeros = cpf.substring(0,10);
+            soma = 0;
+            for (i = 11; i > 1; i--)
+                soma += numeros.charAt(11 - i) * i;
+            resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+            if (resultado != digitos.charAt(1))
+                return false;
+            return true;
+        }
+        else
+            return false;
+    }
+
+    /**
+     * Adiciona a opção de validar CPF ao validador.
+     * O pacote 'brazil' do validador já possui um, mas o default considera válidos
+     * números de CPF em que todos os números são iguais.
+     */
+    $.formUtils.addValidator({
+        name : '_cpf',
+        validatorFunction : function(value, $el, config, language, $form) {
+            bloco1 = value.substring(0, 3);
+            bloco2 = value.substring(4, 7);
+            bloco3 = value.substring(8, 11);
+            bloco4 = value.substring(12, 14);
+
+            cpfNums = bloco1+bloco2+bloco3+bloco4;
+            //console.log(value, cpfNums);
+
+            return validaCPF(cpfNums);
+        },
+        errorMessage : 'CPF inválido',
+        errorMessageKey: 'badCPF'
+    });
 
     /**
      * Adiciona gatilhos de validação dos formulários
@@ -612,7 +672,7 @@ $(document).ready(function () {
                 form: '#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3',
                 validate: {
                     '#frm_novo_usuario_documento': {
-                        validation: 'required, cpf'
+                        validation: 'required, _cpf'
                     },
                     '#frm_novo_usuario_email': {
                         validation: 'required, email'
@@ -623,6 +683,16 @@ $(document).ready(function () {
                     '#frm_novo_usuario_email_alternativo': {
                         validation: 'email',
                         optional: true
+                    },
+                    '#frm_novo_usuario_senha': {
+                        validation: 'required, length',
+                        length: 'min8',
+                        'error-msg': 'A senha deve conter no mínimo 8 dígitos'
+                    },
+                    '#frm_novo_usuario_confirma_senha': {
+                        validation: 'required, confirmation',
+                        confirm: 'frm_novo_usuario_senha',
+                        'error-msg': 'As senhas não conferem'
                     },
                     '#frm_novo_usuario_cidade': {
                         validation: 'required'
@@ -781,6 +851,9 @@ $(document).ready(function () {
             $("#NovoUsuarioPassoFinal").fadeIn("slow").addClass('passoAtual');
         });
 
+        var shaObj = new jsSHA("SHA-1", "TEXT");
+        shaObj.update($('#frm_novo_usuario_senha').val());
+        var _senha = shaObj.getHash("HEX");
         var _documento = $('#frm_novo_usuario_documento').val();
         var _email = $('#frm_novo_usuario_email').val();
         var _nome = $('#frm_novo_usuario_nome').val();
@@ -803,6 +876,7 @@ $(document).ready(function () {
                 documento: _documento,
                 email: _email,
                 nome : _nome,
+                senha: _senha,
                 genero:_genero,
                 email_alternativo: _email_alternativo,
                 cidade:_cidade,

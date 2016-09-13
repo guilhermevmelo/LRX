@@ -21,16 +21,17 @@ $q = $_GET["q"] ?? $_POST["q"] ?? NULL;
  *
  */
 if (isset($q) && $q == "login") {
-//    $email = "guilhermevmelo@gmail.com";
-//    $senha = sha1("iqh5riv9");
     $email = addslashes($_POST['email']);
     $senha = addslashes($_POST['senha']);
 
     $u = UsuarioDAO::login($email, $senha);
 
     if ($u === null) {
-        Erro::lancarErro(array("codigo" => 1001, "mensagem" => "Usuário não Encontrado"));
-    } else {
+        Erro::lancarErro(array("codigo" => 1001, "mensagem" => "Usuário não encontrado"));
+    } else if ($u->confirmado() != 1) {
+        Erro::lancarErro(array("codigo" => 1002, "mensagem" => "Usuário não confirmado"));
+    }
+    else {
         header('Content-Type: application/json');
         $resposta = array(
             "codigo" => 200,
@@ -321,20 +322,18 @@ if (isset($q) && $q == "cadastrarUsuario") {
     $laboratorio = addslashes($_POST['laboratorio']);
     $area_de_pesquisa = addslashes($_POST['area_de_pesquisa']);
     $titulo = addslashes(intval($_POST['titulo']));
-
+    $senha = addslashes($_POST['senha']);
 
     $p = new Professor($nome, $email, $cpf);
     $p->setAreaDePesquisa($area_de_pesquisa);
     $p->setCidade($cidade);
-    $p->setEstado("CE"); //TODO transformar em dropdown
+    $p->setEstado($estado);
     $p->setConfirmado(false);
     $p->setGenero($genero);
     $p->setDepartamento($departamento);
-    $senha = uniqid();
-    $p->setSenhaAberta($senha);
-
+    $p->setSenha($senha);
     $p->setTitulo(intval($titulo));
-    $p->setTelefone("85 999999999"); //TODO remover a mascara
+    $p->setTelefone($telefone);
     $p->setLaboratorio($laboratorio);
     $p->setEmailAlternativo($email_alternativo);
     $p->setIes($ies);
