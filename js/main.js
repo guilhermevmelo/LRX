@@ -672,45 +672,20 @@ $(document).ready(function () {
                 form: '#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3',
                 validate: {
                     '#frm_novo_usuario_documento': {
-                        validation: 'required, _cpf'
-                    },
-                    '#frm_novo_usuario_email': {
-                        validation: 'required, email'
-                    },
-                    '#frm_novo_usuario_nome': {
-                        validation: 'required'
-                    },
-                    '#frm_novo_usuario_email_alternativo': {
-                        validation: 'email',
-                        optional: true
+                        validation: '_cpf'
                     },
                     '#frm_novo_usuario_senha': {
-                        validation: 'required, length',
+                        validation: 'length',
                         length: 'min8',
                         'error-msg': 'A senha deve conter no mínimo 8 dígitos'
                     },
                     '#frm_novo_usuario_confirma_senha': {
-                        validation: 'required, confirmation',
+                        validation: 'confirmation',
                         confirm: 'frm_novo_usuario_senha',
                         'error-msg': 'As senhas não conferem'
                     },
-                    '#frm_novo_usuario_cidade': {
-                        validation: 'required'
-                    },
                     '#frm_novo_usuario_telefone': {
-                        validation: 'required, brphone'
-                    },
-                    '#frm_novo_usuario_ies': {
-                        validation: 'required'
-                    },
-                    '#frm_novo_usuario_departamento': {
-                        validation: 'required'
-                    },
-                    '#frm_novo_usuario_laboratorio': {
-                        validation: 'required'
-                    },
-                    '#frm_novo_usuario_area_de_pesquisa': {
-                        validation: 'required'
+                        validation: 'brphone'
                     }
                 }
             });
@@ -891,12 +866,17 @@ $(document).ready(function () {
         }).done(function (r) {
             if (r.codigo == 200) {
                 console.log(r);
-                $('#NovoUsuarioFinalh1').val('Cadastro concluído');
-                $('#NovoUsuarioFinalP').val('Sua solicitação de cadastro foi enviada com sucesso. Verifique seu email para informações adicionais.');
+                $('#NovoUsuarioFinalh1').html('Cadastro concluído');
+                $('#NovoUsuarioFinalP').html('Sua solicitação de cadastro foi enviada com sucesso. Verifique seu email para informações adicionais.');
                 $('#NovoUsuarioPassoFinal').append('<a href="#/Inicio" title="Voltar à tela inicial" class="botao vermelho">Voltar à tela inicial</a>');
             } else {
                 apresentarErro(r.mensagem);
+                $('#NovoUsuarioFinalh1').html('Cadastro não concluído');
+                $('#NovoUsuarioFinalP').html('Ocorreu um erro com sua solicitação de cadastro. Favor tentar novamente em alguns minutos. Caso o problema persista, entre em contato com os técnicos do laboratório no email lrxufc@gmail.com');
+                $('#NovoUsuarioPassoFinal').append('<a href="#/Inicio" title="Voltar à tela inicial" class="botao vermelho">Voltar à tela inicial</a>');
             }
+            $('.passoAtual').removeClass('passoAtual');
+            $("#NovoUsuarioPasso1").addClass('passoAtual');
         });
     });
 

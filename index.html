@@ -76,11 +76,11 @@
                     <form id="FormLogin" name="FormLogin" action="#/Login" method="post">
                         <fieldset>
                             <label for="frm_login_email">email</label>
-                            <input type="email" name="frm_login_email" id="frm_login_email">
+                            <input type="email" name="frm_login_email" id="frm_login_email" required>
                         </fieldset>
                         <fieldset>
                             <label for="frm_login_senha">Senha</label>
-                            <input type="password" name="frm_login_senha" id="frm_login_senha">
+                            <input type="password" name="frm_login_senha" id="frm_login_senha" required>
                         </fieldset>
                         <div>
 
@@ -527,7 +527,7 @@
                     <fieldset>
                         <label for="frm_novo_usuario_documento">CPF</label>
                         <input type="text" id="frm_novo_usuario_documento" name="frm_novo_usuario_documento"
-                               placeholder="000.000.000-00" size="15" maxlength="15">
+                               placeholder="000.000.000-00" size="15" maxlength="15" required>
                     </fieldset>
                     <fieldset>
                         <label for="frm_novo_usuario_email">Email</label>
@@ -558,7 +558,7 @@
                     </fieldset>
 
                     <fieldset>
-                        <label for="frm_novo_usuario_email_alternativo">Email Alternativo</label>
+                        <label for="frm_novo_usuario_email_alternativo">Email Alternativo (opcional)</label>
                         <input type="email" id="frm_novo_usuario_email_alternativo" name="frm_novo_usuario_email_alternativo"
                                placeholder="rietveld@fisica.ufc.br">
                     </fieldset>
@@ -566,7 +566,7 @@
                     <fieldset>
                         <label for="frm_novo_usuario_cidade">Cidade</label>
                         <input type="text" id="frm_novo_usuario_cidade" name="frm_novo_usuario_cidade"
-                               placeholder="Fortaleza">
+                               placeholder="Fortaleza" required>
                     </fieldset>
                     <fieldset>
                         <label for="frm_novo_usuario_estado">Estado</label>
@@ -603,15 +603,15 @@
                     <fieldset>
                         <label for="frm_novo_usuario_telefone">Telefone</label>
                         <input type="tel" id="frm_novo_usuario_telefone" name="frm_novo_usuario_telefone"
-                               placeholder="(85) 99999-9999">
+                               placeholder="(85) 99999-9999" required>
                     </fieldset>
                     <fieldset>
                         <label for="frm_novo_usuario_senha">Senha</label>
-                        <input type="password" id="frm_novo_usuario_senha" name="frm_novo_usuario_senha">
+                        <input type="password" id="frm_novo_usuario_senha" name="frm_novo_usuario_senha" minlength="8" required>
                     </fieldset>
                         <fieldset>
-                            <label for="frm_novo_usuario_confirma_senha">Senha</label>
-                            <input type="password" id="frm_novo_usuario_confirma_senha" name="frm_novo_usuario_confirma_senha">
+                            <label for="frm_novo_usuario_confirma_senha">Confirme a senha</label>
+                            <input type="password" id="frm_novo_usuario_confirma_senha" name="frm_novo_usuario_confirma_senha" required>
                         </fieldset>
                     <fieldset>
                         <a href="#/Inicio" title="Voltar à tela inicial" class="botao vermelho">Voltar à tela inicial</a>
@@ -626,7 +626,7 @@
                     <fieldset>
                         <label for="frm_novo_usuario_ies">IES</label>
                         <input type="text" id="frm_novo_usuario_ies" name="frm_novo_usuario_ies"
-                               placeholder="UFC">
+                               placeholder="UFC" required>
                     </fieldset>
                     <fieldset>
                         <label for="frm_novo_usuario_departamento">Departamento</label>
@@ -642,7 +642,7 @@
                     <fieldset>
                         <label for="frm_novo_usuario_area_de_pesquisa">Área de pesquisa</label>
                         <input type="text" id="frm_novo_usuario_area_de_pesquisa" name="frm_novo_usuario_area_de_pesquisa"
-                               placeholder="">
+                               required>
                     </fieldset>
                     <fieldset>
                         <label for="frm_novo_usuario_titulo">Título</label>
