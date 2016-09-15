@@ -155,6 +155,7 @@ class EquipamentoDAO /*extends DAO*/ {
                     'id_equipamento'    => intval($tupla['id_equipamento']),
                     'nome'              => $tupla['nome'],
                     'tubo'              => $tupla['tubo'],
+                    'tipo'              => $tupla['tipo'],
                     'disponivel'        =>$tupla['disponivel'] == 1 ? true : false
                 );
             }

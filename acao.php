@@ -1,6 +1,6 @@
 <?php
 /**
- * arquivo: 	action.php
+ * arquivo: 	acao.php
  * data:		04/03/2015
  * autor:		Guilherme Vieira
  * descrição:	Manipula requisiçoes da index.
@@ -197,9 +197,13 @@ if (isset($q) && $q == "obterDetalhesSolicitacao") {
  */
 if (isset($q) && $q == "obterListaEquipamentos") {
     header('Content-Type: application/json');
-
+    /**
+     * Se não for explicitamente requisitado que não sejam retornados apenas
+     * os equipamentos disponíveis, serão.
+     */
+    $apenasDisponiveis = boolval($_GET['apenasDisponiveis'] ?? true);
     $eDAO = new EquipamentoDAO();
-    $resposta = $eDAO->obterTodos(true, true);
+    $resposta = $eDAO->obterTodos($apenasDisponiveis, true);
 
     echo json_encode(array("codigo" => 200, "equipamentos" => $resposta));
 }

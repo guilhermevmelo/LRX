@@ -7,13 +7,13 @@ var usuario = null;
 var tipo_sistema = null;
 var timeoutErro = null;
 var timeoutCronometroErro = null;
-var telJaTem14 = false;
+var equipamentosDisponiveis = [];
 
 window.onload = iniciarAplicacao;
 window.onhashchange = exibirSecao;
 
 /**
- * Função obitida de http://www.quirksmode.org/js/cookies.html
+ * Função obtida de http://www.quirksmode.org/js/cookies.html
  * @param name
  * @param value
  * @param days
@@ -213,7 +213,9 @@ function obterDetalhesSolicitacao(id) {
 // TODO fundir as duas funções em uma só
 
 function preencherSolicitacoes() {
-    $(".listaSolicitacoes").empty();
+    $("#ListaSolicitacoes").empty();
+    $('#Detalhe').fadeOut('slow');
+    $('#NenhumaSolicitação').fadeOut('slow');
     $.ajax({
         url: 'acao.php',
         type: 'get',
@@ -227,7 +229,12 @@ function preencherSolicitacoes() {
         if (r.codigo !== 200) {
             apresentarErro(r);
         } else {
+            console.log(r);
             var  n = 0;
+
+            if (r.solicitacoes.length == 0)
+                $('#NenhumaSolicitação').fadeIn('slow');
+
             r.solicitacoes.forEach(function(_s) {
 
                 // var elementoLi = "<li class=\"bloco relativo escondido\"><span class=\"solicitacaoMenuFlutuante floatRight\"><a" +
@@ -331,7 +338,7 @@ function preencherSolicitacoes() {
                     //$(this).addClass('solicitacaoEmDetalhe');
                 });
 
-                $(".listaSolicitacoes").append(elementoLi);
+                $("#ListaSolicitacoes").append(elementoLi);
 
                 setTimeout(function(){
                     $(elementoLi).fadeIn('slow').removeClass('escondido');
@@ -343,131 +350,170 @@ function preencherSolicitacoes() {
 }
 
 function preencherSolicitacoesConcluidas() {
-    $(".listaSolicitacoes").empty();
+    $("#ListaSolicitacoes").empty();
+    $('#Detalhe').fadeOut('slow');
+    $('#NenhumaSolicitação').fadeOut('slow', function () {
+        $.ajax({
+            url: 'acao.php',
+            type: 'get',
+            data: {
+                q: 'obterListaSolicitacoesConcluidas',
+                id: usuario.id,
+                nivel_acesso: usuario.nivel_acesso,
+                tipoSistema: tipo_sistema
+            }
+        }).done(function (r) {
+            if (r.codigo !== 200) {
+                apresentarErro(r);
+            } else {
+                console.log(r);
+                var  n = 0;
+
+                if (r.solicitacoes.length == 0)
+                    $('#NenhumaSolicitação').fadeIn('slow');
+
+                r.solicitacoes.forEach(function(_s) {
+
+                    // var elementoLi = "<li class=\"bloco relativo escondido\"><span class=\"solicitacaoMenuFlutuante floatRight\"><a" +
+                    //     " href=\"#/Dashboard/E/"+_s.id_solicitacao+"\">excluir</a> </span><h3" +
+                    // " class=\"solicitacaoIdentificacao\">"+_s.identificacao+"</h3>";
+                    //
+                    // elementoLi += "<h4 class=\"vermelho\">Aguardando autorização do professor</h4>";
+                    //
+                    //
+                    // elementoLi += "<p>Criada em <span class=\"solicitacaoDataSolicitacao\">"+_s.data_solicitacao+"</span><br>";
+                    // elementoLi += "<span class=\"solicitacaoDataSolicitacao\">Entregue em 15 de Abril</span>";
+                    // elementoLi += "</p></li>";
+
+                    var elementoLi = document.createElement('li');
+                    elementoLi.classList.add('bloco');
+                    elementoLi.classList.add('relativo');
+                    elementoLi.classList.add('escondido');
+
+                    elementoLi.id = "_sol" + _s.id_solicitacao;
+
+                    var identificacaoH3 = document.createElement('h3');
+                    identificacaoH3.classList.add('solicitacaoIdentificacao');
+                    identificacaoH3.innerHTML = _s.identificacao;
+                    elementoLi.appendChild(identificacaoH3);
+
+                    var statusH4 = document.createElement('h4');
+                    switch (_s.status) {
+                        case 1:
+                            statusH4.classList.add('cinza');
+                            statusH4.innerHTML = 'Aguardando autorização do professor.';
+                            break;
+
+                        case 2:
+                            statusH4.classList.add('cinza');
+                            statusH4.innerHTML = 'Aguardando aprovação do laboratório.';
+                            break;
+
+                        case 3:
+                            statusH4.classList.add('amarela');
+                            statusH4.innerHTML = 'Aguardando confirmação de entrega da amostra';
+                            break;
+
+                        case 4:
+                            statusH4.classList.add('amarela');
+                            statusH4.innerHTML = 'Na fila do equipamento';
+                            break;
+
+                        case 5:
+                            statusH4.classList.add('amarela');
+                            statusH4.innerHTML = 'Em processo de análise.';
+                            break;
+
+                        case 6:
+                            statusH4.classList.add('azul');
+                            statusH4.innerHTML = 'Análise Concluída. Aguardando recolhimento da amostra.';
+                            break;
+
+                        case 7:
+                            statusH4.classList.add('verde');
+                            statusH4.innerHTML = 'Solicitação Finalizada.';
+                            break;
+
+                        case -1:
+                            statusH4.classList.add('vermelha');
+                            statusH4.innerHTML = 'Cancelada pelo responsável.';
+                            break;
+
+                        case -2:
+                            statusH4.classList.add('vermelha');
+                            statusH4.innerHTML = 'Cancelada pelo operador.';
+                            break;
+
+                        case -3:
+                            statusH4.classList.add('vermelha');
+                            statusH4.innerHTML = 'Cancelada por falta de entrega da amostra.';
+                            break;
+                    }
+                    elementoLi.appendChild(statusH4);
+
+                    var bandeiraDiv = document.createElement('div');
+                    bandeiraDiv.classList.add('bandeiraEquipamento');
+                    switch (_s.id_equipamento) {
+                        case 2:
+                            bandeiraDiv.classList.add('panalytical');
+                            break;
+                        case 1:
+                            bandeiraDiv.classList.add('rigakudrx');
+                            break;
+                        case 3:
+                            // bandeiraDiv.classList.add('rigakufrx');
+                            break;
+                    }
+                    elementoLi.appendChild(bandeiraDiv);
+
+                    var jElementoLi = $(elementoLi);
+
+                    jElementoLi.click(function() {
+                        console.log('Click na solicitação', _s.id_solicitacao);
+                        obterDetalhesSolicitacao(_s.id_solicitacao);
+                        //$('.solicitacaoEmDetalhe').removeClass('solicitacaoEmDetalhe');
+                        //$(this).addClass('solicitacaoEmDetalhe');
+                    });
+
+                    $("#ListaSolicitacoes").append(elementoLi);
+
+                    setTimeout(function(){
+                        $(elementoLi).fadeIn('slow').removeClass('escondido');
+                    }, 100*n++);
+
+                });
+            }
+        });
+    });
+
+}
+
+function obterEquipamentos() {
     $.ajax({
         url: 'acao.php',
         type: 'get',
+        async: false,
         data: {
-            q: 'obterListaSolicitacoesConcluidas',
-            id: usuario.id,
-            nivel_acesso: usuario.nivel_acesso,
-            tipoSistema: tipo_sistema
+            q: 'obterListaEquipamentos',
+            apenasDisponiveis: 1
         }
     }).done(function (r) {
-        if (r.codigo !== 200) {
-            apresentarErro(r);
-        } else {
-            var  n = 0;
-            r.solicitacoes.forEach(function(_s) {
+        equipamentosDisponiveis = r.equipamentos;
+    });
+}
 
-                // var elementoLi = "<li class=\"bloco relativo escondido\"><span class=\"solicitacaoMenuFlutuante floatRight\"><a" +
-                //     " href=\"#/Dashboard/E/"+_s.id_solicitacao+"\">excluir</a> </span><h3" +
-                // " class=\"solicitacaoIdentificacao\">"+_s.identificacao+"</h3>";
-                //
-                // elementoLi += "<h4 class=\"vermelho\">Aguardando autorização do professor</h4>";
-                //
-                //
-                // elementoLi += "<p>Criada em <span class=\"solicitacaoDataSolicitacao\">"+_s.data_solicitacao+"</span><br>";
-                // elementoLi += "<span class=\"solicitacaoDataSolicitacao\">Entregue em 15 de Abril</span>";
-                // elementoLi += "</p></li>";
+function atualizarOpcoesDeEquipamentos(tipo, optionsElement) {
+    /* Limpa os equipamentos listados */
+    $(optionsElement).empty();
 
-                var elementoLi = document.createElement('li');
-                elementoLi.classList.add('bloco');
-                elementoLi.classList.add('relativo');
-                elementoLi.classList.add('escondido');
+    /* Adiciona apenas os disponíveis */
+    equipamentosDisponiveis.forEach(function (_e) {
+        if (_e.tipo == tipo) {
+            var e = document.createElement('option');
+            e.value = _e.id_equipamento;
+            e.innerHTML = _e.nome;
 
-                elementoLi.id = "_sol" + _s.id_solicitacao;
-
-                var identificacaoH3 = document.createElement('h3');
-                identificacaoH3.classList.add('solicitacaoIdentificacao');
-                identificacaoH3.innerHTML = _s.identificacao;
-                elementoLi.appendChild(identificacaoH3);
-
-                var statusH4 = document.createElement('h4');
-                switch (_s.status) {
-                    case 1:
-                        statusH4.classList.add('cinza');
-                        statusH4.innerHTML = 'Aguardando autorização do professor.';
-                        break;
-
-                    case 2:
-                        statusH4.classList.add('cinza');
-                        statusH4.innerHTML = 'Aguardando aprovação do laboratório.';
-                        break;
-
-                    case 3:
-                        statusH4.classList.add('amarela');
-                        statusH4.innerHTML = 'Aguardando confirmação de entrega da amostra';
-                        break;
-
-                    case 4:
-                        statusH4.classList.add('amarela');
-                        statusH4.innerHTML = 'Na fila do equipamento';
-                        break;
-
-                    case 5:
-                        statusH4.classList.add('amarela');
-                        statusH4.innerHTML = 'Em processo de análise.';
-                        break;
-
-                    case 6:
-                        statusH4.classList.add('azul');
-                        statusH4.innerHTML = 'Análise Concluída. Aguardando recolhimento da amostra.';
-                        break;
-
-                    case 7:
-                        statusH4.classList.add('verde');
-                        statusH4.innerHTML = 'Solicitação Finalizada.';
-                        break;
-
-                    case -1:
-                        statusH4.classList.add('vermelha');
-                        statusH4.innerHTML = 'Cancelada pelo responsável.';
-                        break;
-
-                    case -2:
-                        statusH4.classList.add('vermelha');
-                        statusH4.innerHTML = 'Cancelada pelo operador.';
-                        break;
-
-                    case -3:
-                        statusH4.classList.add('vermelha');
-                        statusH4.innerHTML = 'Cancelada por falta de entrega da amostra.';
-                        break;
-                }
-                elementoLi.appendChild(statusH4);
-
-                var bandeiraDiv = document.createElement('div');
-                bandeiraDiv.classList.add('bandeiraEquipamento');
-                switch (_s.id_equipamento) {
-                    case 2:
-                        bandeiraDiv.classList.add('panalytical');
-                        break;
-                    case 1:
-                        bandeiraDiv.classList.add('rigakudrx');
-                        break;
-                    case 3:
-                        // bandeiraDiv.classList.add('rigakufrx');
-                        break;
-                }
-                elementoLi.appendChild(bandeiraDiv);
-
-                var jElementoLi = $(elementoLi);
-
-                jElementoLi.click(function() {
-                    console.log('Click na solicitação', _s.id_solicitacao);
-                    obterDetalhesSolicitacao(_s.id_solicitacao);
-                    //$('.solicitacaoEmDetalhe').removeClass('solicitacaoEmDetalhe');
-                    //$(this).addClass('solicitacaoEmDetalhe');
-                });
-
-                $(".listaSolicitacoes").append(elementoLi);
-
-                setTimeout(function(){
-                    $(elementoLi).fadeIn('slow').removeClass('escondido');
-                }, 100*n++);
-
-            });
+            optionsElement.appendChild(e);
         }
     });
 }
@@ -475,7 +521,8 @@ function preencherSolicitacoesConcluidas() {
 function exibirSecao() {
     var hash = window.location.hash;
     var estadoAtual = $('.estadoAtual');
-    console.log("aqui com hash ", hash, usuario);
+
+    console.log(hash, usuario);
 
     switch (hash) {
         case '#/Inicio':
@@ -520,11 +567,14 @@ function exibirSecao() {
 
         case '#/NovaSolicitacao':
             $('#Principal, #Detalhe').fadeOut('slow', function () {
+                obterEquipamentos();
                 $('#NovaSolicitacao').fadeIn('slow');
             });
             break;
 
         case '#/Sair':
+            $("#ListaSolicitacoes").empty();
+            $('#Detalhe').fadeOut('slow');
             apagarCookie('uid');
             apagarCookie('tipoSistema');
             usuario = null;
@@ -604,8 +654,7 @@ $(document).ready(function () {
      *  Função de validação de CPF
      *  obtida de http://www.geradordecpf.org/funcao-javascript-validar-cpf.html em 13/09/2016
      */
-    function validaCPF(cpf)
-    {
+    function validaCPF(cpf) {
         var numeros, digitos, soma, i, resultado, digitos_iguais;
         digitos_iguais = 1;
         if (cpf.length < 11)
@@ -701,7 +750,7 @@ $(document).ready(function () {
     });
 
     /**
-     * Adiciona um gatilho para enviar via AJAX a requisição de login e processar o resultado.
+     * Adiciona um gatilho para enviar a requisição de login e processar o resultado.
      */
     $('#FormLogin').submit(function (evento) {
         evento.stopPropagation();
@@ -880,37 +929,26 @@ $(document).ready(function () {
         });
     });
 
+    /**
+     * Adiciona um gatilho para atualizar as opções de equipamentos, de acordo
+     * com os disponíveis previamente obtidos do servidor.
+     */
+    $('[name=frm_nova_solicitacao_tipo_analise]').change(function() {
+        var tipo = $(this).val();
+        var options = document.getElementById('frm_nova_solicitacao_equipamento');
+        atualizarOpcoesDeEquipamentos(tipo, options);
+    });
 
     $('#linkNovaSolicitacao').click(function () {
-        $('.ativo').removeClass('ativo').fadeOut('slow', function () {
-            var options = document.getElementById('frm_nova_solicitacao_equipamento');
-            /* Limpa os equipamentos listados */
-            $(options).empty();
-
-            /* Obtém os equipamentos disponíveis */
-
-            $.ajax({
-                url: 'acao.php',
-                type: 'get',
-                async: false,
-                data: {
-                    q: 'obterListaEquipamentos'
-                }
-            }).done(function (r) {
-
-                r.equipamentos.forEach(function (_e) {
-                    var e = document.createElement('option');
-                    e.value = _e.id_equipamento;
-                    e.innerHTML = _e.nome;
-
-                    options.appendChild(e);
-                });
+        $('#NenhumaSolicitação').fadeOut('slow', function() {
+            $('.ativo').removeClass('ativo').fadeOut('slow', function () {
+                /* Obtém os equipamentos disponíveis */
+                obterEquipamentos();
+                $('#FormNovaSolicitacao').trigger('reset');
+                $('#NovaSolicitacao').fadeIn('slow').addClass('ativo');
             });
-
-            $('#FormNovaSolicitacao').trigger('reset');
-
-            $('#NovaSolicitacao').fadeIn('slow').addClass('ativo');
         });
+
     });
 
     $('#linkListarSolicitacoesAbertas').click(function () {
@@ -926,6 +964,8 @@ $(document).ready(function () {
             preencherSolicitacoesConcluidas();
         });
     });
+
+
 
     $('#FormNovaSolicitacao').submit(function (evento) {
         evento.stopPropagation();
