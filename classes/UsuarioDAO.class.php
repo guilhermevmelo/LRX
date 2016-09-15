@@ -86,6 +86,34 @@ class UsuarioDAO {
         // TODO: Implement obterTodos() method.
     }
 
+    public static function existeDocumento($documento) : bool {
+        $conexao = new \PDO(DSN, USUARIO, SENHA);
+
+        $sql = sprintf("select * from usuarios where cpf = :documento");
+        $consulta = $conexao->prepare($sql);
+        $consulta->bindValue(':documento', $documento);
+
+        $consulta->execute();
+
+        if ($consulta->fetch() === false)
+            return false;
+        return true;
+    }
+
+    public static function existeEmail($email) : bool {
+        $conexao = new \PDO(DSN, USUARIO, SENHA);
+
+        $sql = sprintf("select * from usuarios where email = :email");
+        $consulta = $conexao->prepare($sql);
+        $consulta->bindValue(':email', $email);
+
+        $consulta->execute();
+
+        if ($consulta->fetch() === false)
+            return false;
+        return true;
+    }
+
     public static function login($email, $senha) {
         $conexao = new \PDO(DSN, USUARIO, SENHA);
         $sql = sprintf("select id_usuario, nivel_acesso from usuarios where email = :email and senha = :senha limit 1");

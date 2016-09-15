@@ -128,6 +128,10 @@ h3.cabecalho {
     border-bottom: 2px solid #dedede;
 }
 
+p {
+    margin: 10px auto;
+}
+
 a/*,
 nav ul li */{
     text-decoration: none;
@@ -449,12 +453,13 @@ input[type="reset"],
 input[type="submit"],
 .botao {
     padding: 7px;
-    border: 1px solid #666;
-    color: #666;
-    background-color: #eee;
+    border: 1px solid #4145dc;
+    color: #4145dc !important;
+    background-color: #d8d9f8;
     /*border-radius: 4px;*/
     font-size: 0.8em;
     text-transform: uppercase;
+    transition: all .5s;
 }
 
 input[type="button"]:hover,
@@ -487,7 +492,7 @@ input[type="submit"]:hover,
     /*border-radius: 5px;*/
     color: #dc1f18;
     /*border: 1px solid #dc1f18;*/
-    background-color: #ffd8dc;
+    background-color: #f9c9c7; /*#ffd8dc;*/
     margin: 25px auto;
     padding: 10px;
     box-shadow: 0 3px 5px #333;
@@ -512,6 +517,15 @@ input[type="submit"]:hover,
     display: none;
 }
 
+#NovoUsuario .bloco {
+    width: 50%;
+    margin: 0 auto;
+}
+
+#NovoUsuario .bloco:not(.passoAtual) {
+    display: none;
+}
+
 /** Estilos compartilhados **/
 .escondido { display: none; }
 
@@ -530,7 +544,52 @@ input[type="submit"]:hover,
 .amarelo { color: #feff5f; }
 .azul { color: #4145dc;}
 .verde { color: #51dc5d; }
+input[type="button"].verde:hover,
+input[type="reset"].verde:hover,
+input[type="submit"].verde:hover,
+.botao.verde:hover{
+    background-color: #d0f6d4;
+    border-color: #2ad038;
+    color: #2ad038 !important;
+}
 .vermelho { color: #dc1f18; }
+input[type="button"].vermelho:hover,
+input[type="reset"].vermelho:hover,
+input[type="submit"].vermelho:hover,
+.botao.vermelho:hover{
+    background-color: #f9c9c7;
+    border-color: #dc1f18;
+    color: #dc1f18 !important;
+}
+
+input[type="button"]:disabled,
+input[type="button"]:disabled:hover,
+input[type="reset"]:disabled,
+input[type="reset"]:disabled:hover,
+input[type="submit"]:disabled,
+input[type="submit"]:disabled:hover,
+.botao:disabled,
+.botao:disabled:hover,
+.disabled,
+.disabled:hover {
+    border: 1px solid #666 !important;
+    color: #666 !important;
+    background-color: #eee !important;
+}
+
+.error {
+    border-color: #dc1f18;
+    color: #dc1f18;
+}
+
+.valid {
+    border-color: #2ad038 !important;
+    color: #2ad038;
+}
+
+.form-error {
+    color: #dc1f18;
+}
 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
     .panalytical {

@@ -87,7 +87,7 @@ class ProfessorDAO /*extends DAO*/ {
 
     /**
      * @param int $id
-     * @return Professor
+     * @return Professor | bool
      */
     public function obter(int $id) : Professor {
         $sql = sprintf("select u.*, p.id_grupo from usuarios u, professores p where u.id_usuario = :id_usuario and p.id_professor = u.id_usuario limit 1");
@@ -116,6 +116,8 @@ class ProfessorDAO /*extends DAO*/ {
         $p->setGenero((int) $tupla['genero']);
         $p->setTelefone($tupla['telefone']);
         $p->setTitulo((int) $tupla['titulo']);
+        $p->setIes($tupla['ies']);
+        $p->setSaudacao((int) $tupla['saudacao']);
 
         return $p;
     }
@@ -205,6 +207,8 @@ class ProfessorDAO /*extends DAO*/ {
             $p->setGenero((int) $tupla['genero']);
             $p->setTelefone($tupla['telefone']);
             $p->setTitulo((int) $tupla['titulo']);
+            $p->setIes($tupla['ies']);
+            $p->setSaudacao((int) $tupla['saudacao']);
 
             array_push($professores, $p);
         }

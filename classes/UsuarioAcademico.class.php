@@ -37,6 +37,9 @@ abstract class UsuarioAcademico extends Usuario {
      */
     protected $limite;
 
+    protected $ies;
+
+
     /**
      * @return mixed
      */
@@ -107,6 +110,21 @@ abstract class UsuarioAcademico extends Usuario {
     public function setGrupo($grupo) {
         $this->grupo = $grupo;
     }         // \LRX\Grupo
+
+    /**
+     * @return mixed
+     */
+    public function getIes() {
+        return $this->ies;
+    }
+
+    /**
+     * @param mixed $ies
+     */
+    public function setIes($ies) {
+        $this->ies = $ies;
+    }
+
 
 
 }

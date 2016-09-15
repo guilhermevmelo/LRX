@@ -7,6 +7,7 @@ var usuario = null;
 var tipo_sistema = null;
 var timeoutErro = null;
 var timeoutCronometroErro = null;
+var telJaTem14 = false;
 
 window.onload = iniciarAplicacao;
 window.onhashchange = exibirSecao;
@@ -209,7 +210,7 @@ function obterDetalhesSolicitacao(id) {
 
 }
 
-// TODO fundir as duas funcoes e uma só
+// TODO fundir as duas funções em uma só
 
 function preencherSolicitacoes() {
     $(".listaSolicitacoes").empty();
@@ -584,8 +585,112 @@ function iniciarAplicacao() {
     exibirSecao();
 }
 
+function definirMascaras() {
+    $('#frm_novo_usuario_documento').mask('000.000.000-00', {reverse: true});
+    var options =  {onKeyPress: function(tel, e, field, options){
+        var masks = ['(00) 00000-0000', '(00) 0000-00009'];
+        mask = (tel.length>14) ? masks[0] : masks[1];
+        $('#frm_novo_usuario_telefone').mask(mask, options);
+    }};
+
+    $('#frm_novo_usuario_telefone').mask('(00) 0000-00009', options);
+}
+
 $(document).ready(function () {
     atualizarCampos();
+    definirMascaras();
+
+    /**
+     *  Função de validação de CPF
+     *  obtida de http://www.geradordecpf.org/funcao-javascript-validar-cpf.html em 13/09/2016
+     */
+    function validaCPF(cpf)
+    {
+        var numeros, digitos, soma, i, resultado, digitos_iguais;
+        digitos_iguais = 1;
+        if (cpf.length < 11)
+            return false;
+        for (i = 0; i < cpf.length - 1; i++)
+            if (cpf.charAt(i) != cpf.charAt(i + 1))
+            {
+                digitos_iguais = 0;
+                break;
+            }
+        if (!digitos_iguais)
+        {
+            numeros = cpf.substring(0,9);
+            digitos = cpf.substring(9);
+            soma = 0;
+            for (i = 10; i > 1; i--)
+                soma += numeros.charAt(10 - i) * i;
+            resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+            if (resultado != digitos.charAt(0))
+                return false;
+            numeros = cpf.substring(0,10);
+            soma = 0;
+            for (i = 11; i > 1; i--)
+                soma += numeros.charAt(11 - i) * i;
+            resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+            if (resultado != digitos.charAt(1))
+                return false;
+            return true;
+        }
+        else
+            return false;
+    }
+
+    /**
+     * Adiciona a opção de validar CPF ao validador.
+     * O pacote 'brazil' do validador já possui um, mas o default considera válidos
+     * números de CPF em que todos os números são iguais.
+     */
+    $.formUtils.addValidator({
+        name : '_cpf',
+        validatorFunction : function(value, $el, config, language, $form) {
+            bloco1 = value.substring(0, 3);
+            bloco2 = value.substring(4, 7);
+            bloco3 = value.substring(8, 11);
+            bloco4 = value.substring(12, 14);
+
+            cpfNums = bloco1+bloco2+bloco3+bloco4;
+            //console.log(value, cpfNums);
+
+            return validaCPF(cpfNums);
+        },
+        errorMessage : 'CPF inválido',
+        errorMessageKey: 'badCPF'
+    });
+
+    /**
+     * Adiciona gatilhos de validação dos formulários
+     */
+    $.validate({
+        modules: 'jsconf, security, html5, toggleDisabled, brazil',
+        onModulesLoaded: function () {
+            $.setupValidation({
+                lang: 'pt',
+                form: '#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3',
+                validate: {
+                    '#frm_novo_usuario_documento': {
+                        validation: '_cpf'
+                    },
+                    '#frm_novo_usuario_senha': {
+                        validation: 'length',
+                        length: 'min8',
+                        'error-msg': 'A senha deve conter no mínimo 8 dígitos'
+                    },
+                    '#frm_novo_usuario_confirma_senha': {
+                        validation: 'confirmation',
+                        confirm: 'frm_novo_usuario_senha',
+                        'error-msg': 'As senhas não conferem'
+                    },
+                    '#frm_novo_usuario_telefone': {
+                        validation: 'brphone'
+                    }
+                }
+            });
+        }
+    });
 
     /**
      * Adiciona um gatilho para dispensar a mensagem de erro ao clique.
@@ -659,6 +764,119 @@ $(document).ready(function () {
                 $('#Inicio').fadeOut('slow');
                 $('header').toggle('drop', {direction:"up"});
             }
+        });
+    });
+
+    /**
+     * Cadastro
+     */
+    $('#frmNovoUsuarioPasso1').submit(function (evento) {
+        evento.stopPropagation();
+        evento.preventDefault();
+
+        var sbmtNovoUsuarioPasso1 = $('#sbmtNovoUsuarioPasso1');
+        sbmtNovoUsuarioPasso1.attr('disabled', 'disabled');
+
+        var _documento = $('#frm_novo_usuario_documento').val();
+        var _email = $('#frm_novo_usuario_email').val();
+
+        $.ajax({
+            url: 'acao.php',
+            type: 'get',
+            data: {
+                q: 'verificarDocumento',
+                documento: _documento,
+                email: _email
+            }
+        }).done(function (r) {
+            if (r.codigo == 200) {
+                console.log(r);
+                if (r.existeDocumento || r.existeEmail) {
+                    apresentarErro({mensagem:"Esse "+ (r.existeDocumento?'documento':'email') + " já está cadastrado. Caso não lembre sua senha, clique <a href=\"#/RecuperarConta\">aqui</a>."});
+                    sbmtNovoUsuarioPasso1.removeAttr('disabled');
+                } else{
+                    $("#NovoUsuarioPasso1").fadeOut('slow', function () {
+                        $('.passoAtual').removeClass('passoAtual');
+                        $("#NovoUsuarioPasso2").fadeIn("slow").addClass('passoAtual');
+                    })
+                }
+            }
+        });
+    });
+
+    $('#frmNovoUsuarioPasso2').submit(function (evento) {
+        evento.stopPropagation();
+        evento.preventDefault();
+
+        $("#NovoUsuarioPasso2").fadeOut('slow', function () {
+            $('.passoAtual').removeClass('passoAtual');
+            $("#NovoUsuarioPasso3").fadeIn("slow").addClass('passoAtual');
+        });
+    });
+
+    $('#frmNovoUsuarioPasso3').submit(function (evento) {
+        evento.stopPropagation();
+        evento.preventDefault();
+
+        var sbmtNovoUsuarioFinalizar = $('#btnNovoUsuarioFinalizar');
+        sbmtNovoUsuarioFinalizar.attr('disabled', 'disabled');
+
+        $("#NovoUsuarioPasso3").fadeOut('slow', function () {
+            $('.passoAtual').removeClass('passoAtual');
+            $("#NovoUsuarioPassoFinal").fadeIn("slow").addClass('passoAtual');
+        });
+
+        var shaObj = new jsSHA("SHA-1", "TEXT");
+        shaObj.update($('#frm_novo_usuario_senha').val());
+        var _senha = shaObj.getHash("HEX");
+        var _documento = $('#frm_novo_usuario_documento').val();
+        var _email = $('#frm_novo_usuario_email').val();
+        var _nome = $('#frm_novo_usuario_nome').val();
+        var _genero = $('#frm_novo_usuario_genero').val();
+        var _email_alternativo = $('#frm_novo_usuario_email_alternativo').val();
+        var _cidade = $('#frm_novo_usuario_cidade').val();
+        var _estado = $('#frm_novo_usuario_estado').val();
+        var _telefone = $('#frm_novo_usuario_telefone').val();
+        var _ies = $('#frm_novo_usuario_ies').val();
+        var _departamento = $('#frm_novo_usuario_departamento').val();
+        var _laboratorio = $('#frm_novo_usuario_laboratorio').val();
+        var _area_de_pesquisa = $('#frm_novo_usuario_area_de_pesquisa').val();
+        var _titulo = $('#frm_novo_usuario_titulo').val();
+
+        $.ajax({
+            url: 'acao.php',
+            type: 'post',
+            data: {
+                q: 'cadastrarUsuario',
+                documento: _documento,
+                email: _email,
+                nome : _nome,
+                senha: _senha,
+                genero:_genero,
+                email_alternativo: _email_alternativo,
+                cidade:_cidade,
+                estado: _estado,
+                telefone:_telefone,
+                ies:_ies,
+                departamento:_departamento,
+                laboratorio:_laboratorio,
+                area_de_pesquisa:_area_de_pesquisa,
+                titulo:_titulo
+            }
+        }).done(function (r) {
+            if (r.codigo == 200) {
+                console.log(r);
+                $('#NovoUsuarioFinalh1').html('Cadastro concluído');
+                $('#NovoUsuarioFinalP').html('Sua solicitação de cadastro foi enviada com sucesso. Verifique seu email para informações adicionais.');
+                $('#NovoUsuarioPassoFinal').append('<a href="#/Inicio" title="Voltar à tela inicial" class="botao vermelho">Voltar à tela inicial</a>');
+            } else {
+                apresentarErro(r.mensagem);
+                $('#NovoUsuarioFinalh1').html('Cadastro não concluído');
+                $('#NovoUsuarioFinalP').html('Ocorreu um erro com sua solicitação de cadastro. Favor tentar novamente em alguns minutos. Caso o problema persista, entre em contato com os técnicos do laboratório no email lrxufc@gmail.com');
+                $('#NovoUsuarioPassoFinal').append('<a href="#/Inicio" title="Voltar à tela inicial" class="botao vermelho">Voltar à tela inicial</a>');
+            }
+            $('.passoAtual').removeClass('passoAtual');
+            $("#NovoUsuarioPasso1").addClass('passoAtual');
         });
     });
 
