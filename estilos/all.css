@@ -587,7 +587,7 @@ input[type="submit"]:disabled:hover,
     color: #2ad038;
 }
 
-.helpe-block {
+.form-error {
     color: #dc1f18;
 }
 
