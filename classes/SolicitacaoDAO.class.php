@@ -108,16 +108,14 @@ class SolicitacaoDAO {
             $consulta->bindValue(':id_fenda', $solicitacao->getFenda(), \PDO::PARAM_INT);
             //$consulta->bindValue(':id_resultado', $solicitacao->getResultado()->getId(), \PDO::PARAM_INT);
             $consulta->bindValue(':data_solicitacao', $solicitacao->getDataSolicitacao()->format("Y-m-d H:i:s"));
-            $consulta->bindValue(':data_conclusao', $solicitacao->getDataConclusao() != null ?
-                $solicitacao->getDataConclusao()->format("Y-m-d H:i:s") : null);
+            $consulta->bindValue(':data_conclusao', $solicitacao->getDataConclusao() != null ? $solicitacao->getDataConclusao()->format("Y-m-d H:i:s") : null);
             $consulta->bindValue(':_status', $solicitacao->getStatus());
             $consulta->bindValue(':configuracao', json_encode($solicitacao->getConfiguracao()));
             $consulta->bindValue(':identificacao', $solicitacao->getIdentificacaoDaAmostra());
             $consulta->bindValue(':composicao',$solicitacao->getComposicao());
             $consulta->bindValue(':tipo', $solicitacao->getTipo(), \PDO::PARAM_INT);
             $consulta->bindValue(':tipo_outro', $solicitacao->getTipoOutro());
-            $consulta->bindValue(':data_recebimento', $solicitacao->getDataRecebimento() != null ?
-                $solicitacao->getDataRecebimento()->format("Y-m-d H:i:s") : null);
+            $consulta->bindValue(':data_recebimento', $solicitacao->getDataRecebimento() != null ? $solicitacao->getDataRecebimento()->format("Y-m-d H:i:s") : null);
             $consulta->bindValue(':inflamavel', $solicitacao->getInflamavel(), \PDO::PARAM_BOOL);
             $consulta->bindValue(':radioativo', $solicitacao->getRadioativo(), \PDO::PARAM_BOOL);
             $consulta->bindValue(':toxico', $solicitacao->getToxico(), \PDO::PARAM_BOOL);

@@ -177,7 +177,7 @@ if (isset($q) && $q == "obterListaSolicitacoesConcluidas") {
  */
 if (isset($q) && $q == "obterDetalhesSolicitacao") {
     $id = addslashes($_GET["id_solicitacao"]);
-    $tipoSistema = $_GET['tipoSistema'];
+    $tipoSistema = intval($_GET['tipoSistema']);
 
     header('Content-Type: application/json');
 
@@ -217,19 +217,42 @@ if (isset($q) && $q == "novaSolicitacaoAcademica") {
     $eDAO = new EquipamentoDAO();
     $equipamento = $eDAO->obter(intval($_POST['id_equipamento']));
 
-    //TODO separar caso seja aluno
-    $uDAO = new ProfessorDAO();
-    $u = $uDAO->obter(intval($_POST['id_usuario']));
+    $u = null;
+    switch (intval($_POST['nivel_acesso'])) {
+        case 1:
+            $uDAO = new AlunoDAO();
+            $u = $uDAO->obter(intval($_POST['id_usuario']));
+            break;
+
+        case 2:
+            $uDAO = new ProfessorDAO();
+            $u = $uDAO->obter(intval($_POST['id_usuario']));
+            break;
+
+        default:
+            $uDAO = new ProfessorDAO();
+            $u = $uDAO->obter(intval($_POST['id_usuario']));
+    }
 
     $s = new SolicitacaoAcademica($u, $equipamento);
     $fDAO = new FendaDAO();
+    // Adicionando uma fenda padrão. Deverá ser modifiada pelo operador.
     $s->setFenda($fDAO->obter(2));
-
+    $s->setTipo(intval($_POST['tipo_amostra']));
     $s->setComposicao(addslashes($_POST['composicao']));
-    $config = array(
-        '2theta_inicial' => intval($_POST['dois_theta_inicial']),
-        '2theta_final' => intval($_POST['dois_theta_final']),
-    );
+
+    $config = ($_POST['tipo_analise'] == 'drx') ?
+        array(
+            'tecnica' => 'drx',
+            'dois_theta_inicial' => intval($_POST['dois_theta_inicial']),
+            'dois_theta_final' => intval($_POST['dois_theta_final']),
+            'delta_dois_theta' => intval($_POST['delta_dois_theta']),
+        ) :
+        array(
+            'tecnica' => 'frx',
+            'resultado' => $_POST['tipo_resultado'],
+            'medida' => $_POST['tipo_medida']
+        );
 
     $s->setConfiguracao($config);
 

@@ -610,7 +610,7 @@ function iniciarAplicacao() {
             if (r.codigo !== 200) {
                 apresentarErro(r);
             } else {
-                usuario = [];
+                usuario = {};
                 usuario.id = r.id_usuario;
                 usuario.documento = r.documento;
                 usuario.nome = r.nome;
@@ -1016,15 +1016,27 @@ $(document).ready(function () {
 
         var _tipo_analise = $('#frm_nova_solicitacao_tipo_analise_drx').is(':checked') ? 'drx' : 'frx';
         var _id_equipamento = $('#frm_nova_solicitacao_equipamento').val();
-        var _dois_theta_inicial = $('#frm_nova_solicitacao_2theta_inicial').val();
-        var _dois_theta_final = $('#frm_nova_solicitacao_2theta_final').val();
+        var _observacoes = $('#frm_nova_solicitacao_observacoes').val();
+
+        var _tipo_amostra = $('#frm_nova_solicitacao_tipo_amostra').val();
         var _composicao = $('#frm_nova_solicitacao_composicao').val();
+
+        // Segurança
         var _inflamavel = $('#frm_nova_solicitacao_seguranca_inflamavel').is('checked');
         var _corrosivo = $('#frm_nova_solicitacao_seguranca_corrosivo').is('checked');
         var _toxico = $('#frm_nova_solicitacao_seguranca_toxico').is('checked');
         var _higroscopico = $('#frm_nova_solicitacao_seguranca_higroscopico').is('checked');
         var _radioativo = $('#frm_nova_solicitacao_seguranca_radioativo').is('checked');
-        var _observacoes = $('#frm_nova_solicitacao_observacoes').val();
+
+        // Apenas FRX
+        var _tipo_medida = $('#frm_nova_solicitacao_tipo_medida_semi_quantitativa').is(':checked') ? 'semi-quantitativa' : 'quantitativa';
+        var _tipo_resultado = $('#frm_nova_solicitacao_tipo_resultados_elementos').is(':checked') ? 'elementos' : 'oxidos';
+
+        // Apenas DRX
+        var _dois_theta_inicial = $('#frm_nova_solicitacao_2theta_inicial').val();
+        var _dois_theta_final = $('#frm_nova_solicitacao_2theta_final').val();
+        var _delta_dois_theta = $('#frm_nova_solicitacao_delta_2theta').val();
+
 
         $.ajax({
             url: 'acao.php',
@@ -1037,6 +1049,10 @@ $(document).ready(function () {
                 id_equipamento: _id_equipamento,
                 dois_theta_inicial: _dois_theta_inicial,
                 dois_theta_final: _dois_theta_final,
+                delta_dois_theta: _delta_dois_theta,
+                tipo_medida: _tipo_medida,
+                tipo_resultado: _tipo_resultado,
+                tipo_amostra: _tipo_amostra,
                 composicao: _composicao,
                 inflamavel: _inflamavel,
                 corrosivo: _corrosivo,
@@ -1056,7 +1072,6 @@ $(document).ready(function () {
                 });
             }
         });
-
 
     });
 
