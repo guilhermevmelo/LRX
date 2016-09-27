@@ -15,7 +15,7 @@ session_start();
 /** @var  $q string A operação a ser executada. Será o conteúdo de uma reqisição GET ou POST; NULL caso não haja
  * requisição */
 //$q = isset($_GET["q"])? $_GET["q"] : (isset($_POST["q"]) ? $_POST["q"] : NULL);
-$q = $_GET["q"] ?? $_POST["q"] ?? NULL;
+$q = $_GET["q"] ?? $_POST["q"] ?? null;
 
 /**
  *
@@ -333,6 +333,7 @@ if (isset($q) && $q == "cadastrarUsuario") {
     $p->setCidade($cidade);
     $p->setEstado($estado);
     $p->setConfirmado(false);
+    $p->setEmailConfirmado(false);
     $p->setGenero($genero);
     $p->setDepartamento($departamento);
     $p->setSenha($senha);

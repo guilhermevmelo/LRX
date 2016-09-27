@@ -194,7 +194,7 @@
                         <h4>Tipo de análise e equipamento</h4>
 
                         <fieldset>
-                            <label>Escolha o tipo de análise</label>
+                            <label>Selecione o tipo de análise</label>
                             <input type="radio" id="frm_nova_solicitacao_tipo_analise_drx"
                                    name="frm_nova_solicitacao_tipo_analise" value="DRX">
                             <label for="frm_nova_solicitacao_tipo_analise_drx">DRX</label>
@@ -203,315 +203,351 @@
                             <label for="frm_nova_solicitacao_tipo_analise_frx">FRX</label>
                         </fieldset>
 
-                        <fieldset>
+                        <fieldset id="fld_nova_solicitacao_equipamento" class="escondido">
                             <label for="frm_nova_solicitacao_equipamento">Escolha o equipamento</label>
                             <select name="frm_nova_solicitacao_equipamento" id="frm_nova_solicitacao_equipamento"></select>
                         </fieldset>
 
-                        <div id="fld_nova_solicitacao_config_drx_xpert">
-                            <h4>Configurações da análise</h4>
-                            <fieldset>
-                                <label for="frm_nova_solicitacao_2theta_inicial" style="display: inline;">2&theta; inicial
-                                </label>
-                                <select id="frm_nova_solicitacao_2theta_inicial" name="frm_nova_solicitacao_2theta_inicial">
-                                    <option value="3">3&deg;</option>
-                                    <option value="4">4&deg;</option>
-                                    <option value="5">5&deg;</option>
-                                    <option value="6">6&deg;</option>
-                                    <option value="7">7&deg;</option>
-                                    <option value="8">8&deg;</option>
-                                    <option value="9">9&deg;</option>
-                                    <option value="10" selected>10&deg;</option>
-                                    <option value="11">11&deg;</option>
-                                    <option value="12">12&deg;</option>
-                                    <option value="13">13&deg;</option>
-                                    <option value="14">14&deg;</option>
-                                    <option value="15">15&deg;</option>
-                                    <option value="16">16&deg;</option>
-                                    <option value="17">17&deg;</option>
-                                    <option value="18">18&deg;</option>
-                                    <option value="19">19&deg;</option>
-                                    <option value="20">20&deg;</option>
-                                    <option value="21">21&deg;</option>
-                                    <option value="22">22&deg;</option>
-                                    <option value="23">23&deg;</option>
-                                    <option value="24">24&deg;</option>
-                                    <option value="25">25&deg;</option>
-                                    <option value="26">26&deg;</option>
-                                    <option value="27">27&deg;</option>
-                                    <option value="28">28&deg;</option>
-                                    <option value="29">29&deg;</option>
-                                    <option value="30">30&deg;</option>
-                                    <option value="31">31&deg;</option>
-                                    <option value="32">32&deg;</option>
-                                    <option value="33">33&deg;</option>
-                                    <option value="34">34&deg;</option>
-                                    <option value="35">35&deg;</option>
-                                    <option value="36">36&deg;</option>
-                                    <option value="37">37&deg;</option>
-                                    <option value="38">38&deg;</option>
-                                    <option value="39">39&deg;</option>
-                                    <option value="40">40&deg;</option>
-                                    <option value="41">41&deg;</option>
-                                    <option value="42">42&deg;</option>
-                                    <option value="43">43&deg;</option>
-                                    <option value="44">44&deg;</option>
-                                    <option value="45">45&deg;</option>
-                                    <option value="46">46&deg;</option>
-                                    <option value="47">47&deg;</option>
-                                    <option value="48">48&deg;</option>
-                                    <option value="49">49&deg;</option>
-                                    <option value="50">50&deg;</option>
-                                    <option value="51">51&deg;</option>
-                                    <option value="52">52&deg;</option>
-                                    <option value="53">53&deg;</option>
-                                    <option value="54">54&deg;</option>
-                                    <option value="55">55&deg;</option>
-                                    <option value="56">56&deg;</option>
-                                    <option value="57">57&deg;</option>
-                                    <option value="58">58&deg;</option>
-                                    <option value="59">59&deg;</option>
-                                    <option value="60">60&deg;</option>
-                                    <option value="61">61&deg;</option>
-                                    <option value="62">62&deg;</option>
-                                    <option value="63">63&deg;</option>
-                                    <option value="64">64&deg;</option>
-                                    <option value="65">65&deg;</option>
-                                    <option value="66">66&deg;</option>
-                                    <option value="67">67&deg;</option>
-                                    <option value="68">68&deg;</option>
-                                    <option value="69">69&deg;</option>
-                                    <option value="70">70&deg;</option>
-                                    <option value="71">71&deg;</option>
-                                    <option value="72">72&deg;</option>
-                                    <option value="73">73&deg;</option>
-                                    <option value="74">74&deg;</option>
-                                    <option value="75">75&deg;</option>
-                                    <option value="76">76&deg;</option>
-                                    <option value="77">77&deg;</option>
-                                    <option value="78">78&deg;</option>
-                                    <option value="79">79&deg;</option>
-                                    <option value="80">80&deg;</option>
-                                    <option value="81">81&deg;</option>
-                                    <option value="82">82&deg;</option>
-                                    <option value="83">83&deg;</option>
-                                    <option value="84">84&deg;</option>
-                                    <option value="85">85&deg;</option>
-                                    <option value="86">86&deg;</option>
-                                    <option value="87">87&deg;</option>
-                                    <option value="88">88&deg;</option>
-                                    <option value="89">89&deg;</option>
-                                    <option value="90">90&deg;</option>
-                                    <option value="91">91&deg;</option>
-                                    <option value="92">92&deg;</option>
-                                    <option value="93">93&deg;</option>
-                                    <option value="94">94&deg;</option>
-                                    <option value="95">95&deg;</option>
-                                    <option value="96">96&deg;</option>
-                                    <option value="97">97&deg;</option>
-                                    <option value="98">98&deg;</option>
-                                    <option value="99">99&deg;</option>
-                                    <option value="100">100&deg;</option>
-                                    <option value="101">101&deg;</option>
-                                    <option value="102">102&deg;</option>
-                                    <option value="103">103&deg;</option>
-                                    <option value="104">104&deg;</option>
-                                    <option value="105">105&deg;</option>
-                                    <option value="106">106&deg;</option>
-                                    <option value="107">107&deg;</option>
-                                    <option value="108">108&deg;</option>
-                                    <option value="109">109&deg;</option>
-                                    <option value="110">110&deg;</option>
-                                    <option value="111">111&deg;</option>
-                                    <option value="112">112&deg;</option>
-                                    <option value="113">113&deg;</option>
-                                    <option value="114">114&deg;</option>
-                                    <option value="115">115&deg;</option>
-                                    <option value="116">116&deg;</option>
-                                    <option value="117">117&deg;</option>
-                                    <option value="118">118&deg;</option>
-                                    <option value="119">119&deg;</option>
-                                </select>
+                        <div>
+
+
+                            <div id="div_nova_solicitacao_comum" class="escondido">
+                                <h4>Informações da Amostra</h4>
+
+                                <fieldset>
+                                    <label for="frm_nova_solicitacao_tipo_amostra">Escolha o tipo da amostra</label>
+                                    <select id="frm_nova_solicitacao_tipo_amostra" name="frm_nova_solicitacao_tipo_amostra">
+                                        <option value="1" selected>Pó</option>
+                                        <option value="2">Filme</option>
+                                        <option value="3">Pastilha</option>
+                                        <option value="4">Eletrodo</option>
+                                        <!--<option value="5">Outro</option>-->
+                                    </select>
+                                </fieldset>
+
+                                <fieldset>
+                                    <label for="frm_nova_solicitacao_composicao">Composição</label>
+                                    <input type="text" name="frm_nova_solicitacao_composicao"
+                                           id="frm_nova_solicitacao_composicao" required>
+                                </fieldset>
+
+                                <fieldset>
+                                    <label>Segurança</label>
+                                    <input type="checkbox" name="frm_nova_solicitacao_seguranca[]"
+                                           id="frm_nova_solicitacao_seguranca_inflamavel" value="inflamavel">
+                                    <label for="frm_nova_solicitacao_seguranca_inflamavel">Inflamável</label>
+
+                                    <input type="checkbox" name="frm_nova_solicitacao_seguranca[]"
+                                           id="frm_nova_solicitacao_seguranca_toxico" value="toxico">
+                                    <label for="frm_nova_solicitacao_seguranca_toxico">Tóxico</label>
+
+                                    <input type="checkbox" name="frm_nova_solicitacao_seguranca[]"
+                                           id="frm_nova_solicitacao_seguranca_higroscopico" value="higroscopico">
+                                    <label for="frm_nova_solicitacao_seguranca_higroscopico">Higroscópico</label>
+
+                                    <input type="checkbox" name="frm_nova_solicitacao_seguranca[]"
+                                           id="frm_nova_solicitacao_seguranca_corrosivo" value="corrosivo">
+                                    <label for="frm_nova_solicitacao_seguranca_corrosivo">Corrosivo</label>
+
+                                    <input type="checkbox" name="frm_nova_solicitacao_seguranca[]"
+                                           id="frm_nova_solicitacao_seguranca_radioativo" value="radioativo">
+                                    <label for="frm_nova_solicitacao_seguranca_radioativo">Radioativo</label>
+                                </fieldset>
+
+                                <fieldset>
+                                    <label for="frm_nova_solicitacao_observacoes">Observações</label>
+                                    <textarea name="frm_nova_solicitacao_observacoes"
+                                              id="frm_nova_solicitacao_observacoes"></textarea>
+                                </fieldset>
+                            </div>
+
+                            <div id="div_nova_solicitacao_config_drx" class="escondido">
+                                <h4>Configurações da análise</h4>
+                                <fieldset class="inline-block">
+                                    <label for="frm_nova_solicitacao_2theta_inicial" class="inline">2&theta; inicial
+                                    </label>
+                                    <select id="frm_nova_solicitacao_2theta_inicial" name="frm_nova_solicitacao_2theta_inicial">
+                                        <option value="3">3&deg;</option>
+                                        <option value="4">4&deg;</option>
+                                        <option value="5">5&deg;</option>
+                                        <option value="6">6&deg;</option>
+                                        <option value="7">7&deg;</option>
+                                        <option value="8">8&deg;</option>
+                                        <option value="9">9&deg;</option>
+                                        <option value="10" selected>10&deg;</option>
+                                        <option value="11">11&deg;</option>
+                                        <option value="12">12&deg;</option>
+                                        <option value="13">13&deg;</option>
+                                        <option value="14">14&deg;</option>
+                                        <option value="15">15&deg;</option>
+                                        <option value="16">16&deg;</option>
+                                        <option value="17">17&deg;</option>
+                                        <option value="18">18&deg;</option>
+                                        <option value="19">19&deg;</option>
+                                        <option value="20">20&deg;</option>
+                                        <option value="21">21&deg;</option>
+                                        <option value="22">22&deg;</option>
+                                        <option value="23">23&deg;</option>
+                                        <option value="24">24&deg;</option>
+                                        <option value="25">25&deg;</option>
+                                        <option value="26">26&deg;</option>
+                                        <option value="27">27&deg;</option>
+                                        <option value="28">28&deg;</option>
+                                        <option value="29">29&deg;</option>
+                                        <option value="30">30&deg;</option>
+                                        <option value="31">31&deg;</option>
+                                        <option value="32">32&deg;</option>
+                                        <option value="33">33&deg;</option>
+                                        <option value="34">34&deg;</option>
+                                        <option value="35">35&deg;</option>
+                                        <option value="36">36&deg;</option>
+                                        <option value="37">37&deg;</option>
+                                        <option value="38">38&deg;</option>
+                                        <option value="39">39&deg;</option>
+                                        <option value="40">40&deg;</option>
+                                        <option value="41">41&deg;</option>
+                                        <option value="42">42&deg;</option>
+                                        <option value="43">43&deg;</option>
+                                        <option value="44">44&deg;</option>
+                                        <option value="45">45&deg;</option>
+                                        <option value="46">46&deg;</option>
+                                        <option value="47">47&deg;</option>
+                                        <option value="48">48&deg;</option>
+                                        <option value="49">49&deg;</option>
+                                        <option value="50">50&deg;</option>
+                                        <option value="51">51&deg;</option>
+                                        <option value="52">52&deg;</option>
+                                        <option value="53">53&deg;</option>
+                                        <option value="54">54&deg;</option>
+                                        <option value="55">55&deg;</option>
+                                        <option value="56">56&deg;</option>
+                                        <option value="57">57&deg;</option>
+                                        <option value="58">58&deg;</option>
+                                        <option value="59">59&deg;</option>
+                                        <option value="60">60&deg;</option>
+                                        <option value="61">61&deg;</option>
+                                        <option value="62">62&deg;</option>
+                                        <option value="63">63&deg;</option>
+                                        <option value="64">64&deg;</option>
+                                        <option value="65">65&deg;</option>
+                                        <option value="66">66&deg;</option>
+                                        <option value="67">67&deg;</option>
+                                        <option value="68">68&deg;</option>
+                                        <option value="69">69&deg;</option>
+                                        <option value="70">70&deg;</option>
+                                        <option value="71">71&deg;</option>
+                                        <option value="72">72&deg;</option>
+                                        <option value="73">73&deg;</option>
+                                        <option value="74">74&deg;</option>
+                                        <option value="75">75&deg;</option>
+                                        <option value="76">76&deg;</option>
+                                        <option value="77">77&deg;</option>
+                                        <option value="78">78&deg;</option>
+                                        <option value="79">79&deg;</option>
+                                        <option value="80">80&deg;</option>
+                                        <option value="81">81&deg;</option>
+                                        <option value="82">82&deg;</option>
+                                        <option value="83">83&deg;</option>
+                                        <option value="84">84&deg;</option>
+                                        <option value="85">85&deg;</option>
+                                        <option value="86">86&deg;</option>
+                                        <option value="87">87&deg;</option>
+                                        <option value="88">88&deg;</option>
+                                        <option value="89">89&deg;</option>
+                                        <option value="90">90&deg;</option>
+                                        <option value="91">91&deg;</option>
+                                        <option value="92">92&deg;</option>
+                                        <option value="93">93&deg;</option>
+                                        <option value="94">94&deg;</option>
+                                        <option value="95">95&deg;</option>
+                                        <option value="96">96&deg;</option>
+                                        <option value="97">97&deg;</option>
+                                        <option value="98">98&deg;</option>
+                                        <option value="99">99&deg;</option>
+                                        <option value="100">100&deg;</option>
+                                        <option value="101">101&deg;</option>
+                                        <option value="102">102&deg;</option>
+                                        <option value="103">103&deg;</option>
+                                        <option value="104">104&deg;</option>
+                                        <option value="105">105&deg;</option>
+                                        <option value="106">106&deg;</option>
+                                        <option value="107">107&deg;</option>
+                                        <option value="108">108&deg;</option>
+                                        <option value="109">109&deg;</option>
+                                        <option value="110">110&deg;</option>
+                                        <option value="111">111&deg;</option>
+                                        <option value="112">112&deg;</option>
+                                        <option value="113">113&deg;</option>
+                                        <option value="114">114&deg;</option>
+                                        <option value="115">115&deg;</option>
+                                        <option value="116">116&deg;</option>
+                                        <option value="117">117&deg;</option>
+                                        <option value="118">118&deg;</option>
+                                        <option value="119">119&deg;</option>
+                                    </select>
+                                </fieldset>
+
+                                <fieldset class="inline-block">
+                                    <label for="frm_nova_solicitacao_2theta_final" class="inline">2&theta; final
+                                    </label>
+                                    <select id="frm_nova_solicitacao_2theta_final" name="frm_nova_solicitacao_2theta_final">
+                                        <option value="4">4&deg;</option>
+                                        <option value="5">5&deg;</option>
+                                        <option value="6">6&deg;</option>
+                                        <option value="7">7&deg;</option>
+                                        <option value="8">8&deg;</option>
+                                        <option value="9">9&deg;</option>
+                                        <option value="10">10&deg;</option>
+                                        <option value="11">11&deg;</option>
+                                        <option value="12">12&deg;</option>
+                                        <option value="13">13&deg;</option>
+                                        <option value="14">14&deg;</option>
+                                        <option value="15">15&deg;</option>
+                                        <option value="16">16&deg;</option>
+                                        <option value="17">17&deg;</option>
+                                        <option value="18">18&deg;</option>
+                                        <option value="19">19&deg;</option>
+                                        <option value="20">20&deg;</option>
+                                        <option value="21">21&deg;</option>
+                                        <option value="22">22&deg;</option>
+                                        <option value="23">23&deg;</option>
+                                        <option value="24">24&deg;</option>
+                                        <option value="25">25&deg;</option>
+                                        <option value="26">26&deg;</option>
+                                        <option value="27">27&deg;</option>
+                                        <option value="28">28&deg;</option>
+                                        <option value="29">29&deg;</option>
+                                        <option value="30">30&deg;</option>
+                                        <option value="31">31&deg;</option>
+                                        <option value="32">32&deg;</option>
+                                        <option value="33">33&deg;</option>
+                                        <option value="34">34&deg;</option>
+                                        <option value="35">35&deg;</option>
+                                        <option value="36">36&deg;</option>
+                                        <option value="37">37&deg;</option>
+                                        <option value="38">38&deg;</option>
+                                        <option value="39">39&deg;</option>
+                                        <option value="40">40&deg;</option>
+                                        <option value="41">41&deg;</option>
+                                        <option value="42">42&deg;</option>
+                                        <option value="43">43&deg;</option>
+                                        <option value="44">44&deg;</option>
+                                        <option value="45">45&deg;</option>
+                                        <option value="46">46&deg;</option>
+                                        <option value="47">47&deg;</option>
+                                        <option value="48">48&deg;</option>
+                                        <option value="49">49&deg;</option>
+                                        <option value="50">50&deg;</option>
+                                        <option value="51">51&deg;</option>
+                                        <option value="52">52&deg;</option>
+                                        <option value="53">53&deg;</option>
+                                        <option value="54">54&deg;</option>
+                                        <option value="55">55&deg;</option>
+                                        <option value="56">56&deg;</option>
+                                        <option value="57">57&deg;</option>
+                                        <option value="58">58&deg;</option>
+                                        <option value="59">59&deg;</option>
+                                        <option value="60">60&deg;</option>
+                                        <option value="61">61&deg;</option>
+                                        <option value="62">62&deg;</option>
+                                        <option value="63">63&deg;</option>
+                                        <option value="64">64&deg;</option>
+                                        <option value="65">65&deg;</option>
+                                        <option value="66">66&deg;</option>
+                                        <option value="67">67&deg;</option>
+                                        <option value="68">68&deg;</option>
+                                        <option value="69">69&deg;</option>
+                                        <option value="70">70&deg;</option>
+                                        <option value="71">71&deg;</option>
+                                        <option value="72">72&deg;</option>
+                                        <option value="73">73&deg;</option>
+                                        <option value="74">74&deg;</option>
+                                        <option value="75">75&deg;</option>
+                                        <option value="76">76&deg;</option>
+                                        <option value="77">77&deg;</option>
+                                        <option value="78">78&deg;</option>
+                                        <option value="79">79&deg;</option>
+                                        <option value="80">80&deg;</option>
+                                        <option value="81">81&deg;</option>
+                                        <option value="82">82&deg;</option>
+                                        <option value="83">83&deg;</option>
+                                        <option value="84">84&deg;</option>
+                                        <option value="85">85&deg;</option>
+                                        <option value="86">86&deg;</option>
+                                        <option value="87">87&deg;</option>
+                                        <option value="88">88&deg;</option>
+                                        <option value="89">89&deg;</option>
+                                        <option value="90">90&deg;</option>
+                                        <option value="91">91&deg;</option>
+                                        <option value="92">92&deg;</option>
+                                        <option value="93">93&deg;</option>
+                                        <option value="94">94&deg;</option>
+                                        <option value="95">95&deg;</option>
+                                        <option value="96">96&deg;</option>
+                                        <option value="97">97&deg;</option>
+                                        <option value="98">98&deg;</option>
+                                        <option value="99">99&deg;</option>
+                                        <option value="100" selected>100&deg;</option>
+                                        <option value="101">101&deg;</option>
+                                        <option value="102">102&deg;</option>
+                                        <option value="103">103&deg;</option>
+                                        <option value="104">104&deg;</option>
+                                        <option value="105">105&deg;</option>
+                                        <option value="106">106&deg;</option>
+                                        <option value="107">107&deg;</option>
+                                        <option value="108">108&deg;</option>
+                                        <option value="109">109&deg;</option>
+                                        <option value="110">110&deg;</option>
+                                        <option value="111">111&deg;</option>
+                                        <option value="112">112&deg;</option>
+                                        <option value="113">113&deg;</option>
+                                        <option value="114">114&deg;</option>
+                                        <option value="115">115&deg;</option>
+                                        <option value="116">116&deg;</option>
+                                        <option value="117">117&deg;</option>
+                                        <option value="118">118&deg;</option>
+                                        <option value="119">119&deg;</option>
+                                        <option value="120">120&deg;</option>
+
+                                    </select>
+                                </fieldset>
+
+                                <fieldset class="inline-block">
+                                    <label for="frm_nova_solicitacao_delta_2theta" class="inline">&Delta;&theta;
+                                    </label>
+                                    <input type="number" step="0.001" id="frm_nova_solicitacao_delta_2theta" name="frm_nova_solicitacao_delta_2theta" value="0.013" disabled>
+                                </fieldset>
+
+                            </div>
+
+                            <div id="div_nova_solicitacao_config_frx" class="escondido">
+                                <fieldset>
+                                    <label>Selecione o tipo de medida</label>
+                                    <input type="radio" id="frm_nova_solicitacao_tipo_medida_semi_quantitativa"
+                                           name="frm_nova_solicitacao_tipo_medida" value="semi-quantitativa" checked>
+                                    <label for="frm_nova_solicitacao_tipo_medida_semi_quantitativa">Semi-Quantitativa</label>
+                                    <input type="radio" id="frm_nova_solicitacao_tipo_medida_quantitativa"
+                                           name="frm_nova_solicitacao_tipo_medida" value="quantitativa">
+                                    <label for="frm_nova_solicitacao_tipo_medida_quantitativa">Quantitativa</label>
+                                </fieldset>
+
+                                <fieldset>
+                                    <label>Selecione a forma dos resultados</label>
+                                    <input type="radio" id="frm_nova_solicitacao_tipo_resultados_elementos"
+                                           name="frm_nova_solicitacao_tipo_resultados" value="elementos" checked>
+                                    <label for="frm_nova_solicitacao_tipo_resultados_elementos">Elementos</label>
+                                    <input type="radio" id="frm_nova_solicitacao_tipo_resultados_oxidos"
+                                           name="frm_nova_solicitacao_tipo_resultados" value="oxidos">
+                                    <label for="frm_nova_solicitacao_tipo_resultados_oxidos">Óxidos</label>
+                                </fieldset>
+                            </div>
+
+                            <fieldset id="fld_frm_nova_solicitacao_submit">
+                                <input type="submit" name="frm_nova_solicitacao_submit" id="frm_nova_solicitacao_submit"
+                                       value="Solicitar">
                             </fieldset>
 
-                            <fieldset>
-                                <label for="frm_nova_solicitacao_2theta_final" style="display: inline;">2&theta; final
-                                </label>
-                                <select id="frm_nova_solicitacao_2theta_final" name="frm_nova_solicitacao_2theta_final">
-                                    <option value="4">4&deg;</option>
-                                    <option value="5">5&deg;</option>
-                                    <option value="6">6&deg;</option>
-                                    <option value="7">7&deg;</option>
-                                    <option value="8">8&deg;</option>
-                                    <option value="9">9&deg;</option>
-                                    <option value="10">10&deg;</option>
-                                    <option value="11">11&deg;</option>
-                                    <option value="12">12&deg;</option>
-                                    <option value="13">13&deg;</option>
-                                    <option value="14">14&deg;</option>
-                                    <option value="15">15&deg;</option>
-                                    <option value="16">16&deg;</option>
-                                    <option value="17">17&deg;</option>
-                                    <option value="18">18&deg;</option>
-                                    <option value="19">19&deg;</option>
-                                    <option value="20">20&deg;</option>
-                                    <option value="21">21&deg;</option>
-                                    <option value="22">22&deg;</option>
-                                    <option value="23">23&deg;</option>
-                                    <option value="24">24&deg;</option>
-                                    <option value="25">25&deg;</option>
-                                    <option value="26">26&deg;</option>
-                                    <option value="27">27&deg;</option>
-                                    <option value="28">28&deg;</option>
-                                    <option value="29">29&deg;</option>
-                                    <option value="30">30&deg;</option>
-                                    <option value="31">31&deg;</option>
-                                    <option value="32">32&deg;</option>
-                                    <option value="33">33&deg;</option>
-                                    <option value="34">34&deg;</option>
-                                    <option value="35">35&deg;</option>
-                                    <option value="36">36&deg;</option>
-                                    <option value="37">37&deg;</option>
-                                    <option value="38">38&deg;</option>
-                                    <option value="39">39&deg;</option>
-                                    <option value="40">40&deg;</option>
-                                    <option value="41">41&deg;</option>
-                                    <option value="42">42&deg;</option>
-                                    <option value="43">43&deg;</option>
-                                    <option value="44">44&deg;</option>
-                                    <option value="45">45&deg;</option>
-                                    <option value="46">46&deg;</option>
-                                    <option value="47">47&deg;</option>
-                                    <option value="48">48&deg;</option>
-                                    <option value="49">49&deg;</option>
-                                    <option value="50">50&deg;</option>
-                                    <option value="51">51&deg;</option>
-                                    <option value="52">52&deg;</option>
-                                    <option value="53">53&deg;</option>
-                                    <option value="54">54&deg;</option>
-                                    <option value="55">55&deg;</option>
-                                    <option value="56">56&deg;</option>
-                                    <option value="57">57&deg;</option>
-                                    <option value="58">58&deg;</option>
-                                    <option value="59">59&deg;</option>
-                                    <option value="60">60&deg;</option>
-                                    <option value="61">61&deg;</option>
-                                    <option value="62">62&deg;</option>
-                                    <option value="63">63&deg;</option>
-                                    <option value="64">64&deg;</option>
-                                    <option value="65">65&deg;</option>
-                                    <option value="66">66&deg;</option>
-                                    <option value="67">67&deg;</option>
-                                    <option value="68">68&deg;</option>
-                                    <option value="69">69&deg;</option>
-                                    <option value="70">70&deg;</option>
-                                    <option value="71">71&deg;</option>
-                                    <option value="72">72&deg;</option>
-                                    <option value="73">73&deg;</option>
-                                    <option value="74">74&deg;</option>
-                                    <option value="75">75&deg;</option>
-                                    <option value="76">76&deg;</option>
-                                    <option value="77">77&deg;</option>
-                                    <option value="78">78&deg;</option>
-                                    <option value="79">79&deg;</option>
-                                    <option value="80">80&deg;</option>
-                                    <option value="81">81&deg;</option>
-                                    <option value="82">82&deg;</option>
-                                    <option value="83">83&deg;</option>
-                                    <option value="84">84&deg;</option>
-                                    <option value="85">85&deg;</option>
-                                    <option value="86">86&deg;</option>
-                                    <option value="87">87&deg;</option>
-                                    <option value="88">88&deg;</option>
-                                    <option value="89">89&deg;</option>
-                                    <option value="90">90&deg;</option>
-                                    <option value="91">91&deg;</option>
-                                    <option value="92">92&deg;</option>
-                                    <option value="93">93&deg;</option>
-                                    <option value="94">94&deg;</option>
-                                    <option value="95">95&deg;</option>
-                                    <option value="96">96&deg;</option>
-                                    <option value="97">97&deg;</option>
-                                    <option value="98">98&deg;</option>
-                                    <option value="99">99&deg;</option>
-                                    <option value="100" selected>100&deg;</option>
-                                    <option value="101">101&deg;</option>
-                                    <option value="102">102&deg;</option>
-                                    <option value="103">103&deg;</option>
-                                    <option value="104">104&deg;</option>
-                                    <option value="105">105&deg;</option>
-                                    <option value="106">106&deg;</option>
-                                    <option value="107">107&deg;</option>
-                                    <option value="108">108&deg;</option>
-                                    <option value="109">109&deg;</option>
-                                    <option value="110">110&deg;</option>
-                                    <option value="111">111&deg;</option>
-                                    <option value="112">112&deg;</option>
-                                    <option value="113">113&deg;</option>
-                                    <option value="114">114&deg;</option>
-                                    <option value="115">115&deg;</option>
-                                    <option value="116">116&deg;</option>
-                                    <option value="117">117&deg;</option>
-                                    <option value="118">118&deg;</option>
-                                    <option value="119">119&deg;</option>
-                                    <option value="120">120&deg;</option>
-
-                                </select>
-                            </fieldset>
-
-                            <h4>Informações da Amostra</h4>
-
-                            <fieldset>
-                                <label for="frm_nova_solicitacao_tipo_amostra">Escolha o tipo da amostra</label>
-                                <select id="frm_nova_solicitacao_tipo_amostra" name="frm_nova_solicitacao_tipo_amostra">
-                                    <option value="1">Pó</option>
-                                    <option value="2">Filme</option>
-                                    <option value="3">Pastilha</option>
-                                    <option value="4">Eletrodo</option>
-                                    <option value="5">Outro</option>
-                                </select>
-                            </fieldset>
-
-                            <fieldset>
-                                <label for="frm_nova_solicitacao_composicao">Composição</label>
-                                <input type="text" name="frm_nova_solicitacao_composicao"
-                                       id="frm_nova_solicitacao_composicao">
-                            </fieldset>
-
-                            <fieldset>
-                                <label>Segurança</label>
-                                <input type="checkbox" name="frm_nova_solicitacao_seguranca_inflamavel"
-                                       id="frm_nova_solicitacao_seguranca_inflamavel" value="inflamavel">
-                                <label for="frm_nova_solicitacao_seguranca_inflamavel">Inflamável</label>
-
-                                <input type="checkbox" name="frm_nova_solicitacao_seguranca_toxico"
-                                       id="frm_nova_solicitacao_seguranca_toxico" value="toxico">
-                                <label for="frm_nova_solicitacao_seguranca_toxico">Tóxico</label>
-
-                                <input type="checkbox" name="frm_nova_solicitacao_seguranca_higroscopico"
-                                       id="frm_nova_solicitacao_seguranca_higroscopico" value="higroscopico">
-                                <label for="frm_nova_solicitacao_seguranca_higroscopico">Higroscópico</label>
-
-                                <input type="checkbox" name="frm_nova_solicitacao_seguranca_corrosivo"
-                                       id="frm_nova_solicitacao_seguranca_corrosivo" value="corrosivo">
-                                <label for="frm_nova_solicitacao_seguranca_corrosivo">Corrosivo</label>
-
-                                <input type="checkbox" name="frm_nova_solicitacao_seguranca_radioativo"
-                                       id="frm_nova_solicitacao_seguranca_radioativo" value="radioativo">
-                                <label for="frm_nova_solicitacao_seguranca_radioativo">Radioativo</label>
-                            </fieldset>
-
-                            <fieldset>
-                                <label for="frm_nova_solicitacao_observacoes">Observações</label>
-                                <textarea name="frm_nova_solicitacao_observacoes"
-                                          id="frm_nova_solicitacao_observacoes"></textarea>
-                            </fieldset>
                         </div>
-
-                        <fieldset id="fld_frm_nova_solicitacao_submit">
-                            <input type="submit" name="frm_nova_solicitacao_submit" id="frm_nova_solicitacao_submit"
-                                   value="Solicitar">
-                        </fieldset>
 
                     </form>
 

@@ -502,9 +502,9 @@ function obterEquipamentos() {
     });
 }
 
-function atualizarOpcoesDeEquipamentos(tipo, optionsElement) {
+function atualizarOpcoesDeEquipamentos(tipo, elementoOption) {
     /* Limpa os equipamentos listados */
-    $(optionsElement).empty();
+    $(elementoOption).empty();
 
     /* Adiciona apenas os disponíveis */
     equipamentosDisponiveis.forEach(function (_e) {
@@ -513,9 +513,15 @@ function atualizarOpcoesDeEquipamentos(tipo, optionsElement) {
             e.value = _e.id_equipamento;
             e.innerHTML = _e.nome;
 
-            optionsElement.appendChild(e);
+            elementoOption.appendChild(e);
         }
     });
+}
+
+function obterParteDoHash(numeroDaParte) {
+    var hash = window.location.hash;
+    var partes = hash.split('/');
+    return partes[numeroDaParte];
 }
 
 function exibirSecao() {
@@ -646,47 +652,72 @@ function definirMascaras() {
     $('#frm_novo_usuario_telefone').mask('(00) 0000-00009', options);
 }
 
+/**
+ *  Função de validação de CPF
+ *  obtida de http://www.geradordecpf.org/funcao-javascript-validar-cpf.html em 13/09/2016
+ */
+function validaCPF(cpf) {
+    var numeros, digitos, soma, i, resultado, digitos_iguais;
+    digitos_iguais = 1;
+    if (cpf.length < 11)
+        return false;
+    for (i = 0; i < cpf.length - 1; i++)
+        if (cpf.charAt(i) != cpf.charAt(i + 1))
+        {
+            digitos_iguais = 0;
+            break;
+        }
+    if (!digitos_iguais)
+    {
+        numeros = cpf.substring(0,9);
+        digitos = cpf.substring(9);
+        soma = 0;
+        for (i = 10; i > 1; i--)
+            soma += numeros.charAt(10 - i) * i;
+        resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+        if (resultado != digitos.charAt(0))
+            return false;
+        numeros = cpf.substring(0,10);
+        soma = 0;
+        for (i = 11; i > 1; i--)
+            soma += numeros.charAt(11 - i) * i;
+        resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+        if (resultado != digitos.charAt(1))
+            return false;
+        return true;
+    }
+    else
+        return false;
+}
+
+function exibeOpcoesDoEquipamentoSelecionado(equipamento, opcoesDRX, opcoesFRX) {
+    switch (parseInt(equipamento)) {
+        case 1: // Rigaku DMAXB
+            opcoesFRX.slideUp('slow', function () {
+                opcoesDRX.slideDown('slow').removeClass('escondido');
+
+                $('#frm_nova_solicitacao_delta_2theta').val(0.02);
+            }).addClass('escondido');
+            break;
+        case 2: // PANalytical X'Pert PRO
+            opcoesFRX.slideUp('slow', function () {
+                opcoesDRX.slideDown('slow').removeClass('escondido');
+
+                $('#frm_nova_solicitacao_delta_2theta').val(0.013);
+            }).addClass('escondido');
+            break;
+        case 3: // Rigaku ZSX mini II
+            opcoesDRX.slideUp('slow', function () {
+                opcoesFRX.slideDown('slow').removeClass('escondido');
+            }).addClass('escondido');
+            break;
+    }
+}
+
 $(document).ready(function () {
+
     atualizarCampos();
     definirMascaras();
-
-    /**
-     *  Função de validação de CPF
-     *  obtida de http://www.geradordecpf.org/funcao-javascript-validar-cpf.html em 13/09/2016
-     */
-    function validaCPF(cpf) {
-        var numeros, digitos, soma, i, resultado, digitos_iguais;
-        digitos_iguais = 1;
-        if (cpf.length < 11)
-            return false;
-        for (i = 0; i < cpf.length - 1; i++)
-            if (cpf.charAt(i) != cpf.charAt(i + 1))
-            {
-                digitos_iguais = 0;
-                break;
-            }
-        if (!digitos_iguais)
-        {
-            numeros = cpf.substring(0,9);
-            digitos = cpf.substring(9);
-            soma = 0;
-            for (i = 10; i > 1; i--)
-                soma += numeros.charAt(10 - i) * i;
-            resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-            if (resultado != digitos.charAt(0))
-                return false;
-            numeros = cpf.substring(0,10);
-            soma = 0;
-            for (i = 11; i > 1; i--)
-                soma += numeros.charAt(11 - i) * i;
-            resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-            if (resultado != digitos.charAt(1))
-                return false;
-            return true;
-        }
-        else
-            return false;
-    }
 
     /**
      * Adiciona a opção de validar CPF ao validador.
@@ -718,7 +749,7 @@ $(document).ready(function () {
         onModulesLoaded: function () {
             $.setupValidation({
                 lang: 'pt',
-                form: '#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3',
+                form: '#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3, #FormNovaSolicitacao',
                 validate: {
                     '#frm_novo_usuario_documento': {
                         validation: '_cpf'
@@ -934,9 +965,17 @@ $(document).ready(function () {
      * com os disponíveis previamente obtidos do servidor.
      */
     $('[name=frm_nova_solicitacao_tipo_analise]').change(function() {
+        $('#fld_nova_solicitacao_equipamento').slideDown('slow');
+
         var tipo = $(this).val();
         var options = document.getElementById('frm_nova_solicitacao_equipamento');
         atualizarOpcoesDeEquipamentos(tipo, options);
+        $('#div_nova_solicitacao_comum').slideDown('slow').removeClass('escondido');
+        exibeOpcoesDoEquipamentoSelecionado($('#frm_nova_solicitacao_equipamento').val(), $('#div_nova_solicitacao_config_drx'), $('#div_nova_solicitacao_config_frx'));
+    });
+
+    $('#frm_nova_solicitacao_equipamento').change(function () {
+        exibeOpcoesDoEquipamentoSelecionado($(this).val(), $('#div_nova_solicitacao_config_drx'), $('#div_nova_solicitacao_config_frx'));
     });
 
     $('#linkNovaSolicitacao').click(function () {

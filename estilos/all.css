@@ -541,6 +541,8 @@ input[type="submit"]:hover,
 .justify { text-align: justify; }
 
 .relativo { position: relative; }
+.inline-block { display: inline-block; }
+.inline { display: inline; }
 
 .cinza { color: #666; }
 .amarelo { color: #feff5f; }

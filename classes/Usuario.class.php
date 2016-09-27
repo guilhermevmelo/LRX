@@ -20,7 +20,7 @@ abstract class Usuario {
     protected $genero;      // Masculino | Feminino
     protected $senha;       // Hash SHA1
     protected $telefone;
-    protected $nivel_acesso = 1;// 1 - Aluno | 2 - Professor | 3 - Responsável por empresa | 4 - Financeiro | 5 -
+    protected $nivel_acesso = 1; // 1 - Aluno | 2 - Professor | 3 - Responsável por empresa | 4 - Financeiro | 5 -
     // Operador | 6 - Administrador
     protected $confirmado = false;
     protected $email_confirmado = false;
@@ -268,7 +268,7 @@ abstract class Usuario {
 
 
     /**
-     * @param int $email_confirmado
+     * @param boolean $email_confirmado
      */
     public function setEmailConfirmado($email_confirmado) {
         $this->email_confirmado = $email_confirmado;
