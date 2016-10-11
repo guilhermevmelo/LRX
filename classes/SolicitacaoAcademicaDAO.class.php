@@ -39,7 +39,7 @@ class SolicitacaoAcademicaDAO {
     }
 
     public function obter($id, $emArray = true) {
-        $sql = sprintf("select * from solicitacoes_academicas sa, solicitacoes s where sa.id_solicitacao = s.id_solicitacao and sa.id_solicitacao
+        $sql = sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s.id_solicitacao and sa.id_usuario = u.id_usuario and sa.id_solicitacao
  = :id");
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(':id', $id, \PDO::PARAM_INT);
@@ -53,14 +53,29 @@ class SolicitacaoAcademicaDAO {
             $eDAO = new EquipamentoDAO();
             $e = $eDAO->obter(intval($tupla['id_equipamento']));
 
-            // TODO: Adequar ao tipo de usuário solicitante.
-            $pDAO = new ProfessorDAO();
-            $p = $pDAO->obter(intval($tupla['id_usuario']));
+            // TODO: Terminar adequação ao tipo de usuário solicitante.
+            switch(intval($tupla['nivel_acesso'])) {
+                case 1:
+                    $uDAO = new AlunoDAO();
+                    break;
+
+                case 2:
+                    $uDAO = new ProfessorDAO();
+                    break;
+
+                case 5:
+                    $uDAO = new ProfessorDAO();
+                    break;
+
+                default:
+                    $uDAO = new ProfessorDAO();
+            }
+            $u = $uDAO->obter(intval($tupla['id_usuario']));
 
             $s = array(
                 "id_solicitacao"    => intval($tupla['id_solicitacao']),
                 "id_solicitante"    => intval($tupla['id_usuario']),
-                "solicitante"       => $p->getNome(),
+                "solicitante"       => $u->getNome(),
                 "id_equipamento"    => intval($tupla['id_equipamento']),
                 "equipamento"       => $e->getNome(),
                 "tipo_equipamento"  => $e->getTipo(),
@@ -151,27 +166,42 @@ class SolicitacaoAcademicaDAO {
     }
 
     public function obterTodosPorUsuario($id, $emArray = true) {
-        $sql = sprintf("select * from solicitacoes_academicas sa, solicitacoes s where sa.id_solicitacao = s.id_solicitacao and sa.id_usuario
- = :id and s.status < 7 and s.status > 0");
+        $sql = sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s.id_solicitacao and u.id_usuario = sa.id_usuario and sa.id_usuario = :id and s.status < 7 and s.status > 0");
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(':id', $id, \PDO::PARAM_INT);
         $consulta->execute();
 
         $solicitacoes = array();
-
         foreach ($consulta->fetchAll(\PDO::FETCH_ASSOC) as $tupla) {
             if ($emArray) {
                 $eDAO = new EquipamentoDAO();
                 $e = $eDAO->obter(intval($tupla['id_equipamento']));
 
-                // TODO: Adequar ao tipo de usuário solicitante.
-                $pDAO = new ProfessorDAO();
-                $p = $pDAO->obter(intval($tupla['id_usuario']));
+                // TODO: Terminar adequação ao tipo de usuário solicitante.
+                switch(intval($tupla['nivel_acesso'])) {
+                    case 1:
+                        $uDAO = new AlunoDAO();
+                        break;
+
+                    case 2:
+                        $uDAO = new ProfessorDAO();
+                        break;
+
+                    case 5:
+                        $uDAO = new ProfessorDAO();
+                        break;
+
+                    default:
+                        $uDAO = new ProfessorDAO();
+                }
+
+
+                $u = $uDAO->obter(intval($tupla['id_usuario']));
 
                 $s = array(
                     "id_solicitacao"    => intval($tupla['id_solicitacao']),
                     "id_solicitante"    => intval($tupla['id_usuario']),
-                    "solicitante"       => $p->getNome(),
+                    "solicitante"       => $u->getNome(),
                     "id_equipamento"    => intval($tupla['id_equipamento']),
                     "equipamento"       => $e->getNome(),
                     "tipo_equipamento"  => $e->getTipo(),
@@ -219,13 +249,14 @@ class SolicitacaoAcademicaDAO {
             }
 
             array_push($solicitacoes, $s);
+            //Debug: array_push($solicitacoes, $consulta->queryString);
         }
 
         return $solicitacoes;
     }
 
     public function obterTodasConcluidasPorUsuario($id, $emArray = true) {
-        $sql = sprintf("select * from solicitacoes_academicas sa, solicitacoes s where sa.id_solicitacao = s.id_solicitacao and sa.id_usuario
+        $sql = sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s.id_solicitacao and sa.id_usuario = u.id_usuario and sa.id_usuario
  = :id and (s.status < 0 or s.status = 7) order by data_conclusao desc");
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(':id', $id, \PDO::PARAM_INT);
@@ -238,14 +269,30 @@ class SolicitacaoAcademicaDAO {
                 $eDAO = new EquipamentoDAO();
                 $e = $eDAO->obter(intval($tupla['id_equipamento']));
 
-                // TODO: Adequar ao tipo de usuário solicitante.
-                $pDAO = new ProfessorDAO();
-                $p = $pDAO->obter(intval($tupla['id_usuario']));
+                // TODO: Terminar adequação ao tipo de usuário solicitante.
+                switch(intval($tupla['nivel_acesso'])) {
+                    case 1:
+                        $uDAO = new AlunoDAO();
+                        break;
+
+                    case 2:
+                        $uDAO = new ProfessorDAO();
+                        break;
+
+                    case 5:
+                        $uDAO = new ProfessorDAO();
+                        break;
+
+                    default:
+                        $uDAO = new ProfessorDAO();
+                }
+
+                $u = $uDAO->obter(intval($tupla['id_usuario']));
 
                 $s = array(
                     "id_solicitacao"    => intval($tupla['id_solicitacao']),
                     "id_solicitante"    => intval($tupla['id_usuario']),
-                    "solicitante"       => $p->getNome(),
+                    "solicitante"       => $u->getNome(),
                     "id_equipamento"    => intval($tupla['id_equipamento']),
                     "equipamento"       => $e->getNome(),
                     "tipo_equipamento"  => $e->getTipo(),
@@ -299,8 +346,8 @@ class SolicitacaoAcademicaDAO {
     }
 
     public function obterTodasIncompletas($emArray = true) {
-        $sql = sprintf("select * from solicitacoes_academicas sa, solicitacoes s where sa.id_solicitacao = s
-        .id_solicitacao and s.status < 7 and s.status > 0");
+        $sql = sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s
+        .id_solicitacao and sa.id_usuario = u.id_usuario and s.status < 7 and s.status > 0");
         $consulta = $this->conexao->prepare($sql);
         $consulta->execute();
 
@@ -311,14 +358,29 @@ class SolicitacaoAcademicaDAO {
                 $eDAO = new EquipamentoDAO();
                 $e = $eDAO->obter(intval($tupla['id_equipamento']));
 
-                // TODO: Adequar ao tipo de usuário solicitante.
-                $pDAO = new ProfessorDAO();
-                $p = $pDAO->obter(intval($tupla['id_usuario']));
+                // TODO: Terminar adequação ao tipo de usuário solicitante.
+                switch(intval($tupla['nivel_acesso'])) {
+                    case 1:
+                        $uDAO = new AlunoDAO();
+                        break;
+
+                    case 2:
+                        $uDAO = new ProfessorDAO();
+                        break;
+
+                    case 5:
+                        $uDAO = new ProfessorDAO();
+                        break;
+
+                    default:
+                        $uDAO = new ProfessorDAO();
+                }
+                $u = $uDAO->obter(intval($tupla['id_usuario']));
 
                 $s = array(
                     "id_solicitacao"    => intval($tupla['id_solicitacao']),
                     "id_solicitante"    => intval($tupla['id_usuario']),
-                    "solicitante"       => $p->getNome(),
+                    "solicitante"       => $u->getNome(),
                     "id_equipamento"    => intval($tupla['id_equipamento']),
                     "equipamento"       => $e->getNome(),
                     "tipo_equipamento"  => $e->getTipo(),
@@ -372,8 +434,7 @@ class SolicitacaoAcademicaDAO {
     }
 
     public function obterTodasConcluidas($emArray = true) {
-        $sql = sprintf("select * from solicitacoes_academicas sa, solicitacoes s where sa.id_solicitacao = s
-        .id_solicitacao and (s.status < 0 or s.status = 7)");
+        $sql = sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s.id_solicitacao and sa.id_usuario = u.id_usuario and (s.status < 0 or s.status = 7)");
         $consulta = $this->conexao->prepare($sql);
         $consulta->execute();
 
@@ -384,14 +445,29 @@ class SolicitacaoAcademicaDAO {
                 $eDAO = new EquipamentoDAO();
                 $e = $eDAO->obter(intval($tupla['id_equipamento']));
 
-                // TODO: Adequar ao tipo de usuário solicitante.
-                $pDAO = new ProfessorDAO();
-                $p = $pDAO->obter(intval($tupla['id_usuario']));
+                // TODO: Terminar adequação ao tipo de usuário solicitante.
+                switch(intval($tupla['nivel_acesso'])) {
+                    case 1:
+                        $uDAO = new AlunoDAO();
+                        break;
+
+                    case 2:
+                        $uDAO = new ProfessorDAO();
+                        break;
+
+                    case 5:
+                        $uDAO = new ProfessorDAO();
+                        break;
+
+                    default:
+                        $uDAO = new ProfessorDAO();
+                }
+                $u = $uDAO->obter(intval($tupla['id_usuario']));
 
                 $s = array(
                     "id_solicitacao"    => intval($tupla['id_solicitacao']),
                     "id_solicitante"    => intval($tupla['id_usuario']),
-                    "solicitante"       => $p->getNome(),
+                    "solicitante"       => $u->getNome(),
                     "id_equipamento"    => intval($tupla['id_equipamento']),
                     "equipamento"       => $e->getNome(),
                     "tipo_equipamento"  => $e->getTipo(),

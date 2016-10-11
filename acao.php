@@ -25,7 +25,7 @@ if (isset($q) && $q == "login") {
     $senha = addslashes($_POST['senha']);
 
     $u = UsuarioDAO::login($email, $senha);
-
+    //TODO: Mensagens diferentes para email e para senha não encontrados.
     if ($u === null) {
         Erro::lancarErro(array("codigo" => 1001, "mensagem" => "Usuário não encontrado"));
     } else if ($u->confirmado() != 1) {
@@ -124,7 +124,7 @@ if (isset($q) && $q == "obterListaSolicitacoes") {
     if ($tipoSistema == 1) {
         $saDAO = new SolicitacaoAcademicaDAO();
 
-        // TODO implemntar demais niveis
+        // TODO implementar demais niveis
         switch ($nivel_acesso) {
             case 5:
                 $resposta = $saDAO->obterTodasIncompletas();
