@@ -165,8 +165,10 @@ class SolicitacaoAcademicaDAO {
         // TODO: Implement obterTodos() method.
     }
 
-    public function obterTodosPorUsuario($id, $emArray = true) {
-        $sql = sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s.id_solicitacao and u.id_usuario = sa.id_usuario and sa.id_usuario = :id and s.status < 7 and s.status > 0");
+    public function obterTodosPorUsuario($id, $emArray = true, $incluirAlunos = true) {
+        $sql = $incluirAlunos === true ?
+            sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u, alunos a where sa.id_solicitacao = s.id_solicitacao and ((u.id_usuario = sa.id_usuario and sa.id_usuario = :id) or (sa.id_usuario = u.id_usuario and u.id_usuario = a.id_aluno and a.id_professor = :id and sa.id_usuario != :id)) and s.status < 7 and s.status > 0") :
+            sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s.id_solicitacao and u.id_usuario = sa.id_usuario and sa.id_usuario = :id and s.status < 7 and s.status > 0");
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(':id', $id, \PDO::PARAM_INT);
         $consulta->execute();

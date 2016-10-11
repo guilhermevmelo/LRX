@@ -758,7 +758,7 @@ $(document).ready(function () {
         onModulesLoaded: function () {
             $.setupValidation({
                 lang: "pt",
-                form: "#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3, #FormNovaSolicitacao",
+                form: "#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3, #FormNovaSolicitacao, #FormLogin",
                 validate: {
                     "#frm_novo_usuario_documento": {
                         validation: "_cpf"
@@ -775,6 +775,11 @@ $(document).ready(function () {
                     },
                     "#frm_novo_usuario_telefone": {
                         validation: "brphone"
+                    },
+                    "#frm_login_senha" : {
+                        validation: "length",
+                        length: "min8",
+                        "error-msg": "A senha deve conter no mínimo 8 dígitos"
                     }
                 }
             });
