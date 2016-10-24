@@ -528,6 +528,10 @@ input[type="submit"]:hover,
     display: none;
 }
 
+#detalhe_Autorizar {
+    display: none;
+}
+
 /** Estilos compartilhados **/
 .escondido { display: none; }
 

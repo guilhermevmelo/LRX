@@ -44,6 +44,7 @@ if (isset($q) && $q == "login") {
             "genero" => $u->getGenero(),
             "telefone" => $u->getTelefone(),
             "nivel_acesso" => $u->getNivelAcesso(),
+            "limite" => $u->getLimite(),
             "confirmado" => $u->confirmado(),
             "email_confirmado" => $u->emailConfirmado(),
             "uid" => $u->getUid(),
@@ -69,8 +70,6 @@ if (isset($q) && $q == "login") {
  *
  */
 if (isset($q) && $q == "loginDireto") {
-//    $email = "guilhermevmelo@gmail.com";
-//    $senha = sha1("iqh5riv9");
     $uid = addslashes($_POST['uid']);
 
     $u = UsuarioDAO::obterPorUid($uid);
@@ -90,6 +89,7 @@ if (isset($q) && $q == "loginDireto") {
             "genero" => $u->getGenero(),
             "telefone" => $u->getTelefone(),
             "nivel_acesso" => $u->getNivelAcesso(),
+            "limite" => $u->getLimite(),
             "confirmado" => $u->confirmado(),
             "email_confirmado" => $u->emailConfirmado(),
             "uid" => $u->getUid(),
@@ -127,6 +127,10 @@ if (isset($q) && $q == "obterListaSolicitacoes") {
         // TODO implementar demais niveis
         switch ($nivel_acesso) {
             case 5:
+                $resposta = $saDAO->obterTodasIncompletas(true);
+                break;
+
+            case 6:
                 $resposta = $saDAO->obterTodasIncompletas();
                 break;
 
@@ -277,6 +281,13 @@ if (isset($q) && $q == "novaSolicitacaoAcademica") {
 
 }
 
+
+/**
+ *
+ */
+if (isset($q) && $q == "alterarSolicitacaoAcademica") {
+
+}
 /**
  *
  */

@@ -155,7 +155,6 @@ function dataPhpParaJs(data) {
 }
 
 function obterDetalhesSolicitacao(id) {
-
     $("#Detalhe").fadeOut("slow", function () {
         $.ajax({
             url: "acao.php",
@@ -175,8 +174,16 @@ function obterDetalhesSolicitacao(id) {
                 if (r.solicitacao.data_entrega === null) {
                     $("#detalhe_DataRecebimento").html("A Amostra ainda não foi entregue.");
                 } else {
-                    $("#detalhe_DataRecebimento").html(dataPhpParaJs(r.solicitacao.data_recebiento));
+                    $("#detalhe_DataRecebimento").html(dataPhpParaJs(r.solicitacao.data_entrega));
                 }
+
+                if (usuario.nivel_acesso === 2) {
+                    $("#detalhe_Autorizar").show();
+                } else {
+                    $("#detalhe_Autorizar").hide();
+                }
+
+
                 $("#detalhe_Tipo").html(r.solicitacao.tipo_equipamento);
                 $("#detalhe_Equipamento").html(r.solicitacao.equipamento);
 
@@ -623,6 +630,7 @@ function iniciarAplicacao() {
                 usuario.genero = r.genero;
                 usuario.telefone = r.telefone;
                 usuario.nivel_acesso = r.nivel_acesso;
+                usuario.limite = r.limite;
                 usuario.confirmado = r.confirmado;
                 usuario.email_confirmado = r.email_confirmado;
                 usuario.uid = r.uid;
@@ -826,7 +834,7 @@ $(document).ready(function () {
             if (r.codigo !== 200) {
                 apresentarErro(r);
             } else {
-                usuario = [];
+                usuario = {};
                 usuario.id = r.id_usuario;
                 usuario.documento = r.documento;
                 usuario.nome = r.nome;
@@ -836,6 +844,7 @@ $(document).ready(function () {
                 usuario.genero = r.genero;
                 usuario.telefone = r.telefone;
                 usuario.nivel_acesso = r.nivel_acesso;
+                usuario.limite = r.limite;
                 usuario.confirmado = r.confirmado;
                 usuario.email_confirmado = r.email_confirmado;
                 usuario.uid = r.uid;

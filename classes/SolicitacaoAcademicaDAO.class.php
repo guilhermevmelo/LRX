@@ -165,7 +165,7 @@ class SolicitacaoAcademicaDAO {
         // TODO: Implement obterTodos() method.
     }
 
-    public function obterTodosPorUsuario($id, $emArray = true, $incluirAlunos = true) {
+    public function obterTodosPorUsuario($id, $incluirAlunos = true, $emArray = true) {
         $sql = $incluirAlunos === true ?
             sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u, alunos a where sa.id_solicitacao = s.id_solicitacao and ((u.id_usuario = sa.id_usuario and sa.id_usuario = :id) or (sa.id_usuario = u.id_usuario and u.id_usuario = a.id_aluno and a.id_professor = :id and sa.id_usuario != :id)) and s.status < 7 and s.status > 0") :
             sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s.id_solicitacao and u.id_usuario = sa.id_usuario and sa.id_usuario = :id and s.status < 7 and s.status > 0");
@@ -347,9 +347,9 @@ class SolicitacaoAcademicaDAO {
         return $solicitacoes;
     }
 
-    public function obterTodasIncompletas($emArray = true) {
+    public function obterTodasIncompletas( $somenteAutorizadas = false, $emArray = true) {
         $sql = sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s
-        .id_solicitacao and sa.id_usuario = u.id_usuario and s.status < 7 and s.status > 0");
+        .id_solicitacao and sa.id_usuario = u.id_usuario and s.status < 7 and s.status > %d", $somenteAutorizadas? 1 : 0);
         $consulta = $this->conexao->prepare($sql);
         $consulta->execute();
 
