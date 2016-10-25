@@ -72,6 +72,7 @@ class AlunoDAO /*extends DAO*/ {
         $a = new Aluno($tupla['nome'], $tupla['email'], $tupla['cpf'], $this->pDAO->obter($tupla['id_professor']),
             $tupla['vinculo'], (int) $tupla['limite'], $tupla['uid'], (int) $tupla['id_usuario']);
         $a->setConfirmado($tupla['confirmado'] == 1 ? true : false);
+        $a->setEmailConfirmado($tupla['email_confirmado'] == 1 ? true : false);
         $a->setCidade($tupla['cidade']);
         $a->setEstado($tupla['estado']);
         $a->setSenha($tupla['senha']);
