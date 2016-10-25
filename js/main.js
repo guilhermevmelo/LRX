@@ -176,16 +176,91 @@ function obterDetalhesSolicitacao(id) {
                 } else {
                     $("#detalhe_DataRecebimento").html(dataPhpParaJs(r.solicitacao.data_entrega));
                 }
+                var detalhes_autorizar = $("#detalhe_Autorizar");
+                if (usuario.nivel_acesso === 2 && r.solicitacao.status === 1) {
+                    detalhes_autorizar.click(function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
 
-                if (usuario.nivel_acesso === 2) {
-                    $("#detalhe_Autorizar").show();
+                        $.ajax({
+                            url: "acao.php",
+                            type: "get",
+                            data: {
+                                q: "aprovarSolicitacao",
+                                id_solicitacao: id,
+                                id_professor: usuario.id
+                            }
+                        }).done(function (r) {
+                            window.console.log(r);
+                            if (r.codigo !== 200) {
+                                apresentarErro(r);
+                            } else {
+                                //TODO: apresentar notificação
+                                preencherSolicitacoes();
+                                obterDetalhesSolicitacao(id);
+                            }
+                        });
+                    });
+                    detalhes_autorizar.show();
                 } else {
-                    $("#detalhe_Autorizar").hide();
+                    detalhes_autorizar.hide();
                 }
 
 
                 $("#detalhe_Tipo").html(r.solicitacao.tipo_equipamento);
                 $("#detalhe_Equipamento").html(r.solicitacao.equipamento);
+                var statusH4 = $("#detalhe_Status");
+                switch (r.solicitacao.status) {
+                    case 1:
+                        statusH4.addClass("cinza");
+                        statusH4.html("Aguardando autorização do professor.");
+                        break;
+
+                    case 2:
+                        statusH4.addClass("cinza");
+                        statusH4.html("Aguardando aprovação do laboratório.");
+                        break;
+
+                    case 3:
+                        statusH4.addClass("amarela");
+                        statusH4.html("Aguardando confirmação de entrega da amostra");
+                        break;
+
+                    case 4:
+                        statusH4.addClass("amarela");
+                        statusH4.html("Na fila do equipamento");
+                        break;
+
+                    case 5:
+                        statusH4.addClass("amarela");
+                        statusH4.html("Em processo de análise.");
+                        break;
+
+                    case 6:
+                        statusH4.addClass("azul");
+                        statusH4.html("Análise Concluída. Aguardando recolhimento da amostra.");
+                        break;
+
+                    case 7:
+                        statusH4.addClass("verde");
+                        statusH4.html("Solicitação Finalizada.");
+                        break;
+
+                    case -1:
+                        statusH4.addClass("vermelha");
+                        statusH4.html("Cancelada pelo responsável.");
+                        break;
+
+                    case -2:
+                        statusH4.addClass("vermelha");
+                        statusH4.html("Cancelada pelo operador.");
+                        break;
+
+                    case -3:
+                        statusH4.addClass("vermelha");
+                        statusH4.html("Cancelada por falta de entrega da amostra.");
+                        break;
+                }
 
                 $("#detalhe_Cancelar").click(function() {
                     //TODO adicionar confirmacao
@@ -537,13 +612,13 @@ function obterParteDoHash(numeroDaParte) {
 }
 
 function exibirSecao() {
-    var hash = window.location.hash;
+    var hash = obterParteDoHash(1);
     var estadoAtual = $(".estadoAtual");
 
     window.console.log(hash, usuario);
 
     switch (hash) {
-        case "#/Inicio":
+        case "Inicio":
             if (usuario !== null) {
                 location.hash = "#/Dashboard";
             } else {
@@ -556,7 +631,7 @@ function exibirSecao() {
             }
             break;
 
-        case "#/Dashboard":
+        case "Dashboard":
             if (usuario === null) {
                 location.hash = "#/Inicio";
             } else {
@@ -571,7 +646,7 @@ function exibirSecao() {
             }
             break;
 
-        case "#/NovoUsuario":
+        case "NovoUsuario":
             // TODO: Terminar
             estadoAtual.fadeOut("slow", function () {
                 $(this).removeClass("estadoAtual");
@@ -581,14 +656,14 @@ function exibirSecao() {
             });
             break;
 
-        case "#/NovaSolicitacao":
+        case "NovaSolicitacao":
             $("#Principal, #Detalhe").fadeOut("slow", function () {
                 obterEquipamentos();
                 $("#NovaSolicitacao").fadeIn("slow");
             });
             break;
 
-        case "#/Sair":
+        case "Sair":
             $("#ListaSolicitacoes").empty();
             $("#Detalhe").fadeOut("slow");
             apagarCookie("uid");

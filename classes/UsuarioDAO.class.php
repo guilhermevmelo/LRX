@@ -16,7 +16,58 @@ class UsuarioDAO {
     }
 
     public function obter($id) {
-        // TODO: Implement obter() method.
+        $conexao = new \PDO(DSN, USUARIO, SENHA);
+        $sql = sprintf("SELECT id_usuario, nivel_acesso FROM usuarios WHERE id_usuario = :id LIMIT 1");
+
+        $consulta = $conexao->prepare($sql);
+        $consulta->bindValue(':id', $id);
+
+        $consulta->execute();
+
+        $tupla = $consulta->fetch(\PDO::FETCH_ASSOC);
+
+        if ($tupla === false)
+            return null;
+
+        switch ((int)$tupla['nivel_acesso']) {
+            case 1:
+                $aDAO = new AlunoDAO();
+                return $aDAO->obter((int)$tupla['id_usuario']);
+                break;
+
+            case 2:
+                $pDAO = new ProfessorDAO();
+                return $pDAO->obter((int)$tupla['id_usuario']);
+                break;
+
+            case 3:
+                // TODO: Implementar Responsável por empresa
+                break;
+
+            case 4:
+                // TODO: Implementar Financeiro
+                break;
+
+            case 5:
+                $aDAO = new AlunoDAO();
+                $u = $aDAO->obter((int)$tupla['id_usuario']);
+                if ($u !== false)
+                    return $u;
+
+                $pDAO = new ProfessorDAO();
+                $u = $pDAO->obter((int)$tupla['id_usuario']);
+                return $u;
+                break;
+
+            case 6:
+                //TODO: Implementar Administrador
+                break;
+
+            default:
+                return null;
+        }
+
+        return null;
     }
 
     public static function obterPorUid($uid) {

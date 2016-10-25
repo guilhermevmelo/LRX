@@ -281,18 +281,53 @@ if (isset($q) && $q == "novaSolicitacaoAcademica") {
 
 }
 
-
 /**
  *
  */
 if (isset($q) && $q == "alterarSolicitacaoAcademica") {
 
 }
+
+/**
+ *
+ */
+if (isset($q) && $q == "aprovarSolicitacao") {
+
+    $pDAO = new ProfessorDAO();
+    $saDAO = new SolicitacaoAcademicaDAO();
+
+    $id_professor = intval($_GET["id_professor"]);
+
+    $p = $pDAO->obter($id_professor);
+
+    if ($p === null) {
+        Erro::lancarErro(array("codigo" => 3999, "mensagem" => "Usuário não encontrado"));
+    } else {
+        $nSolicitacoesAndamento = $saDAO->obterNumeroSolicitacoesEmAndamento($id_professor)["aprovadas"];
+        $limite = $p->getLimite();
+
+        //echo $nSolicitacoesAndamento . " < " . $limite;
+
+        if ($nSolicitacoesAndamento < $limite) {
+            $s = $saDAO->obter(intval($_GET["id_solicitacao"]), false);
+            $s->setStatus(2);
+            $saDAO->atualizar($s);
+
+            header('Content-Type: application/json');
+            echo json_encode(array("codigo" => 200));
+        } else {
+            Erro::lancarErro(array("codigo" => 4000, "mensagem" => "Limite de solicitações atingido"));
+        }
+    }
+
+
+}
+
 /**
  *
  */
 if (isset($q) && $q == "cancelarSolicitacao") {
-    //header('Content-Type: application/json');
+    header('Content-Type: application/json');
 
     // TODO adicionar verificacao de uid
 
