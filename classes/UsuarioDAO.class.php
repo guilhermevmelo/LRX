@@ -211,7 +211,9 @@ class UsuarioDAO {
                 break;
 
             case 6:
-                //TODO: Implementar Administrador
+                $pDAO = new ProfessorDAO();
+                $u = $pDAO->obter((int)$tupla['id_usuario']);
+                return $u;
                 break;
 
             default:

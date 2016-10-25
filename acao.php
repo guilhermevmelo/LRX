@@ -27,9 +27,11 @@ if (isset($q) && $q == "login") {
     $u = UsuarioDAO::login($email, $senha);
     //TODO: Mensagens diferentes para email e para senha não encontrados.
     if ($u === null) {
-        Erro::lancarErro(array("codigo" => 1001, "mensagem" => "Usuário não encontrado"));
-    } else if ($u->confirmado() != 1) {
-        Erro::lancarErro(array("codigo" => 1002, "mensagem" => "Usuário não confirmado"));
+        Erro::lancarErro(array("codigo" => 1001, "mensagem" => "Usuário não encontrado."));
+    } else if (!$u->emailConfirmado()) {
+        Erro::lancarErro(array("codigo" => 1002, "mensagem" => "Email não confirmado."));
+    } else if ($u->confirmado() != 2) {
+        Erro::lancarErro(array("codigo" => 1002, "mensagem" => "Usuário ainda não teve cadastro liberado por um operador."));
     }
     else {
         header('Content-Type: application/json');
@@ -326,6 +328,31 @@ if (isset($q) && $q == "aprovarSolicitacao") {
 /**
  *
  */
+if (isset($q) && $q == "confirmarEmail") {
+    //TODO refatorar isso aqui
+    $uid = addslashes($_GET["uid"]);
+    $u = UsuarioDAO::obterPorUid($uid);
+
+
+
+    if ($u === null) {
+        Erro::lancarErro(array("codigo" => 300, "mensagem" => "Usuário não encontrado."));
+    } else {
+        $pDAO = new ProfessorDAO();
+        $p = $pDAO->obter($u->getId());
+        $p->confirmarEmail();
+        $pDAO->atualizar($p);
+        header('Content-Type: application/json');
+        //print_r($u);
+        echo json_encode(array("codigo" => 200, "mensagem" => "Seu email foi confirmado, ".$u->getNome()));
+    }
+
+}
+
+
+/**
+ *
+ */
 if (isset($q) && $q == "cancelarSolicitacao") {
     header('Content-Type: application/json');
 
@@ -415,6 +442,32 @@ if (isset($q) && $q == "cadastrarUsuario") {
     $pDAO = new ProfessorDAO();
     try {
         $pDAO->criar($p);
+
+        $link = "http://guilhermevieira.com.br/raiosx/#/NovoUsuario/Confirmar/".$p->getUid();
+        // subject
+        $subject = '[Confirmação de Cadastro LRX] '.$p->getNome();
+
+        // message
+        $message = '
+	<html>
+	<head>
+	 <title>'.$subject.'</title>
+	</head>
+	<body>
+	Confirmar: <a href="'.$link.'">'.$link.'</a>
+	</body>
+	</html>
+	';
+
+        // To send HTML mail, the Content-type header must be set
+        $headers  = 'MIME-Version: 1.0' . "\r\n";
+        $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+
+        // Additional headers
+        $headers .= 'From: LRX <naoresponda@raiosx.fisica.ufc.br>' . "\r\n";
+
+        // Mail it
+        mail($p->getEmail(), $subject, $message, $headers);
         $r = array(
             "codigo" => 200
         );

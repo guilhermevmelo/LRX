@@ -156,7 +156,7 @@ class UsuarioAcademicoDAO {
             $sql = sprintf("update usuarios set cpf = :cpf, nome = :nome, email = :email, senha = :senha, estado = :estado, cidade = :cidade,
             departamento = :departamento, laboratorio = :laboratorio, area_de_pesquisa = :area_de_pesquisa, telefone
             = :telefone, email_alternativo = :email_alternativo, nivel_acesso = :nivel_acesso, uid = :uid, confirmado
-             = :confirmado, titulo = :titulo, genero = :genero, limite =
+             = :confirmado, email_confirmado = :email_confirmado, titulo = :titulo, genero = :genero, limite =
              :limite, ies = :ies, saudacao = :saudacao where id_usuario = :id_usuario limit 1");
             $consulta = $this->conexao->prepare($sql);
 
@@ -175,7 +175,7 @@ class UsuarioAcademicoDAO {
             $consulta->bindValue(':nivel_acesso', $usuario->getNivelAcesso(), \PDO::PARAM_INT);
             $consulta->bindValue(':uid', $usuario->getUid());
             $consulta->bindValue(':confirmado', $usuario->confirmado(), \PDO::PARAM_BOOL);
-            //$consulta->bindValue(':email_confirmado', $usuario->getEmailConfirmado(), \PDO::PARAM_BOOL);
+            $consulta->bindValue(':email_confirmado', $usuario->emailConfirmado(), \PDO::PARAM_BOOL);
             $consulta->bindValue(':titulo', $usuario->getTitulo(), \PDO::PARAM_INT);
             $consulta->bindValue(':genero', $usuario->getGenero() == "M" ? 1 : 2, \PDO::PARAM_INT);
             $consulta->bindValue(':limite', $usuario->getLimite(), \PDO::PARAM_INT);

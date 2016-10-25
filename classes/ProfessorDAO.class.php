@@ -104,7 +104,8 @@ class ProfessorDAO /*extends DAO*/ {
 
         $p = new Professor($tupla['nome'], $tupla['email'], $tupla['cpf'], (int) $tupla['id_usuario'], $tupla['uid'],
             (int)$tupla['limite']);
-        $p->setConfirmado($tupla['confirmado'] == 1 ? true : false);
+        $p->setConfirmado(intval($tupla['confirmado']) == 1 ? true : false);
+        $p->setEmailConfirmado(intval($tupla['email_confirmado']) == 1 ? true : false);
         $p->setCidade($tupla['cidade']);
         $p->setEstado($tupla['estado']);
         $p->setSenha($tupla['senha']);
