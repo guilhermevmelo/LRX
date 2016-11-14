@@ -155,6 +155,57 @@ class AlunoDAO /*extends DAO*/ {
         return $a;
     }
 
+    public function obterPorUid($uid, $em_array = false) {
+        $sql = sprintf("select u.*, a.id_grupo, a.id_professor, a.vinculo
+                        from usuarios u, alunos a
+                        where u.uid = :uid
+                          and a.id_aluno = u.id_usuario limit 1");
+
+        $consulta = $this->conexao->prepare($sql);
+        $consulta->bindValue(':uid', $uid);
+
+        $consulta->execute();
+
+        $tupla = $consulta->fetch(\PDO::FETCH_ASSOC);
+
+        if ($tupla === false)
+            return false;
+
+        $saDAO = new SolicitacaoAcademicaDAO();
+
+        if ($em_array) {
+            $a = array();
+            $a['id_aluno'] = intval($tupla['id_usuario']);
+            $a['nome'] = $tupla['nome'];
+            $a['email'] = $tupla['email'];
+            $a['cpf'] = $tupla['cpf'];
+            $a['vinculo'] = intval($tupla['vinculo']);
+            $a['limite'] = intval($tupla['limite']);
+            $a['numero_solicitacoes_abertas'] = $saDAO->obterNumeroSolicitacoesEmAndamento(intval($tupla['id_usuario']))["aprovadas"];
+            $a['area_de_pesquisa'] = $tupla['area_de_pesquisa'];
+            $a['confirmado'] = intval($tupla['confirmado']) === 1 ? true : false;
+        } else {
+            $professor = $tupla['id_professor'] != null ? $this->pDAO->obter($tupla['id_professor']) : null;
+
+            $a = new Aluno($tupla['nome'], $tupla['email'], $tupla['cpf'], $professor,
+                intval($tupla['vinculo']), intval($tupla['limite']), $tupla['uid'], intval($tupla['id_usuario']));
+            $a->setConfirmado($tupla['confirmado'] == 1 ? true : false);
+            $a->setEmailConfirmado($tupla['email_confirmado'] == 1 ? true : false);
+            $a->setCidade($tupla['cidade']);
+            $a->setEstado($tupla['estado']);
+            $a->setSenha($tupla['senha']);
+            $a->setAreaDePesquisa($tupla['area_de_pesquisa']);
+            $a->setDepartamento($tupla['departamento']);
+            $a->setLaboratorio($tupla['laboratorio']);
+            $a->setEmailAlternativo($tupla['email_alternativo']);
+            $a->setNivelAcesso((int)$tupla['nivel_acesso']);
+            $a->setGenero((int)$tupla['genero']);
+            $a->setTelefone($tupla['telefone']);
+            $a->setTitulo((int)$tupla['titulo']);
+        }
+        return $a;
+    }
+
     public function atualizar(Aluno $aluno) {
         $aluno_antigo = $this->obter($aluno->getId());
         if ($aluno_antigo === false)

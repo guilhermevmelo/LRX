@@ -684,7 +684,7 @@
                     <fieldset>
                         <label for="frm_novo_usuario_cidade">Cidade</label>
                         <input type="text" id="frm_novo_usuario_cidade" name="frm_novo_usuario_cidade"
-                               placeholder="Fortaleza" required>
+                               placeholder="Fortaleza" value="Fortaleza" required>
                     </fieldset>
                     <fieldset>
                         <label for="frm_novo_usuario_estado">Estado</label>
@@ -744,18 +744,18 @@
                     <fieldset>
                         <label for="frm_novo_usuario_ies">IES</label>
                         <input type="text" id="frm_novo_usuario_ies" name="frm_novo_usuario_ies"
-                               placeholder="UFC" required>
+                               placeholder="UFC" value="UFC" required>
                     </fieldset>
                     <fieldset>
                         <label for="frm_novo_usuario_departamento">Departamento</label>
                         <input type="text" id="frm_novo_usuario_departamento" name="frm_novo_usuario_departamento"
-                               placeholder="Física" required>
+                               placeholder="Física" value="Física" required>
                     </fieldset>
 
                     <fieldset>
                         <label for="frm_novo_usuario_laboratorio">Laboratório (sigla)</label>
                         <input type="text" id="frm_novo_usuario_laboratorio" name="frm_novo_usuario_laboratorio"
-                               placeholder="LRX" required>
+                               placeholder="LRX" value="LRX" required>
                     </fieldset>
                     <fieldset>
                         <label for="frm_novo_usuario_area_de_pesquisa">Área de pesquisa</label>
@@ -776,6 +776,10 @@
                        </select>
                     </fieldset>
                     <fieldset>
+                        <input type="hidden" id="frm_novo_usuario_uid" name="frm_novo_usuario_uid">
+                    </fieldset>
+
+                    <fieldset>
                         <a href="#/Inicio" title="Voltar à tela inicial" class="botao vermelho">Voltar à tela inicial</a>
                         <input type="submit" value="Finalizar" id="btnNovoUsuarioFinalizar" name="btnNovoUsuarioFinalizar">
                     </fieldset>
@@ -785,6 +789,12 @@
             <div id="NovoUsuarioPassoFinal" class="bloco">
                 <h1 id="NovoUsuarioFinalh1">Aguarde um instante</h1>
                 <p id="NovoUsuarioFinalP"></p>
+            </div>
+        </section>
+
+        <section id="CadastroAluno" class="secao">
+            <div class="bloco">
+                aqui vai o complemento
             </div>
         </section>
 

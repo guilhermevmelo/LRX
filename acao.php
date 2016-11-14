@@ -360,17 +360,43 @@ if (isset($q) && $q == "aprovarSolicitacao") {
 if (isset($q) && $q == "confirmarEmail") {
     //TODO refatorar isso aqui
     $uid = addslashes($_GET["uid"]);
+    //$nivel_acesso = UsuarioDAO::nivelDeAcessoPorUid($uid);
+
     $u = UsuarioDAO::obterPorUid($uid);
-
-
 
     if ($u === null) {
         Erro::lancarErro(array("codigo" => 300, "mensagem" => "Usuário não encontrado."));
     } else {
-        $pDAO = new ProfessorDAO();
-        $p = $pDAO->obter($u->getId());
+        switch ($u->getNivelAcesso()) {
+            case 1:
+                $uDAO = new AlunoDAO();
+                break;
+
+            case 2:
+                $uDAO = new ProfessorDAO();
+                break;
+
+            case 3:
+                // TODO: Implementar Responsável por empresa
+                break;
+
+            case 4:
+                // TODO: Implementar Financeiro
+                break;
+
+            case 5:
+                // TODO: Consertar isso
+                $uDAO = new AlunoDAO();
+                break;
+
+            case 6:
+                $uDAO = new ProfessorDAO();
+
+                break;
+        }
+        $p = $uDAO->obter($u->getId());
         $p->confirmarEmail();
-        $pDAO->atualizar($p);
+        $uDAO->atualizar($p);
         header('Content-Type: application/json');
         //print_r($u);
         echo json_encode(array("codigo" => 200, "mensagem" => "Seu email foi confirmado, ".$u->getNome()));
@@ -464,7 +490,7 @@ if (isset($q) && $q == "vincularAluno") {
             $mensagem = "Existe um aluno cadastrado com o CPF informado. No entanto, está vinculado a um outro professor. Por favor, solicite que seu aluno se desvincule do outro professor no painel de configurações.";
         } else {
             // vincula e envia email
-
+            //TODO: Vincular caso o aluno já esteja cadastrado e esteja apto a novo vínculo.
             $podeSerVinculado = true;
             $mensagem = "Existe um aluno cadastrado com o CPF informado. Foi vinculado com sucesso à sua conta.";
         }
@@ -532,6 +558,28 @@ if (isset($q) && $q == "vincularAluno") {
     );
     echo json_encode($r);
 }
+
+/**
+ *
+ */
+if (isset($q) && $q == "completarCadastroAluno") {
+    $uid = addslashes($_GET['uid']);
+    $aDAO = new AlunoDAO();
+    $a = $aDAO->obterPorUid($uid, true);
+
+    if ($a === false) {
+        Erro::lancarErro(array("codigo" => 1001, "mensagem" => "Usuário não Encontrado"));
+    } else {
+        header('Content-Type: application/json');
+        $resposta = array(
+            "codigo" => 200,
+            "aluno" => $a
+        );
+
+        echo json_encode($resposta);
+    }
+}
+
 
 /**
  *
@@ -613,6 +661,91 @@ if (isset($q) && $q == "cadastrarUsuario") {
 
     echo json_encode($r);
 }
+
+/**
+ *
+ */
+if (isset($q) && $q == "cadastrarAluno") {
+    header('Content-Type: application/json');
+
+    $email = addslashes($_POST['email']);
+    $cpf = addslashes($_POST['documento']);
+    $cpf = desformatarCPF($cpf);
+    $nome = addslashes($_POST['nome']);
+    $genero = addslashes($_POST['genero']);
+    $email_alternativo = addslashes($_POST['email_alternativo']);
+    $cidade = addslashes($_POST['cidade']);
+    $estado = addslashes($_POST['estado']);
+    $telefone = addslashes($_POST['telefone']);
+    $ies = addslashes($_POST['ies']);
+    $departamento = addslashes($_POST['departamento']);
+    $laboratorio = addslashes($_POST['laboratorio']);
+    $area_de_pesquisa = addslashes($_POST['area_de_pesquisa']);
+    $titulo = addslashes(intval($_POST['titulo']));
+    $senha = addslashes($_POST['senha']);
+    $uid = addslashes($_POST['uid']);
+
+    $aDAO = new AlunoDAO();
+
+    $a = $aDAO->obterPorUid($uid);
+    $a->setAreaDePesquisa($area_de_pesquisa);
+    $a->setCidade($cidade);
+    $a->setEstado($estado);
+    $a->setConfirmado(true);
+    $a->setEmailConfirmado(false);
+    $a->setGenero($genero);
+    $a->setDepartamento($departamento);
+    $a->setSenha($senha);
+    $a->setTitulo(intval($titulo));
+    $a->setTelefone($telefone);
+    $a->setLaboratorio($laboratorio);
+    $a->setEmailAlternativo($email_alternativo);
+    $a->setIes($ies);
+
+
+    try {
+        $aDAO->atualizar($a);
+
+        $link = "http://guilhermevieira.com.br/raiosx/#/NovoUsuario/Confirmar/".$a->getUid();
+        // subject
+        $subject = '[Confirmação de Cadastro LRX] '.$a->getNome();
+
+        // message
+        $message = '
+	<html>
+	<head>
+	 <title>'.$subject.'</title>
+	</head>
+	<body>
+	Confirmar: <a href="'.$link.'">'.$link.'</a>
+	</body>
+	</html>
+	';
+
+        // To send HTML mail, the Content-type header must be set
+        $headers  = 'MIME-Version: 1.0' . "\r\n";
+        $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+
+        // Additional headers
+        $headers .= 'From: LRX <naoresponda@raiosx.fisica.ufc.br>' . "\r\n";
+
+        // Mail it
+        mail($a->getEmail(), $subject, $message, $headers);
+        $r = array(
+            "codigo" => 200
+        );
+    } catch (\Exception $ex) {
+        Erro::lancarErro($ex->getMessage());
+        $r = array(
+            "codigo" => 3,
+            "mensagem" => $ex->getMessage()
+        );
+    }
+
+
+    echo json_encode($r);
+}
+
 
 /********* PREAMBULO ********/
 //echo date_default_timezone_get();

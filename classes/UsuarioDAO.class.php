@@ -115,7 +115,9 @@ class UsuarioDAO {
                 break;
 
             case 6:
-                //TODO: Implementar Administrador
+                $pDAO = new ProfessorDAO();
+                $u = $pDAO->obter((int)$tupla['id_usuario']);
+                return $u;
                 break;
 
             default:
@@ -171,6 +173,22 @@ class UsuarioDAO {
         $sql = sprintf("select * from usuarios where cpf = :cpf");
         $consulta = $conexao->prepare($sql);
         $consulta->bindValue(':cpf', $documento);
+
+        $consulta->execute();
+
+        $tupla = $consulta->fetch(\PDO::FETCH_ASSOC);
+
+        if ($tupla === false)
+            return false;
+        return intval($tupla["nivel_acesso"]);
+    }
+
+    public static function nivelDeAcessoPorUid($uid) {
+        $conexao = new \PDO(DSN, USUARIO, SENHA);
+
+        $sql = sprintf("select * from usuarios where uid = :uid");
+        $consulta = $conexao->prepare($sql);
+        $consulta->bindValue(':uid', $uid);
 
         $consulta->execute();
 

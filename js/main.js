@@ -843,12 +843,56 @@ function exibirSecao() {
                 window.location.hash = "#/Inicio";
             } else {
                 estadoAtual.fadeOut("slow", function () {
+                    $("#frmNovoUsuarioPasso1").trigger("reset");
+                    $("#frmNovoUsuarioPasso2").trigger("reset");
+                    $("#frmNovoUsuarioPasso3").trigger("reset");
                     $(this).removeClass("estadoAtual");
+
+                    $(".passoAtual").removeClass("passoAtual").hide();
+
+                    $("#NovoUsuarioPasso1").addClass("passoAtual").show();
+
+                    $("#frmNovoUsuarioPasso3").submit(function(evento) {
+                        enviarFormNovoUsuario(evento, "cadastrarUsuario");
+                    });
                     $("#NovoUsuario").fadeIn("slow", function () {
                         $(this).addClass("estadoAtual");
                     });
                 });
             }
+            break;
+
+        case "NovoAluno":
+            $.ajax({
+                url: "acao.php",
+                type: "get",
+                async: false,
+                data: {
+                    q: "completarCadastroAluno",
+                    uid: obterParteDoHash(2)
+                }
+            }).done(function(r) {
+                $("#frm_novo_usuario_documento").val(montarCpf(r.aluno.cpf));
+                $("#frm_novo_usuario_email").val(r.aluno.email);
+                $("#frm_novo_usuario_nome").val(r.aluno.nome);
+                $("#frm_novo_usuario_uid").val(obterParteDoHash(2));
+
+
+                $("#frmNovoUsuarioPasso3").submit(function(evento) {
+                    enviarFormNovoUsuario(evento, "cadastrarAluno");
+                });
+
+                $(".passoAtual").removeClass("passoAtual", function () {
+                    $("#NovoUsuarioPasso2").addClass("passoAtual");
+                });
+
+
+                estadoAtual.fadeOut("slow", function() {
+                    $("#NovoUsuario").fadeIn("slow", function () {
+                        $(this).addClass("estadoAtual");
+                    });
+                });
+            });
             break;
 
         case "NovaSolicitacao":
@@ -1004,6 +1048,83 @@ function exibeOpcoesDoEquipamentoSelecionado(equipamento, opcoesDRX, opcoesFRX) 
             }).addClass("escondido");
             break;
     }
+}
+
+function enviarFormNovoUsuario(evento, _q) {
+    evento.stopPropagation();
+    evento.preventDefault();
+
+    var sbmtNovoUsuarioFinalizar = $("#btnNovoUsuarioFinalizar");
+    sbmtNovoUsuarioFinalizar.attr("disabled', 'disabled");
+
+    $("#NovoUsuarioPasso3").fadeOut("slow", function () {
+        $(".passoAtual").removeClass("passoAtual");
+        $("#NovoUsuarioPassoFinal").fadeIn("slow").addClass("passoAtual");
+    });
+
+    var shaObj = new jsSHA("SHA-1", "TEXT");
+    shaObj.update($("#frm_novo_usuario_senha").val());
+    var _senha = shaObj.getHash("HEX");
+    var _documento = $("#frm_novo_usuario_documento").val();
+    var _email = $("#frm_novo_usuario_email").val();
+    var _nome = $("#frm_novo_usuario_nome").val();
+    var _genero = $("#frm_novo_usuario_genero").val();
+    var _email_alternativo = $("#frm_novo_usuario_email_alternativo").val();
+    var _cidade = $("#frm_novo_usuario_cidade").val();
+    var _estado = $("#frm_novo_usuario_estado").val();
+    var _telefone = $("#frm_novo_usuario_telefone").val();
+    var _ies = $("#frm_novo_usuario_ies").val();
+    var _departamento = $("#frm_novo_usuario_departamento").val();
+    var _laboratorio = $("#frm_novo_usuario_laboratorio").val();
+    var _area_de_pesquisa = $("#frm_novo_usuario_area_de_pesquisa").val();
+    var _titulo = $("#frm_novo_usuario_titulo").val();
+    var _uid = $("#frm_novo_usuario_uid").val();
+
+    $.ajax({
+        url: "acao.php",
+        type: "post",
+        data: {
+            q: _q,
+            documento: _documento,
+            email: _email,
+            nome : _nome,
+            senha: _senha,
+            genero:_genero,
+            email_alternativo: _email_alternativo,
+            cidade:_cidade,
+            estado: _estado,
+            telefone:_telefone,
+            ies:_ies,
+            departamento:_departamento,
+            laboratorio:_laboratorio,
+            area_de_pesquisa:_area_de_pesquisa,
+            titulo:_titulo,
+            uid: _uid
+        }
+    }).done(function (r) {
+        if (r.codigo === 200) {
+            window.console.log(r);
+            $("#NovoUsuarioFinalh1").html("Cadastro concluído");
+            $("#NovoUsuarioFinalP").html("Sua solicitação de cadastro foi enviada com sucesso. Verifique seu email para informações adicionais.");
+            $("#NovoUsuarioPassoFinal").append("<a href=\"#/Inicio\" title=\"Voltar à tela inicial\" class=\"botao vermelho\">Voltar à tela inicial</a>");
+        } else {
+            apresentarErro(r.mensagem);
+            $("#NovoUsuarioFinalh1").html("Cadastro não concluído");
+            $("#NovoUsuarioFinalP").html("Ocorreu um erro com sua solicitação de cadastro. Favor tentar novamente em alguns minutos. Caso o problema persista, entre em contato com os técnicos do laboratório no email lrxufc@gmail.com");
+            $("#NovoUsuarioPassoFinal").append("<a href=\"#/Inicio\" title=\"Voltar à tela inicial\" class=\"botao vermelho\">Voltar à tela inicial</a>");
+        }
+        $(".passoAtual").removeClass("passoAtual");
+        $("#NovoUsuarioPasso1").addClass("passoAtual");
+    });
+}
+
+function montarCpf(numero) {
+    var bloco1 = numero.substring(0, 3);
+    var bloco2 = numero.substring(3, 6);
+    var bloco3 = numero.substring(6, 9);
+    var bloco4 = numero.substring(9, 11);
+
+    return bloco1+"."+bloco2+"."+bloco3+"-"+bloco4;
 }
 
 $(document).ready(function () {
@@ -1193,72 +1314,6 @@ $(document).ready(function () {
         $("#NovoUsuarioPasso2").fadeOut("slow", function () {
             $(".passoAtual").removeClass("passoAtual");
             $("#NovoUsuarioPasso3").fadeIn("slow").addClass("passoAtual");
-        });
-    });
-
-    $("#frmNovoUsuarioPasso3").submit(function (evento) {
-        evento.stopPropagation();
-        evento.preventDefault();
-
-        var sbmtNovoUsuarioFinalizar = $("#btnNovoUsuarioFinalizar");
-        sbmtNovoUsuarioFinalizar.attr("disabled', 'disabled");
-
-        $("#NovoUsuarioPasso3").fadeOut("slow", function () {
-            $(".passoAtual").removeClass("passoAtual");
-            $("#NovoUsuarioPassoFinal").fadeIn("slow").addClass("passoAtual");
-        });
-
-        var shaObj = new jsSHA("SHA-1", "TEXT");
-        shaObj.update($("#frm_novo_usuario_senha").val());
-        var _senha = shaObj.getHash("HEX");
-        var _documento = $("#frm_novo_usuario_documento").val();
-        var _email = $("#frm_novo_usuario_email").val();
-        var _nome = $("#frm_novo_usuario_nome").val();
-        var _genero = $("#frm_novo_usuario_genero").val();
-        var _email_alternativo = $("#frm_novo_usuario_email_alternativo").val();
-        var _cidade = $("#frm_novo_usuario_cidade").val();
-        var _estado = $("#frm_novo_usuario_estado").val();
-        var _telefone = $("#frm_novo_usuario_telefone").val();
-        var _ies = $("#frm_novo_usuario_ies").val();
-        var _departamento = $("#frm_novo_usuario_departamento").val();
-        var _laboratorio = $("#frm_novo_usuario_laboratorio").val();
-        var _area_de_pesquisa = $("#frm_novo_usuario_area_de_pesquisa").val();
-        var _titulo = $("#frm_novo_usuario_titulo").val();
-
-        $.ajax({
-            url: "acao.php",
-            type: "post",
-            data: {
-                q: "cadastrarUsuario",
-                documento: _documento,
-                email: _email,
-                nome : _nome,
-                senha: _senha,
-                genero:_genero,
-                email_alternativo: _email_alternativo,
-                cidade:_cidade,
-                estado: _estado,
-                telefone:_telefone,
-                ies:_ies,
-                departamento:_departamento,
-                laboratorio:_laboratorio,
-                area_de_pesquisa:_area_de_pesquisa,
-                titulo:_titulo
-            }
-        }).done(function (r) {
-            if (r.codigo === 200) {
-                window.console.log(r);
-                $("#NovoUsuarioFinalh1").html("Cadastro concluído");
-                $("#NovoUsuarioFinalP").html("Sua solicitação de cadastro foi enviada com sucesso. Verifique seu email para informações adicionais.");
-                $("#NovoUsuarioPassoFinal").append("<a href=\"#/Inicio\" title=\"Voltar à tela inicial\" class=\"botao vermelho\">Voltar à tela inicial</a>");
-            } else {
-                apresentarErro(r.mensagem);
-                $("#NovoUsuarioFinalh1").html("Cadastro não concluído");
-                $("#NovoUsuarioFinalP").html("Ocorreu um erro com sua solicitação de cadastro. Favor tentar novamente em alguns minutos. Caso o problema persista, entre em contato com os técnicos do laboratório no email lrxufc@gmail.com");
-                $("#NovoUsuarioPassoFinal").append("<a href=\"#/Inicio\" title=\"Voltar à tela inicial\" class=\"botao vermelho\">Voltar à tela inicial</a>");
-            }
-            $(".passoAtual").removeClass("passoAtual");
-            $("#NovoUsuarioPasso1").addClass("passoAtual");
         });
     });
 
