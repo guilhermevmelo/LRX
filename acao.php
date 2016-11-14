@@ -116,6 +116,20 @@ if (isset($q) && $q == "loginDireto") {
 /**
  *
  */
+if (isset($q) && $q == "obterListaAlunos") {
+    $id = intval(addslashes($_GET["id"]));
+    $nivel_acesso = intval($_GET['nivel_acesso']);
+    // TODO: Verificar se o usuário solicitante é realment eum professor
+
+    header('Content-Type: application/json');
+    $aDAO = new AlunoDAO();
+    $resposta = $aDAO->obterTodosPorProfessor($id, true);
+    echo json_encode(array("codigo" => 200, "alunos" => $resposta));
+}
+
+/**
+ *
+ */
 if (isset($q) && $q == "obterListaSolicitacoes") {
     $id = addslashes($_GET["id"]);
     $nivel_acesso = intval($_GET['nivel_acesso']);
@@ -176,6 +190,21 @@ if (isset($q) && $q == "obterListaSolicitacoesConcluidas") {
     } else if ($tipoSistema == 2) {
         // TODO: implementar comercial
     }
+}
+
+/**
+ *
+ */
+if (isset($q) && $q == "obterDetalhesAluno") {
+    $id = intval(addslashes($_GET["id_aluno"]));
+    $id_requisitante = intval(addslashes($_GET["id_requisitante"]));
+
+    header('Content-Type: application/json');
+
+    $aDAO = new AlunoDAO();
+    $resposta = $aDAO->obter($id, true);
+    echo json_encode(array("codigo" => 200, "aluno" => $resposta));
+
 }
 
 /**
@@ -405,6 +434,108 @@ if (isset($q) && $q == "verificarDocumento") {
 /**
  *
  */
+if (isset($q) && $q == "vincularAluno") {
+    header('Content-Type: application/json');
+
+    $email = addslashes($_POST['email']);
+    $cpf = addslashes($_POST['documento']);
+    $cpf = desformatarCPF($cpf);
+    $nome = addslashes($_POST['nome']);
+    $id_professor = intval($_POST['id_professor']);
+
+    $podeSerVinculado = false;
+    $existeVinculo = null;
+    $emailExiste = null;
+    $mensagem = null;
+    $documentoExiste = UsuarioDAO::nivelDeAcessoPorDocumento($cpf);
+
+    if ($documentoExiste >= 2) {
+        // documento já cadastrado com um nível de no mínimo professor
+        // TODO: Avisar quando usuario tentar vincular como aluno um usuário já cadastrado como professor
+        $podeSerVinculado = false;
+        $mensagem = "Existe um professor cadastrado com o CPF informado. Por favor, solicite que este entre em contato com a equipe técnica do laboratório para que o cadastro seja modificado.";
+    } else if ($documentoExiste == 1){
+        // documento cadastrado como aluno: verifica se está desvinculado
+        $aDAO = new AlunoDAO();
+        $aluno = $aDAO->obterPorDocumento($cpf);
+        $existeVinculo = AlunoDAO::existeVinculo($aluno->getId());
+
+        if ($existeVinculo) {
+            $mensagem = "Existe um aluno cadastrado com o CPF informado. No entanto, está vinculado a um outro professor. Por favor, solicite que seu aluno se desvincule do outro professor no painel de configurações.";
+        } else {
+            // vincula e envia email
+
+            $podeSerVinculado = true;
+            $mensagem = "Existe um aluno cadastrado com o CPF informado. Foi vinculado com sucesso à sua conta.";
+        }
+
+    } else if (!$documentoExiste) {
+        //documento nao cadastrado: verifica se email esta cadastrado
+        $emailExiste = UsuarioDAO::existeEmail($email);
+
+        if ($emailExiste) {
+            // email ja esta cadastrado notifica o professor
+            $mensagem = "O CPF informado não está cadastrado em nosso sistema, no entanto e email informado está no cadastro de outro CPF. Por favor, entre em contato com seu aluno para conferência dos dados.";
+        } else {
+            // novo usuario, prosseguir com o cadastro
+
+            $aDAO = new AlunoDAO();
+            $pDAO = new ProfessorDAO();
+            $professor = $pDAO->obter($id_professor);
+
+            $aluno = new Aluno($nome, $email, $cpf, $professor);
+            $aluno->setSenhaAberta("12345678");
+
+            $aDAO->criar($aluno);
+
+            $link = "http://guilhermevieira.com.br/raiosx/#/NovoAluno/".$aluno->getUid();
+            // subject
+            $subject = '[Convite para Cadastro no LRX] '.$aluno->getNome();
+
+            // message
+            $message = '
+                <html>
+                <head>
+                 <title>'.$subject.'</title>
+                </head>
+                <body>
+                <p>Olá '.$aluno->getNome().',<br>você foi cadastrado no Sistema de Solicitações do Laboratório de Raios X da UFC sob
+                 orientação de '.$professor->getNome().'. Antes de estar apto a solicitar análises, você precisa completar seu cadastro.
+                  O que pode ser feito seguindo o link abaixo.</p>
+                <p>Continuar cadastro: <a href="'.$link.'">'.$link.'</a></p>
+                </body>
+                </html>
+                ';
+
+            // To send HTML mail, the Content-type header must be set
+            $headers  = 'MIME-Version: 1.0' . "\r\n";
+            $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+
+            // Additional headers
+            $headers .= 'From: LRX <naoresponda@raiosx.fisica.ufc.br>' . "\r\n";
+
+            // Mail it
+            mail($aluno->getEmail(), $subject, $message, $headers);
+
+            $podeSerVinculado = true;
+            $mensagem = "Um convite foi enviado ao email informado. Por favor, solicite que seu aluno conclua o cadastro.";
+        }
+    }
+
+    $r = array(
+        "codigo" => 200,
+        "existeDocumento" => boolval($documentoExiste),
+        "existeEmail" => $emailExiste,
+        "existeVinculo" => $existeVinculo,
+        "podeSerVinculado" => $podeSerVinculado,
+        "mensagem" => $mensagem
+    );
+    echo json_encode($r);
+}
+
+/**
+ *
+ */
 if (isset($q) && $q == "cadastrarUsuario") {
     header('Content-Type: application/json');
 
@@ -487,125 +618,7 @@ if (isset($q) && $q == "cadastrarUsuario") {
 //echo date_default_timezone_get();
 
 /********** TESTES **********/
-if (isset($q) && $q == 'testarSoliDAO') {
-    $saDAO = new SolicitacaoAcademicaDAO();
-    $s = $saDAO->obter(5);
-
-    print_p($s);
-
-}
-
-if (isset($q) && $q == 'testarSoli') {
-    $eDAO = new EquipamentoDAO();
-    $panalytical = $eDAO->obter(2);
-    $uDAO = new ProfessorDAO();
-    $u = $uDAO->obter(1);
-    $s = new SolicitacaoAcademica($u, $panalytical);
-    $fDAO = new FendaDAO();
-    $s->setFenda($fDAO->obter(2));
-
-    $saDAO = new SolicitacaoAcademicaDAO();
-
-    print_p($s);
-
-    $saDAO->criar($s);
-
-    print_p($s);
-}
-
-if (isset($q) && $q == 'testarFenda') {
-//    $f = new Fenda('1/32', true);
-    $fDAO = new FendaDAO();
-//    $fDAO->criar($f);
-
-    print_p($fDAO->obterTodos());
-}
-
-if (isset($q) && $q == 'testarCupom') {
-    $cDAO = new CupomDAO();
-
-    $c = $cDAO->obterPorCodigo("100056E04A42768D5");
-
-    //$c = Cupom::gerarCupom(.5);
-    $c->usar();
-
-    $cDAO->atualizar($c);
-
-    //$cDAO->criar($c);
-    print_p($cDAO->obterTodos());
-}
-
-if (isset($q) && $q == "pdo") {
-    print_p(\PDO::getAvailableDrivers());
-}
-
-if (isset($q) && $q == "usuarios") {
-    //$g = new Grupo();
-    //$g->setId(1);
-
-    $p = new Professor("José Marcos Sasaki", "sasaki@fisica.ufc.br", "98765432100");
-    $p->setAreaDePesquisa("Difração de Raios-X");
-    $p->setCidade("Fortaleza");
-    $p->setEstado("CE");
-    $p->setConfirmado(true);
-    $p->setGenero("M");
-    $p->setDepartamento("Física");
-    $p->setSenhaAberta("sasakilrx");
-    $p->setTitulo(2);
-    $p->setTelefone("85 999999999");
-    $p->setLaboratorio("LRX");
-    $p->setEmailAlternativo("josemarcossasaki@gmail.com");
-    //$p->setGrupo($g);
-//
-    $pDAO = new ProfessorDAO();
-
-    //$pDAO->criar($p);
-
-
-    $profs = $pDAO->obterTodos();
-
-    print_p($profs);
-
-    //$profs[0]->setNome("Guilherme Vieira Melo");
-
-//    $pDAO->atualizar($profs[0]);
-
-//    //$pDAO->criar($p, false);
-//
-    $p2 = $pDAO->obter(1);
-
-//    $a =  new Aluno("Bárbara", "barbaramalves1@gmail.com", "12345678900", $p2);
-//    $a->setAreaDePesquisa("Fisioterapia Respiratória");
-//    $a->setCidade("Fortaleza");
-//    $a->setEstado("CE");
-//    $a->setConfirmado(true);
-//    $a->setGenero("F");
-//    $a->setDepartamento("Fisioterapia");
-//    $a->setSenhaAberta("beautiful18");
-//    $a->setTitulo(0);
-//    $a->setTelefone("85 989233281");
-//    $a->setLaboratorio("HMCASG");
-//    $a->setEmailAlternativo("oproprio@guilhermevieira.com.br");
-
+if (isset($q) && $q == "test") {
     $aDAO = new AlunoDAO();
-    $a = $aDAO->obterTodos();
-//
-//    //print_p($p);
-    //print_p($a);
 
 }
-
-if (isset($q) && $q == 'equipamentos') {
-    $eDAO =  new EquipamentoDAO();
-
-    $e = new Equipamento(null, 'Não Existente', 'FRX', 'Co', false);
-
-    //$eDAO->criar($e);
-    print_p($eDAO->obterTodos());
-
-    //$eDAO->deletar(5);
-    print_p($eDAO->obterTodos());
-}
-
-//for ($i = 3; $i <= 119; $i++)
-//    echo "&lt;option value=\"$i\"&gt;$i&amp;deg;&lt;/option&gt;<br>";

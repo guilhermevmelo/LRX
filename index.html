@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="estilos/all.css" media="all">
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 
-    <script src="js/jquery-1.11.2.js"></script>
+    <script   src="https://code.jquery.com/jquery-3.1.1.js"   integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="   crossorigin="anonymous"></script>
     <script src="js/jquery-ui.js"></script>
     <script src="js/jquery.mask.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
@@ -41,7 +41,7 @@
     </div>
 </noscript>
 <div id="Pagina">
-    <div id="EmDesenvolvimento"><p>Em desenvolvimento v0.1.0</p></div>
+    <div id="EmDesenvolvimento"><p>Em desenvolvimento v0.3.0</p></div>
 
     <div id="DivErro">
         <div id="Erro">
@@ -52,18 +52,18 @@
     <header role="presentation">
         <p id="BoasVindas">
             <span id="_cumprimento">
-                Olá <span id="_titulo"></span> <span id="_nome"></span> (<a href="#/Sair">sair</a>).
+                Olá <span id="_titulo" class="escondido"></span> <span id="_nome"></span> (<a href="#/Sair">sair</a>).
             </span>
             <br>
-            <span id="_segunda_linha">
-                <span id="_Vocativo"></span> <span id="_possui_mensagens"></span> não lidas.
-            </span>
+            <!--<span id="_segunda_linha">-->
+                <!--<span id="_Vocativo"></span> <span id="_possui_mensagens"></span> não lidas.-->
+            <!--</span>-->
         </p>
         <nav>
             <ul>
                 <li><a href="#/Dashboard">Solicitações</a></li>
                 <li><a href="#">Resultados</a></li>
-                <li><a href="#">Alunos</a></li>
+                <li id="menuAlunos"><a href="#/Alunos">Alunos</a></li>
                 <li><a href="#">Configurações</a></li>
                 <li><a href="#">Ajuda</a></li>
             </ul>
@@ -139,10 +139,10 @@
         </section>
 
         <section id="Dashboard" class="secao">
-            <div id="DivMenuLateral" class="bloco">
+            <div class="bloco DivMenuLateral">
                 <h3 class="cabecalho">Solicitações</h3>
-                <nav id="NavMenuLateral">
-                    <ul id="MenuLateral">
+                <nav class="NavMenuLateral">
+                    <ul class="MenuLateral">
                         <li id="linkNovaSolicitacao">Nova Solicitação</li>
                         <li id="linkListarSolicitacoesAbertas">Abertas</li>
                         <li id="linkListarSolicitacoesConcluidas">Concluídas</li>
@@ -168,22 +168,23 @@
 
                 </div>
             </div>
-            <div id="Principal">
-                <ul class="listaSolicitacoes" id="NenhumaSolicitação">
+
+            <div class="Principal">
+                <ul class="lista" id="NenhumaSolicitação">
                     <li class="bloco">
                         <p>Não há solicitações <span></span>a serem exibidas.</p>
                     </li>
                 </ul>
-                <ul class="listaSolicitacoes" id="ListaSolicitacoes">
+                <ul class="lista" id="ListaSolicitacoes">
                     <!--<li class="bloco relativo">-->
-                        <!--<span class="solicitacaoMenuFlutuante floatRight"><a href="#/Dashboard/E/1">excluir</a> </span>-->
-                        <!--<h3 class="solicitacaoIdentificacao">GVM001D001</h3>-->
-                        <!--<h4 class="vermelho">Aguardando autorização do professor</h4>-->
-                        <!--<p>-->
-                            <!--Criada em <span class="solicitacaoDataSolicitacao">14 de Abril</span><br>-->
-                            <!--<span class="solicitacaoDataSolicitacao">Entregue em 15 de Abril</span>-->
-                        <!--</p>-->
-                        <!--<div class="bandeiraEquipamento panalytical"></div>-->
+                    <!--<span class="solicitacaoMenuFlutuante floatRight"><a href="#/Dashboard/E/1">excluir</a> </span>-->
+                    <!--<h3 class="solicitacaoIdentificacao">GVM001D001</h3>-->
+                    <!--<h4 class="vermelho">Aguardando autorização do professor</h4>-->
+                    <!--<p>-->
+                    <!--Criada em <span class="solicitacaoDataSolicitacao">14 de Abril</span><br>-->
+                    <!--<span class="solicitacaoDataSolicitacao">Entregue em 15 de Abril</span>-->
+                    <!--</p>-->
+                    <!--<div class="bandeiraEquipamento panalytical"></div>-->
                     <!--</li>-->
                 </ul>
 
@@ -558,9 +559,81 @@
                     <p class="identificadorAmostra"></p>
                 </div>
             </div>
+        </section>
 
+        <section id="Alunos" class="secao">
+            <div class="bloco DivMenuLateral">
+                <h3 class="cabecalho">Alunos</h3>
+                <nav class="NavMenuLateral">
+                    <ul class="MenuLateral">
+                        <li id="linkNovoAluno">Vincular Aluno</li>
+                        <li id="linkListarAlunos">Lista de alunos</li>
+                    </ul>
+                </nav>
+            </div>
+            <div id="DetalheAluno">
+                <div class="bloco relativo">
+                    <!--<span class="solicitacaoMenuFlutuante floatRight"><a id="detalhe_Cancelar">desvincular</a></span>-->
+                    <h3 class="identificacao" id="detalheAluno_Identificacao"></h3>
+                    <h4 id="detalheAluno_Status">Aluno ainda não completou o cadastro</h4>
+                    <!--<span id="detalheAluno_Autorizar"><a id="detalheAluno_linkAutorizar">autorizar</a></span>-->
+                    <p>
+                        Email: <span id="detalheAluno_Email"></span><br>
+                        Análises em andamento: <span id="detalheAluno_NumeroSolicitacoes"></span><br>
+                        Vínculo: <span id="detalheAluno_Vinculo"></span><br>
+                        Área de Pesquisa: <span id="detalheAluno_Area"></span>
+                    </p>
+                </div>
+            </div>
 
+            <div class="Principal">
+                <ul class="lista" id="NenhumAluno">
+                    <li class="bloco">
+                        <p>O senhor ainda não posui alunos cadastrados.</p>
+                    </li>
+                </ul>
+                <ul class="lista" id="ListaAlunos"></ul>
 
+                <div id="NovoAluno">
+                    <h3 class="cabecalho">Vincular Aluno</h3>
+                    <p>Insira abaixo o cpf e o email do seu aluno. Verificaremos se já existe um cadastro
+                        com os dados especificados.<br>Caso haja, verificaremos se o aluno não possui vínculo com algum
+                        outro professor, antes de vinculá-lo à sua conta.<br>Caso não haja cadastro, um convite será
+                        enviado por email para que ele complete o cadastro.</p>
+
+                    <form name="FormNovoAluno" id="FormNovoAluno" action="#/Alunos" method="post">
+                        <h4>Enviar convite para novo aluno</h4>
+
+                        <fieldset>
+                            <label for="frm_novo_aluno_convite_cpf">CPF</label>
+                            <input type="text" id="frm_novo_aluno_convite_cpf"
+                                   name="frm_novo_aluno_convite_cpf" placeholder="000.000.000-00" size="15" maxlength="15" required>
+                        </fieldset>
+                        <fieldset>
+                            <label for="frm_novo_aluno_convite_email">Email</label>
+                            <input type="email" id="frm_novo_aluno_convite_email"
+                                   name="frm_novo_aluno_convite_email" placeholder="rietveld@fisica.ufc.br" required>
+                        </fieldset>
+
+                        <fieldset>
+                            <label for="frm_novo_aluno_convite_nome">Nome</label>
+                            <input type="text" id="frm_novo_aluno_convite_nome"
+                                   name="frm_novo_aluno_convite_nome" required>
+                        </fieldset>
+
+                        <fieldset>
+                            <input type="submit" name="frm_novo_aluno_convite_sbmt" id="frm_novo_aluno_convite_sbmt"
+                                   value="Vincular">
+                        </fieldset>
+
+                    </form>
+
+                </div>
+
+                <div id="NovoAlunoEnviado" class="bloco">
+                    <p></p>
+                </div>
+            </div>
 
         </section>
 

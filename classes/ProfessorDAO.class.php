@@ -89,7 +89,7 @@ class ProfessorDAO /*extends DAO*/ {
      * @param int $id
      * @return Professor | bool
      */
-    public function obter(int $id) : Professor {
+    public function obter(int $id, $em_array = true) : Professor {
         $sql = sprintf("select u.*, p.id_grupo from usuarios u, professores p where u.id_usuario = :id_usuario and p.id_professor = u.id_usuario limit 1");
 
         $consulta = $this->conexao->prepare($sql);

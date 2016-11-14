@@ -165,6 +165,38 @@ class UsuarioDAO {
         return true;
     }
 
+    public static function nivelDeAcessoPorDocumento($documento) {
+        $conexao = new \PDO(DSN, USUARIO, SENHA);
+
+        $sql = sprintf("select * from usuarios where cpf = :cpf");
+        $consulta = $conexao->prepare($sql);
+        $consulta->bindValue(':cpf', $documento);
+
+        $consulta->execute();
+
+        $tupla = $consulta->fetch(\PDO::FETCH_ASSOC);
+
+        if ($tupla === false)
+            return false;
+        return intval($tupla["nivel_acesso"]);
+    }
+
+    public static function nivelDeAcessoPorEmail($email) {
+        $conexao = new \PDO(DSN, USUARIO, SENHA);
+
+        $sql = sprintf("select * from usuarios where email = :email");
+        $consulta = $conexao->prepare($sql);
+        $consulta->bindValue(':email', $email);
+
+        $consulta->execute();
+
+        $tupla = $consulta->fetch(\PDO::FETCH_ASSOC);
+
+        if ($tupla === false)
+            return false;
+        return intval($tupla["nivel_acesso"]);
+    }
+
     public static function login($email, $senha) {
         $conexao = new \PDO(DSN, USUARIO, SENHA);
         $sql = sprintf("select id_usuario, nivel_acesso from usuarios where email = :email and senha = :senha limit 1");

@@ -75,7 +75,7 @@ function print_p($expression) {
  * Adiciona a função tratarExpection como o manipulador padrão de exceções
  */
 // TODO: Habilitar a linha abaixo
-set_exception_handler('LRX\tratarErro');
+//set_exception_handler('LRX\tratarErro');
 
 /**
  * Define o fuso-horário padrão do servidor para UTC-3 (America/Frtaleza)

@@ -198,7 +198,7 @@ class SolicitacaoAcademicaDAO {
                 }
 
 
-                $u = $uDAO->obter(intval($tupla['id_usuario']));
+                $u = $uDAO->obter(intval($tupla['id_usuario']), false);
 
                 $s = array(
                     "id_solicitacao"    => intval($tupla['id_solicitacao']),
@@ -377,7 +377,7 @@ class SolicitacaoAcademicaDAO {
                     default:
                         $uDAO = new ProfessorDAO();
                 }
-                $u = $uDAO->obter(intval($tupla['id_usuario']));
+                $u = $uDAO->obter(intval($tupla['id_usuario']), false);
 
                 $s = array(
                     "id_solicitacao"    => intval($tupla['id_solicitacao']),
@@ -524,13 +524,19 @@ class SolicitacaoAcademicaDAO {
 
     public function obterNumeroSolicitacoesEmAndamento($id_usuario) {
         $sql = sprintf("select u.limite, count(*) as aprovadas from solicitacoes_academicas sa, solicitacoes s, usuarios u, alunos a where ((sa.id_usuario = u.id_usuario and u.id_usuario = :id) or (sa.id_usuario = a.id_aluno and a.id_professor = u.id_usuario and u.id_usuario = :id)) and sa.id_solicitacao = s.id_solicitacao and s.status < 7 and s.status > 1 group by (u.id_usuario)");
+
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(':id', $id_usuario);
 
         $consulta->execute();
-        if ($tupla = $consulta->fetch() === false)
+        $tupla = $consulta->fetch(\PDO::FETCH_ASSOC);
+        if ($tupla === false)
             return array('aprovadas' => 0);
-        return array('aprovadas' => $tupla['aprovadas']);
+        return array(
+            'aprovadas' => $tupla['aprovadas'],
+            'limite'    => $tupla['limite']
+        );
+
     }
 
     public function existe($id) {

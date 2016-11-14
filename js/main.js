@@ -295,7 +295,171 @@ function obterDetalhesSolicitacao(id) {
 
 }
 
-// TODO fundir as duas funções em uma só
+function obterDetalhesAluno(id) {
+    $("#DetalheAluno").fadeOut("slow", function () {
+        $.ajax({
+            url: "acao.php",
+            type: "get",
+            data: {
+                q: "obterDetalhesAluno",
+                id_aluno: id,
+                id_requisitante: usuario.id
+            }
+        }).done(function (r) {
+            if (r.codigo !== 200) {
+                apresentarErro(r);
+            } else {
+                $("#detalheAluno_Identificacao").html(r.aluno.nome);
+
+                if (!r.aluno.confirmado) {
+                    $("#detalheAluno_Status").html("Aluno ainda não completou o cadastro").show();
+                } else {
+                    $("#detalheAluno_Status").hide();
+                    var vinculo = "";
+                    switch (r.aluno.vinculo) {
+                        case 1:
+                            vinculo = "Iniciação Científica";
+                            break;
+                        case 2:
+                            vinculo = "Mestrado";
+                            break;
+                        case 3:
+                            vinculo = "Doutorado";
+                            break;
+                        case 4:
+                            vinculo = "Técnico";
+                            break;
+                        case 5:
+                            vinculo = "Pesquisador";
+                            break;
+                    }
+                    $("#detalheAluno_Vinculo").html(vinculo);
+                    $("#detalheAluno_Area").html(r.aluno.area_de_pesquisa);
+                    $("#detalheAluno_Email").html(r.aluno.email);
+                    $("#detalheAluno_NumeroSolicitacoes").html(r.aluno.numero_solicitacoes_abertas + "/" + r.aluno.limite);
+                }
+
+                // $("#detalheAluno_Cancelar").click(function() {
+                //     //TODO adicionar confirmacao
+                //     $(this).off("click");
+                //     $("#Detalhe").removeClass("ativo").fadeOut("slow");
+                //     $("#_sol" + r.aluno.id_solicitacao).effect("blind");
+                //
+                //     $.ajax({
+                //         url: "acao.php",
+                //         type: "get",
+                //         data: {
+                //             q: "cancelarSolicitacao",
+                //             id: r.aluno.id_solicitacao,
+                //             uid: usuario.uid,
+                //             nivel_acesso: usuario.nivel_acesso
+                //         }
+                //     }).done(function (re) {
+                //         if (re.codigo !== 200) {
+                //             apresentarErro(re);
+                //         }
+                //     });
+                // });
+
+                $("#DetalheAluno").fadeIn("slow").addClass("ativo");
+
+            }
+        });
+    });
+}
+
+function preencherAlunos() {
+    $("#ListaAlunos").empty();
+    $("#DetalheAluno").fadeOut("slow");
+    $("#NenhumAluno").fadeOut("slow");
+    $.ajax({
+        url: "acao.php",
+        type: "get",
+        async: false,
+        data: {
+            q: "obterListaAlunos",
+            id: usuario.id,
+            nivel_acesso: usuario.nivel_acesso
+        }
+    }).done(function (r) {
+        if (r.codigo !== 200) {
+            apresentarErro(r);
+        } else {
+            window.console.log(r);
+            var  n = 0;
+
+            if (r.alunos.length === 0) {
+                $("#NenhumAluno").fadeIn("slow");
+            }
+
+            r.alunos.forEach(function(_s) {
+                var elementoLi = document.createElement("li");
+                elementoLi.classList.add("bloco");
+                elementoLi.classList.add("relativo");
+                elementoLi.classList.add("escondido");
+
+                elementoLi.id = "_alu" + _s.id_aluno;
+
+                var identificacaoH3 = document.createElement("h3");
+                identificacaoH3.classList.add("alunoNome");
+                identificacaoH3.innerHTML = _s.nome;
+                elementoLi.appendChild(identificacaoH3);
+
+                var statusH4 = document.createElement("h4");
+
+                if(_s.confirmado) {
+
+                    switch (_s.vinculo) {
+                        case 1:
+                            statusH4.classList.add("cinza");
+                            statusH4.innerHTML = "Iniciação Científica";
+                            break;
+
+                        case 2:
+                            statusH4.classList.add("azul");
+                            statusH4.innerHTML = "Mestrado";
+                            break;
+
+                        case 3:
+                            statusH4.classList.add("verde");
+                            statusH4.innerHTML = "Doutorado";
+                            break;
+
+                        case 4:
+                            statusH4.classList.add("amarela");
+                            statusH4.innerHTML = "Técnico";
+                            break;
+
+                        case 5:
+                            statusH4.classList.add("amarela");
+                            statusH4.innerHTML = "Pesquisador";
+                            break;
+                    }
+
+                    statusH4.innerHTML += " - " + _s.numero_solicitacoes_abertas + " solicitações em andamento.";
+                } else {
+                    statusH4.classList.add("vermelha");
+                    statusH4.innerHTML = "Aluno ainda não completou cadastro no sistema.";
+                }
+
+                elementoLi.appendChild(statusH4);
+                var jElementoLi = $(elementoLi);
+
+                jElementoLi.click(function() {
+                    window.console.log("Click no aluno", _s.id_aluno);
+                    obterDetalhesAluno(_s.id_aluno);
+                });
+
+                $("#ListaAlunos").append(elementoLi);
+
+                setTimeout(function(){
+                    $(elementoLi).fadeIn("slow").removeClass("escondido");
+                }, 100*n++);
+
+            });
+        }
+    });
+}
 
 function preencherSolicitacoes() {
     $("#ListaSolicitacoes").empty();
@@ -304,6 +468,7 @@ function preencherSolicitacoes() {
     $.ajax({
         url: "acao.php",
         type: "get",
+        async: false,
         data: {
             q: "obterListaSolicitacoes",
             id: usuario.id,
@@ -442,6 +607,7 @@ function preencherSolicitacoesConcluidas() {
         $.ajax({
             url: "acao.php",
             type: "get",
+            async: false,
             data: {
                 q: "obterListaSolicitacoesConcluidas",
                 id: usuario.id,
@@ -646,6 +812,21 @@ function exibirSecao() {
             }
             break;
 
+        case "Alunos":
+            if (usuario === null || usuario.nivel_acesso < 2) {
+                location.hash = "#/Inicio";
+            } else {
+                estadoAtual.fadeOut("slow", function () {
+                    $(this).removeClass("estadoAtual");
+                    $("#Alunos").fadeIn("slow", function () {
+                        $(this).addClass("estadoAtual");
+                        $("#ListaAlunos").addClass("ativo");
+                        preencherAlunos();
+                    });
+                });
+            }
+            break;
+
         case "NovoUsuario":
             // TODO: Terminar
             if (obterParteDoHash(2) === "Confirmar") {
@@ -671,7 +852,7 @@ function exibirSecao() {
             break;
 
         case "NovaSolicitacao":
-            $("#Principal, #Detalhe").fadeOut("slow", function () {
+            $(".Principal, #Detalhe").fadeOut("slow", function () {
                 obterEquipamentos();
                 $("#NovaSolicitacao").fadeIn("slow");
             });
@@ -693,6 +874,7 @@ function exibirSecao() {
 }
 
 function iniciarAplicacao() {
+    window.console.log("Iniciando a Aplicação...");
     var _uid = lerCookie("uid");
     if (_uid !== null) {
         tipo_sistema = lerCookie("tipoSistema");
@@ -730,8 +912,16 @@ function iniciarAplicacao() {
                 atualizarTokens();
                 atualizarCampos();
 
+                if (usuario.nivel_acesso < 2) {
+                    $('#menuAlunos').hide();
+                }
+
                 $("header").toggle("drop", {direction:"up"});
-                location.hash = "#/Dashboard";
+
+                var hash = obterParteDoHash(1);
+                if (hash === "NovoUsuario" || hash === "Inicio") {
+                    window.location.hash = "#/Dashboard";
+                }
             }
         });
 
@@ -743,6 +933,8 @@ function iniciarAplicacao() {
 
 function definirMascaras() {
     $("#frm_novo_usuario_documento").mask("000.000.000-00", {reverse: true});
+    $("#frm_novo_aluno_convite_cpf").mask("000.000.000-00", {reverse: true});
+
     var options =  {onKeyPress: function(tel, e, field, options){
         var masks = ["(00) 00000-0000', '(00) 0000-00009"];
         var mask = (tel.length>14) ? masks[0] : masks[1];
@@ -756,8 +948,7 @@ function definirMascaras() {
  *  Função de validação de CPF
  *  obtida de http://www.geradordecpf.org/funcao-javascript-validar-cpf.html em 13/09/2016
  */
-function validaCPF(cpf)
-{
+function validaCPF(cpf) {
     var numeros, digitos, soma, i, resultado, digitos_iguais;
     digitos_iguais = 1;
     if (cpf.length < 11)
@@ -850,7 +1041,7 @@ $(document).ready(function () {
         onModulesLoaded: function () {
             $.setupValidation({
                 lang: "pt",
-                form: "#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3, #FormNovaSolicitacao, #FormLogin",
+                form: "#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3, #FormNovaSolicitacao, #FormLogin, #FormNovoAluno",
                 validate: {
                     "#frm_novo_usuario_documento": {
                         validation: "_cpf"
@@ -872,6 +1063,9 @@ $(document).ready(function () {
                         validation: "length",
                         length: "min8",
                         "error-msg": "A senha deve conter no mínimo 8 dígitos"
+                    },
+                    "#frm_novo_aluno_convite_cpf" : {
+                        validation : "_cpf"
                     }
                 }
             });
@@ -893,7 +1087,7 @@ $(document).ready(function () {
         evento.stopPropagation();
         evento.preventDefault();
 
-        //$("#frm_login_sbmt").setAttribute('disabled', "disabled");
+        $("#frm_login_sbmt").prop("disabled", true);
 
         clearTimeout(timeoutErro);
         $("#DivErro").fadeOut("slow");
@@ -915,6 +1109,7 @@ $(document).ready(function () {
                 tipoSistema: tipo_sistema
             }
         }).done(function (r) {
+            $("#frm_login_sbmt").prop("disabled", false);
             if (r.codigo !== 200) {
                 apresentarErro(r);
             } else {
@@ -1094,7 +1289,22 @@ $(document).ready(function () {
                 $("#NovaSolicitacao").fadeIn("slow").addClass("ativo");
             });
         });
+    });
 
+    $("#linkNovoAluno").click(function () {
+        $("#NenhumAluno").fadeOut("slow", function() {
+            $(".ativo").removeClass("ativo").fadeOut("slow", function () {
+                $("#FormNovoAluno").trigger("reset");
+                $("#NovoAluno").fadeIn("slow").addClass("ativo");
+            });
+        });
+    });
+
+    $("#linkListarAlunos").click(function () {
+        $(".ativo").removeClass("ativo").fadeOut("slow", function () {
+            $("#ListaAlunos").addClass("ativo").fadeIn("slow");
+            preencherAlunos();
+        });
     });
 
     $("#linkListarSolicitacoesAbertas").click(function () {
@@ -1112,6 +1322,48 @@ $(document).ready(function () {
     });
 
 
+    /**
+     * Adiciona gatilho para gerenciar vinculo de novo aluno
+     */
+    $("#FormNovoAluno").submit(function(evento) {
+        evento.stopPropagation();
+        evento.preventDefault();
+
+        clearTimeout(timeoutErro);
+        $("#DivErro").fadeOut("slow");
+
+        $("#frm_novo_aluno_convite_sbmt").prop("disabled", true);
+
+        var _email = $("#frm_novo_aluno_convite_email").val();
+        var _cpf = $("#frm_novo_aluno_convite_cpf").val();
+        var _nome = $("#frm_novo_aluno_convite_nome").val();
+
+        $.ajax({
+            url: "acao.php",
+            type: "post",
+            data: {
+                q: "vincularAluno",
+                email: _email,
+                documento: _cpf,
+                nome: _nome,
+                id_professor: usuario.id
+            }
+        }).done(function(r) {
+            if (r.codigo === 200) {
+                window.console.log(r);
+                if (r.naoPodeSerVinculado) {
+                    apresentarErro({mensagem: r.mensagem});
+
+                } else {
+                    $("#NovoAluno").removeClass("ativo").fadeOut("slow", function () {
+                        $("#NovoAlunoEnviado p").html(r.mensagem);
+                        $("#NovoAlunoEnviado").fadeIn("slow").addClass("ativo");
+                    });
+                }
+            }
+        });
+
+    });
 
     $("#FormNovaSolicitacao").submit(function (evento) {
         evento.stopPropagation();

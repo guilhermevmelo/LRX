@@ -164,7 +164,8 @@ article p {
 
 /** Elementos estruturais **/
 .bloco,
-#Principal #NovaSolicitacao {
+.Principal #NovaSolicitacao,
+.Principal #NovoAluno {
     background-color: rgba(255, 255, 255, 1);
     box-shadow: 0 2px 4px #222;
     padding: 10px;
@@ -198,46 +199,51 @@ footer nav#MenuRodape {
     margin: 0 auto;
 }
 
-#Dashboard #DivMenuLateral {
+#Dashboard .DivMenuLateral,
+#Alunos .DivMenuLateral{
     width: 25%;
     float: left;
 }
 
-#Dashboard #Principal/*,
+#Dashboard .Principal,
+#Alunos .Principal/*,
 #Dashboard #NovaSolicitacao*/ {
     float: left;
     width: calc(45% - 10px);
     margin-left: 10px;
 }
 
-#Principal #NovaSolicitacao {
+.Principal #NovaSolicitacao,
+.Principal #NovoAluno {
     display: none;
 }
 
 
-#Dashboard #Detalhe {
+#Dashboard #Detalhe,
+#Alunos #DetalheAluno {
     float: right;
     width: calc(30% - 10px);
     margin-left: 10px;
     display: none;
 }
 
-#Detalhe h4 {
+#Detalhe h4,
+#DetalheAluno h4{
     font-size: 1.1em;
     padding: 10px 0;
 }
 
-#DivMenuLateral {
+.DivMenuLateral {
     padding: 0;
 }
 
-#MenuLateral {
+.MenuLateral {
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-#MenuLateral li {
+.MenuLateral li {
     display: block;
     padding: 5px 10px;
 
@@ -248,7 +254,7 @@ footer nav#MenuRodape {
     transition: background-color .5s;
 }
 
-#MenuLateral li:hover {
+.MenuLateral li:hover {
     background-color: rgba(220, 31, 24, 0.12);
     cursor: pointer;
 }
@@ -301,12 +307,12 @@ header p#BoasVindas {
 
 #_nome { font-weight: bold; }
 
-ul.listaSolicitacoes {
+ul.lista {
     /*max-width: 500px;*/
     list-style-type: none;
 }
 
-ul.listaSolicitacoes li {
+ul.lista li {
     /*border: 1px solid gray;*/
     background-color: rgba(255, 255, 255, 1);
     box-shadow: 0 2px 4px #222;
@@ -319,12 +325,13 @@ ul.listaSolicitacoes li {
     transition: background-color, height 0.5s;
 }
 
-ul.listaSolicitacoes li:hover {
+ul.lista li:hover {
     background-color: #ffebef;
     cursor: pointer;
 }
 
-ul#NenhumaSolicitação { display: none; }
+ul#NenhumaSolicitação,
+ul#NenhumAluno { display: none; }
 
 .solicitacaoEmDetalhe {
     background-color: aliceblue;
@@ -515,7 +522,8 @@ input[type="submit"]:hover,
 }
 
 .secao,
-#NovaSolicitacaoIdentificador {
+#NovaSolicitacaoIdentificador,
+#NovoAlunoEnviado {
     display: none;
 }
 
