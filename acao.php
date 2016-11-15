@@ -271,7 +271,7 @@ if (isset($q) && $q == "novaSolicitacaoAcademica") {
 
     $s = new SolicitacaoAcademica($u, $equipamento);
     $fDAO = new FendaDAO();
-    // Adicionando uma fenda padrão. Deverá ser modifiada pelo operador.
+    // Adicionando uma fenda padrão. Deverá ser modificada pelo operador.
     $s->setFenda($fDAO->obter(2));
     $s->setTipo(intval($_POST['tipo_amostra']));
     $s->setComposicao(addslashes($_POST['composicao']));

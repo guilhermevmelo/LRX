@@ -167,8 +167,8 @@ class SolicitacaoAcademicaDAO {
 
     public function obterTodosPorUsuario($id, $incluirAlunos = true, $emArray = true) {
         $sql = $incluirAlunos === true ?
-            sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u, alunos a where sa.id_solicitacao = s.id_solicitacao and ((u.id_usuario = sa.id_usuario and sa.id_usuario = :id) or (sa.id_usuario = u.id_usuario and u.id_usuario = a.id_aluno and a.id_professor = :id and sa.id_usuario != :id)) and s.status < 7 and s.status > 0") :
-            sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s.id_solicitacao and u.id_usuario = sa.id_usuario and sa.id_usuario = :id and s.status < 7 and s.status > 0");
+            sprintf("select distinct sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u, alunos a where sa.id_solicitacao = s.id_solicitacao and ((u.id_usuario = sa.id_usuario and sa.id_usuario = :id) or (sa.id_usuario = u.id_usuario and u.id_usuario = a.id_aluno and a.id_professor = :id and sa.id_usuario != :id)) and s.status < 7 and s.status > 0") :
+            sprintf("select distinct sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s.id_solicitacao and u.id_usuario = sa.id_usuario and sa.id_usuario = :id and s.status < 7 and s.status > 0");
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(':id', $id, \PDO::PARAM_INT);
         $consulta->execute();
@@ -523,7 +523,13 @@ class SolicitacaoAcademicaDAO {
     }
 
     public function obterNumeroSolicitacoesEmAndamento($id_usuario) {
-        $sql = sprintf("select u.limite, count(*) as aprovadas from solicitacoes_academicas sa, solicitacoes s, usuarios u, alunos a where ((sa.id_usuario = u.id_usuario and u.id_usuario = :id) or (sa.id_usuario = a.id_aluno and a.id_professor = u.id_usuario and u.id_usuario = :id)) and sa.id_solicitacao = s.id_solicitacao and s.status < 7 and s.status > 1 group by (u.id_usuario)");
+        $sql = sprintf("select u.limite, count(distinct s.id_solicitacao) as aprovadas 
+from solicitacoes_academicas sa, solicitacoes s, usuarios u, alunos a 
+where ((sa.id_usuario = u.id_usuario and u.id_usuario = :id) or (sa.id_usuario = a.id_aluno and a.id_professor = u.id_usuario and u.id_usuario = :id)) 
+	and sa.id_solicitacao = s.id_solicitacao 
+    and s.status < 7 
+    and s.status > 1 
+group by (u.id_usuario)");
 
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(':id', $id_usuario);
@@ -533,8 +539,8 @@ class SolicitacaoAcademicaDAO {
         if ($tupla === false)
             return array('aprovadas' => 0);
         return array(
-            'aprovadas' => $tupla['aprovadas'],
-            'limite'    => $tupla['limite']
+            'aprovadas' => intval($tupla['aprovadas']),
+            'limite'    => intval($tupla['limite'])
         );
 
     }

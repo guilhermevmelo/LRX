@@ -117,6 +117,12 @@ function atualizarTokens() {
 }
 
 function atualizarCampos() {
+    if (usuario.nivel_acesso < 2) {
+        $("#menuAlunos").hide();
+    } else {
+        $("#menuAlunos").show();
+    }
+
     var token;
     for (token in tokens) {
         if (tokens.hasOwnProperty(token)) {
@@ -956,10 +962,6 @@ function iniciarAplicacao() {
                 atualizarTokens();
                 atualizarCampos();
 
-                if (usuario.nivel_acesso < 2) {
-                    $('#menuAlunos').hide();
-                }
-
                 $("header").toggle("drop", {direction:"up"});
 
                 var hash = obterParteDoHash(1);
@@ -1113,8 +1115,6 @@ function enviarFormNovoUsuario(evento, _q) {
             $("#NovoUsuarioFinalP").html("Ocorreu um erro com sua solicitação de cadastro. Favor tentar novamente em alguns minutos. Caso o problema persista, entre em contato com os técnicos do laboratório no email lrxufc@gmail.com");
             $("#NovoUsuarioPassoFinal").append("<a href=\"#/Inicio\" title=\"Voltar à tela inicial\" class=\"botao vermelho\">Voltar à tela inicial</a>");
         }
-        $(".passoAtual").removeClass("passoAtual");
-        $("#NovoUsuarioPasso1").addClass("passoAtual");
     });
 }
 
@@ -1128,8 +1128,6 @@ function montarCpf(numero) {
 }
 
 $(document).ready(function () {
-
-    atualizarCampos();
     definirMascaras();
 
     /**
