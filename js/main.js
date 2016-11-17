@@ -412,7 +412,7 @@ function preencherUsuarios(professores, alunos, apenasOperadores, apenasNaoConfi
             if (r.usuarios.length === 0) {
                 var nenhum_usuario = $("#NenhumUsuario");
                 if (apenasNaoConfirmados) {
-                    nenhum_usuario.html("<li class=\"bloco\"><p>Não solicitações de cadastros novos.</p></li>");
+                    nenhum_usuario.html("<li class=\"bloco\"><p>Não há solicitações de cadastros novos.</p></li>");
                 } else {
                     nenhum_usuario.html("<li class=\"bloco\"><p>Ainda não há usuários cadastrados.</p></li>");
                 }
@@ -473,14 +473,18 @@ function preencherUsuarios(professores, alunos, apenasOperadores, apenasNaoConfi
                 elementoLi.appendChild(statusH4);
                 var jElementoLi = $(elementoLi);
 
+                jElementoLi.off();
                 jElementoLi.click(function() {
+
                     $("#DetalheUsuario").fadeOut("slow", function() {
                         $("#detalheUsuario_Identificacao").html(_s.nome);
 
                         if (!_s.confirmado) {
                             if (_s.nivel_acesso === 2) {
                                 $("#detalheUsuario_Status").html("Usuario ainda não foi confirmado").show();
-                                $("#detalheUsuario_linkConfirmar").click(function(evento) {
+                                var detLinkConfirmar = $("#detalheUsuario_linkConfirmar");
+                                detLinkConfirmar.off();
+                                detLinkConfirmar.click(function(evento) {
                                     evento.stopPropagation();
                                     evento.preventDefault();
 
@@ -501,71 +505,48 @@ function preencherUsuarios(professores, alunos, apenasOperadores, apenasNaoConfi
                                             $("#detalheUsuario_Confirmar").slideUp("fast");
                                             apresentarErro(q);
                                         }
+                                        preencherUsuarios(professores, alunos, apenasOperadores, apenasNaoConfirmados);
                                     });
                                 });
                                 $("#detalheUsuario_Confirmar").show();
                             } else {
+                                $("#detalheUsuario_Confirmar").hide();
                                 $("#detalheUsuario_Status").html("Usuario ainda não completou o cadastro").show();
                             }
-
                         } else {
                             $("#detalheUsuario_Status").hide();
                             $("#detalheUsuario_Confirmar").hide();
-                            if (_s.nivel_acesso === 1) {
-                                var vinculo = "";
-                                switch (_s.vinculo) {
-                                    case 1:
-                                        vinculo = "Iniciação Científica";
-                                        break;
-                                    case 2:
-                                        vinculo = "Mestrado";
-                                        break;
-                                    case 3:
-                                        vinculo = "Doutorado";
-                                        break;
-                                    case 4:
-                                        vinculo = "Técnico";
-                                        break;
-                                    case 5:
-                                        vinculo = "Pesquisador";
-                                        break;
-                                }
-
-                                $("#detalheUsuario_Vinculo").html(vinculo);
-                                $("#detalheUsuario_Vinculo").show();
-                            } else {
-                                $("#detalheUsuario_Vinculo").hide();
-                            }
-
-
-                            $("#detalheUsuario_CPF").html(montarCpf(_s.cpf));
-                            $("#detalheUsuario_Telefone").html(_s.telefone);
-                            $("#detalheUsuario_Area").html(_s.area_de_pesquisa);
-                            $("#detalheUsuario_Email").html(_s.email);
-                            $("#detalheUsuario_NumeroSolicitacoes").html(_s.em_andamento + "/" + _s.limite);
                         }
 
-                        // $("#detalheUsuario_Cancelar").click(function() {
-                        //     //TODO adicionar confirmacao
-                        //     $(this).off("click");
-                        //     $("#Detalhe").removeClass("ativo").fadeOut("slow");
-                        //     $("#_sol" + r.usuario.id_solicitacao).effect("blind");
-                        //
-                        //     $.ajax({
-                        //         url: "acao.php",
-                        //         type: "get",
-                        //         data: {
-                        //             q: "cancelarSolicitacao",
-                        //             id: r.usuario.id_solicitacao,
-                        //             uid: usuario.uid,
-                        //             nivel_acesso: usuario.nivel_acesso
-                        //         }
-                        //     }).done(function (re) {
-                        //         if (re.codigo !== 200) {
-                        //             apresentarErro(re);
-                        //         }
-                        //     });
-                        // });
+                        if (_s.nivel_acesso === 1) {
+                            var vinculo = "";
+                            switch (_s.vinculo) {
+                                case 1:
+                                    vinculo = "Iniciação Científica";
+                                    break;
+                                case 2:
+                                    vinculo = "Mestrado";
+                                    break;
+                                case 3:
+                                    vinculo = "Doutorado";
+                                    break;
+                                case 4:
+                                    vinculo = "Técnico";
+                                    break;
+                                case 5:
+                                    vinculo = "Pesquisador";
+                                    break;
+                            }
+                            $("#detalheUsuario_Vinculo").html(vinculo);
+                            $("#detalheUsuario_VinculoContainer").show();
+                        } else {
+                            $("#detalheUsuario_VinculoContainer").hide();
+                        }
+                        $("#detalheUsuario_CPF").html(montarCpf(_s.cpf));
+                        $("#detalheUsuario_Telefone").html(_s.telefone);
+                        $("#detalheUsuario_Area").html(_s.area_de_pesquisa);
+                        $("#detalheUsuario_Email").html(_s.email);
+                        $("#detalheUsuario_NumeroSolicitacoes").html(_s.em_andamento + "/" + _s.limite);
 
                         $("#DetalheUsuario").fadeIn("slow").addClass("ativo");
                     });
@@ -658,7 +639,6 @@ function preencherAlunos() {
 
                 elementoLi.appendChild(statusH4);
                 var jElementoLi = $(elementoLi);
-
                 jElementoLi.click(function() {
                     window.console.log("Click no aluno", _s.id_aluno);
                     obterDetalhesAluno(_s.id_aluno);
@@ -1081,14 +1061,16 @@ function exibirSecao() {
                 estadoAtual.fadeOut("slow", function () {
                     $("#frmNovoUsuarioPasso1").trigger("reset");
                     $("#frmNovoUsuarioPasso2").trigger("reset");
-                    $("#frmNovoUsuarioPasso3").trigger("reset");
+                    var frmNovoUsuario = $("#frmNovoUsuarioPasso3");
+                    frmNovoUsuario.trigger("reset");
                     $(this).removeClass("estadoAtual");
 
                     $(".passoAtual").removeClass("passoAtual").hide();
 
                     $("#NovoUsuarioPasso1").addClass("passoAtual").show();
 
-                    $("#frmNovoUsuarioPasso3").submit(function(evento) {
+                    frmNovoUsuario.off();
+                    frmNovoUsuario.submit(function(evento) {
                         enviarFormNovoUsuario(evento, "cadastrarUsuario");
                     });
                     $("#NovoUsuario").fadeIn("slow", function () {
@@ -1114,7 +1096,9 @@ function exibirSecao() {
                 $("#frm_novo_usuario_uid").val(obterParteDoHash(2));
 
 
-                $("#frmNovoUsuarioPasso3").submit(function(evento) {
+                var frmNovoUsuario = $("#frmNovoUsuarioPasso3");
+                frmNovoUsuario.off();
+                frmNovoUsuario.submit(function(evento) {
                     enviarFormNovoUsuario(evento, "cadastrarAluno");
                 });
 
@@ -1618,9 +1602,6 @@ $(document).ready(function () {
         });
     });
 
-
-
-
     $("#linkListarSolicitacoesAbertas").click(function () {
         $(".ativo").removeClass("ativo").fadeOut("slow", function () {
             $("#ListaSolicitacoes").addClass("ativo").fadeIn("slow");
@@ -1634,7 +1615,6 @@ $(document).ready(function () {
             preencherSolicitacoesConcluidas();
         });
     });
-
 
     /**
      * Adiciona gatilho para gerenciar vinculo de novo aluno

@@ -774,8 +774,17 @@ if (isset($q) && $q == "confirmarUsuario") {
         $u->confirmar();
         $uDAO->atualizar($u);
 
-        $assunto = "[Laboratório de Raios X] Liberação de cadastro";
-        $mensagem = "<p>Olá professor ".$u->getNome().",<br>confirmamos seu cargo de professor e liberamos seu cadastro para solicitações. Pedimos que cadastre individualmente seus alunos para que também possam fazer solicitações.</p>";
+        $assunto = "[LRX] Liberação de cadastro";
+        $link = "http://guilhermevieira.com.br/raiosx/";
+        $mensagem = "<p>Olá professor ".$u->getNome().",<br>confirmamos seu cargo de professor e liberamos seu cadastro 
+            para solicitações.</p>
+            <p>Acesse o sistema em <a href='".$link."' target='_blank'>".$link."</a> e cadastre individualmente seus alunos
+            na opção <strong>Vincular Aluno</strong> do menu <strong>Alunos</strong> para que também possam fazer solicitações.</p>
+            <p>Observe que todas as solicitações, tanto suas quanto de seus alunos, <span style='color:red;'>devem ser aprovadas pelo senhor</span> 
+            antes de serem enviadas ao laboratório. Observe também que cada professor possui um limite todal de vinte solicitações
+            simultâneas em andamento, somadas as suas e a de seus alunos. Contamos, portanto, com sua colaboração para que não forneça
+            seus dados de login arbitrariamente para seus alunos, deixe que tenham cada qual seu próprio cadastro.</p>
+            <p>Agradecemos a compreensão e seja bem vindo!<br>Equipe LRX</p>";
         $correio = new Correio($u->getEmail(), $assunto, $mensagem);
         $correio->enviar();
 
