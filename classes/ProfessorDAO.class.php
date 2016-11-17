@@ -189,27 +189,50 @@ class ProfessorDAO /*extends DAO*/ {
     /**
      * @return array
      */
-    public function obterTodos() : array {
-        $sql = sprintf("select u.*, p.id_grupo from usuarios u, professores p where p.id_professor = u.id_usuario order by id_usuario desc");
+    public function obterTodos($em_array = false, $apenas_nao_confirmados = false) : array {
+        $sql = $apenas_nao_confirmados ?
+            sprintf("select u.*, p.id_grupo from usuarios u, professores p where p.id_professor = u.id_usuario and confirmado = 0 order by id_usuario desc") :
+            sprintf("select u.*, p.id_grupo from usuarios u, professores p where p.id_professor = u.id_usuario order by id_usuario desc");
         $professores = array();
-
+        $saDAO = new SolicitacaoAcademicaDAO();
         foreach ($this->conexao->query($sql) as $tupla) {
-            $p = new Professor($tupla['nome'], $tupla['email'], $tupla['cpf'], (int) $tupla['id_usuario'], $tupla['uid'],
-                (int)$tupla['limite']);
-            $p->setConfirmado($tupla['confirmado'] == 1 ? true : false);
-            $p->setCidade($tupla['cidade']);
-            $p->setEstado($tupla['estado']);
-            $p->setSenha($tupla['senha']);
-            $p->setAreaDePesquisa($tupla['area_de_pesquisa']);
-            $p->setDepartamento($tupla['departamento']);
-            $p->setLaboratorio($tupla['laboratorio']);
-            $p->setEmailAlternativo($tupla['email_alternativo']);
-            $p->setNivelAcesso((int) $tupla['nivel_acesso']);
-            $p->setGenero((int) $tupla['genero']);
-            $p->setTelefone($tupla['telefone']);
-            $p->setTitulo((int) $tupla['titulo']);
-            $p->setIes($tupla['ies']);
-            $p->setSaudacao((int) $tupla['saudacao']);
+            if ($em_array) {
+                $p = array();
+                $p["id_usuario"] = intval($tupla["id_usuario"]);
+                $p["nome"] = $tupla["nome"];
+                $p["email"] = $tupla["email"];
+                $p["cpf"] = $tupla["cpf"];
+                $p["uid"] = $tupla["uid"];
+                $p["confirmado"] = $tupla["confirmado"] == 1 ? true : false;
+                $p["cidade"] = $tupla["cidade"];
+                $p["estado"] = $tupla["estado"];
+                $p["limite"] = intval($tupla["limite"]);
+                $p["area_de_pesquisa"] = $tupla["area_de_pesquisa"];
+                $p["departamento"] = $tupla["departamento"];
+                $p["ies"] = $tupla["ies"];
+                $p["laboratorio"] = $tupla["laboratorio"];
+                $p["genero"] = intval($tupla["genero"]);
+                $p["telefone"] = $tupla["telefone"];
+                $p["nivel_acesso"] = intval($tupla["nivel_acesso"]);
+                $p["em_andamento"] = $saDAO->obterNumeroSolicitacoesEmAndamento(intval($tupla["id_usuario"]))["aprovadas"];
+            } else {
+                $p = new Professor($tupla['nome'], $tupla['email'], $tupla['cpf'], (int) $tupla['id_usuario'], $tupla['uid'],
+                    (int)$tupla['limite']);
+                $p->setConfirmado($tupla['confirmado'] == 1 ? true : false);
+                $p->setCidade($tupla['cidade']);
+                $p->setEstado($tupla['estado']);
+                $p->setSenha($tupla['senha']);
+                $p->setAreaDePesquisa($tupla['area_de_pesquisa']);
+                $p->setDepartamento($tupla['departamento']);
+                $p->setLaboratorio($tupla['laboratorio']);
+                $p->setEmailAlternativo($tupla['email_alternativo']);
+                $p->setNivelAcesso((int) $tupla['nivel_acesso']);
+                $p->setGenero((int) $tupla['genero']);
+                $p->setTelefone($tupla['telefone']);
+                $p->setTitulo((int) $tupla['titulo']);
+                $p->setIes($tupla['ies']);
+                $p->setSaudacao((int) $tupla['saudacao']);
+            }
 
             array_push($professores, $p);
         }

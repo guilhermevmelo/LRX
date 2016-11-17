@@ -200,13 +200,15 @@ footer nav#MenuRodape {
 }
 
 #Dashboard .DivMenuLateral,
-#Alunos .DivMenuLateral{
+#Alunos .DivMenuLateral,
+#Usuarios .DivMenuLateral {
     width: 25%;
     float: left;
 }
 
 #Dashboard .Principal,
-#Alunos .Principal/*,
+#Alunos .Principal,
+#Usuarios .Principal/*,
 #Dashboard #NovaSolicitacao*/ {
     float: left;
     width: calc(45% - 10px);
@@ -220,7 +222,8 @@ footer nav#MenuRodape {
 
 
 #Dashboard #Detalhe,
-#Alunos #DetalheAluno {
+#Alunos #DetalheAluno,
+#Usuarios #DetalheUsuario {
     float: right;
     width: calc(30% - 10px);
     margin-left: 10px;
@@ -228,7 +231,8 @@ footer nav#MenuRodape {
 }
 
 #Detalhe h4,
-#DetalheAluno h4{
+#DetalheAluno h4,
+#DetalheUsuario h4 {
     font-size: 1.1em;
     padding: 10px 0;
 }
@@ -331,7 +335,8 @@ ul.lista li:hover {
 }
 
 ul#NenhumaSolicitação,
-ul#NenhumAluno { display: none; }
+ul#NenhumAluno,
+ul#NenhumUsuario { display: none; }
 
 .solicitacaoEmDetalhe {
     background-color: aliceblue;
@@ -536,7 +541,8 @@ input[type="submit"]:hover,
     display: none;
 }
 
-#detalhe_Autorizar {
+#detalhe_Autorizar,
+#detalheUsuario_Confirmar {
     display: none;
 }
 

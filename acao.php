@@ -119,12 +119,50 @@ if (isset($q) && $q == "loginDireto") {
 if (isset($q) && $q == "obterListaAlunos") {
     $id = intval(addslashes($_GET["id"]));
     $nivel_acesso = intval($_GET['nivel_acesso']);
-    // TODO: Verificar se o usuário solicitante é realment eum professor
+    if ($nivel_acesso !== UsuarioDAO::nivelDeAcessoPorId($id)) {
+        Erro::lancarErro(array("codigo" => 300, "mensagem" => "Você não tem permissão para executar essa ação"));
+        return;
+    }
 
-    header('Content-Type: application/json');
     $aDAO = new AlunoDAO();
     $resposta = $aDAO->obterTodosPorProfessor($id, true);
+    header('Content-Type: application/json');
     echo json_encode(array("codigo" => 200, "alunos" => $resposta));
+}
+
+/**
+ *
+ */
+if (isset($q) && $q == "obterListaUsuarios") {
+    $id = intval(addslashes($_GET["id"]));
+    $nivel_acesso = intval($_GET['nivel_acesso']);
+    $professores = boolval($_GET['professores']);
+    $alunos = boolval($_GET['alunos']);
+    $operadores = boolval($_GET['operadores']);
+    $nao_confirmados = boolval($_GET['nao_confirmados']);
+    if ($nivel_acesso !== UsuarioDAO::nivelDeAcessoPorId($id)) {
+        Erro::lancarErro(array("codigo" => 303, "mensagem" => "Você não tem permissão para executar essa ação"));
+        die();
+    }
+
+    $resposta = array();
+
+    if ($professores) {
+        $pDAO = new ProfessorDAO();
+        $resposta = array_merge($resposta, $pDAO->obterTodos(true, $nao_confirmados));
+    }
+
+    if ($alunos) {
+        $aDAO = new AlunoDAO();
+        $resposta = array_merge($resposta, $aDAO->obterTodos(true, $nao_confirmados));
+    }
+
+    if ($operadores) {
+
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode(array("codigo" => 200, "usuarios" => $resposta));
 }
 
 /**
@@ -174,10 +212,13 @@ if (isset($q) && $q == "obterListaSolicitacoesConcluidas") {
     if ($tipoSistema == 1) {
         $saDAO = new SolicitacaoAcademicaDAO();
 
-
         // TODO implementar demais niveis
         switch ($nivel_acesso) {
             case 5:
+                $resposta = $saDAO->obterTodasConcluidas();
+                break;
+
+            case 6:
                 $resposta = $saDAO->obterTodasConcluidas();
                 break;
 
@@ -323,11 +364,16 @@ if (isset($q) && $q == "alterarSolicitacaoAcademica") {
  *
  */
 if (isset($q) && $q == "aprovarSolicitacao") {
-
     $pDAO = new ProfessorDAO();
     $saDAO = new SolicitacaoAcademicaDAO();
 
     $id_professor = intval($_GET["id_professor"]);
+
+    if (UsuarioDAO::nivelDeAcessoPorId($id_professor != 2)) {
+        Erro::lancarErro(array("codigo" => 300, "mensagem" => "Você não tem permissão para executar essa ação"));
+        return;
+    }
+
 
     $p = $pDAO->obter($id_professor);
 
@@ -337,17 +383,24 @@ if (isset($q) && $q == "aprovarSolicitacao") {
         $nSolicitacoesAndamento = $saDAO->obterNumeroSolicitacoesEmAndamento($id_professor)["aprovadas"];
         $limite = $p->getLimite();
 
-        //echo $nSolicitacoesAndamento . " < " . $limite;
-
+        // Verifica se o professor ainda tem limite para aprovar solicitações
         if ($nSolicitacoesAndamento < $limite) {
             $s = $saDAO->obter(intval($_GET["id_solicitacao"]), false);
-            $s->setStatus(2);
-            $saDAO->atualizar($s);
 
-            header('Content-Type: application/json');
-            echo json_encode(array("codigo" => 200));
+            // Verifica se o solicitante (que pode ser um aluno) tem limite para que sua solicitação seja aprovada
+            $solicitante = $s->getSolicitante();
+            $nSolicitacoesAndamentoSolicitante = $saDAO->obterNumeroSolicitacoesEmAndamento($solicitante);
+
+            if ($nSolicitacoesAndamentoSolicitante["aprovadas"] < $nSolicitacoesAndamentoSolicitante["limite"]) {
+                $s->setStatus(2);
+                $saDAO->atualizar($s);
+                header('Content-Type: application/json');
+                echo json_encode(array("codigo" => 200));
+            } else {
+                Erro::lancarErro(array("codigo" => 4001, "mensagem" => "Limite de solicitações do solicitante atingido"));
+            }
         } else {
-            Erro::lancarErro(array("codigo" => 4000, "mensagem" => "Limite de solicitações atingido"));
+            Erro::lancarErro(array("codigo" => 4000, "mensagem" => "Limite de solicitações do professor atingido"));
         }
     }
 
@@ -403,7 +456,6 @@ if (isset($q) && $q == "confirmarEmail") {
     }
 
 }
-
 
 /**
  *
@@ -515,33 +567,17 @@ if (isset($q) && $q == "vincularAluno") {
             $aDAO->criar($aluno);
 
             $link = "http://guilhermevieira.com.br/raiosx/#/NovoAluno/".$aluno->getUid();
-            // subject
-            $subject = '[Convite para Cadastro no LRX] '.$aluno->getNome();
 
-            // message
-            $message = '
-                <html>
-                <head>
-                 <title>'.$subject.'</title>
-                </head>
-                <body>
+
+            $assunto = '[Convite para Cadastro no LRX] '.$aluno->getNome();
+            $corpo_da_mensagem = '
                 <p>Olá '.$aluno->getNome().',<br>você foi cadastrado no Sistema de Solicitações do Laboratório de Raios X da UFC sob
                  orientação de '.$professor->getNome().'. Antes de estar apto a solicitar análises, você precisa completar seu cadastro.
                   O que pode ser feito seguindo o link abaixo.</p>
                 <p>Continuar cadastro: <a href="'.$link.'">'.$link.'</a></p>
-                </body>
-                </html>
-                ';
-
-            // To send HTML mail, the Content-type header must be set
-            $headers  = 'MIME-Version: 1.0' . "\r\n";
-            $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-
-            // Additional headers
-            $headers .= 'From: LRX <naoresponda@raiosx.fisica.ufc.br>' . "\r\n";
-
-            // Mail it
-            mail($aluno->getEmail(), $subject, $message, $headers);
+            ';
+            $correio = new Correio($email, $assunto, $corpo_da_mensagem);
+            $correio->enviar();
 
             $podeSerVinculado = true;
             $mensagem = "Um convite foi enviado ao email informado. Por favor, solicite que seu aluno conclua o cadastro.";
@@ -579,7 +615,6 @@ if (isset($q) && $q == "completarCadastroAluno") {
         echo json_encode($resposta);
     }
 }
-
 
 /**
  *
@@ -623,30 +658,12 @@ if (isset($q) && $q == "cadastrarUsuario") {
         $pDAO->criar($p);
 
         $link = "http://guilhermevieira.com.br/raiosx/#/NovoUsuario/Confirmar/".$p->getUid();
-        // subject
-        $subject = '[Confirmação de Cadastro LRX] '.$p->getNome();
+        $assunto = '[Confirmação de Cadastro LRX] '.$p->getNome();
+        $corpo_da_mensagem = '<p>Confirmar: <a href="'.$link.'">'.$link.'</a></p>';
 
-        // message
-        $message = '
-	<html>
-	<head>
-	 <title>'.$subject.'</title>
-	</head>
-	<body>
-	Confirmar: <a href="'.$link.'">'.$link.'</a>
-	</body>
-	</html>
-	';
+        $correio = new Correio($email, $assunto, $corpo_da_mensagem);
+        $correio->enviar();
 
-        // To send HTML mail, the Content-type header must be set
-        $headers  = 'MIME-Version: 1.0' . "\r\n";
-        $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-
-        // Additional headers
-        $headers .= 'From: LRX <naoresponda@raiosx.fisica.ufc.br>' . "\r\n";
-
-        // Mail it
-        mail($p->getEmail(), $subject, $message, $headers);
         $r = array(
             "codigo" => 200
         );
@@ -707,30 +724,13 @@ if (isset($q) && $q == "cadastrarAluno") {
         $aDAO->atualizar($a);
 
         $link = "http://guilhermevieira.com.br/raiosx/#/NovoUsuario/Confirmar/".$a->getUid();
-        // subject
-        $subject = '[Confirmação de Cadastro LRX] '.$a->getNome();
+        $assunto = '[Confirmação de Cadastro LRX] '.$a->getNome();
 
-        // message
-        $message = '
-	<html>
-	<head>
-	 <title>'.$subject.'</title>
-	</head>
-	<body>
-	Confirmar: <a href="'.$link.'">'.$link.'</a>
-	</body>
-	</html>
-	';
+        $corpo_da_mensagem = '<p>Confirmar: <a href="'.$link.'">'.$link.'</a></p>';
 
-        // To send HTML mail, the Content-type header must be set
-        $headers  = 'MIME-Version: 1.0' . "\r\n";
-        $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+        $correio = new Correio($email, $assunto, $corpo_da_mensagem);
+        $correio->enviar();
 
-        // Additional headers
-        $headers .= 'From: LRX <naoresponda@raiosx.fisica.ufc.br>' . "\r\n";
-
-        // Mail it
-        mail($a->getEmail(), $subject, $message, $headers);
         $r = array(
             "codigo" => 200
         );
@@ -746,12 +746,50 @@ if (isset($q) && $q == "cadastrarAluno") {
     echo json_encode($r);
 }
 
+/**
+ *
+ */
+if (isset($q) && $q == "confirmarUsuario") {
+    $id = intval(addslashes($_GET["id"]));
+    $id_operador = intval(addslashes($_GET["id_operador"]));
+
+    $nivel_acesso_operador = UsuarioDAO::nivelDeAcessoPorId($id_operador);
+
+    if ($nivel_acesso_operador < 5) {
+        Erro::lancarErro(array("codigo" => 303, "mensagem" => "Você não tem permissão para executar essa ação"));
+        die();
+    }
+
+    $nivel_acesso_professor = UsuarioDAO::nivelDeAcessoPorId($id);
+    if ($nivel_acesso_professor != 2) {
+        Erro::lancarErro(array("codigo" => 5000, "mensagem" => "Não é possível confirmar um usuário que não seja professor"));
+        die();
+    }
+    $uDAO = new ProfessorDAO();
+    $u = $uDAO->obter($id, false);
+
+    if ($u === null) {
+        Erro::lancarErro(array("codigo" => 300, "mensagem" => "Usuário não encontrado."));
+    } else {
+        $u->confirmar();
+        $uDAO->atualizar($u);
+
+        $assunto = "[Laboratório de Raios X] Liberação de cadastro";
+        $mensagem = "<p>Olá professor ".$u->getNome().",<br>confirmamos seu cargo de professor e liberamos seu cadastro para solicitações. Pedimos que cadastre individualmente seus alunos para que também possam fazer solicitações.</p>";
+        $correio = new Correio($u->getEmail(), $assunto, $mensagem);
+        $correio->enviar();
+
+        header('Content-Type: application/json');
+        echo json_encode(array("codigo" => 200, "mensagem" => "O professor ". $u->getNome(). " foi confirmado"));
+    }
+}
+
 
 /********* PREAMBULO ********/
 //echo date_default_timezone_get();
 
 /********** TESTES **********/
 if (isset($q) && $q == "test") {
-    $aDAO = new AlunoDAO();
-
+    var_dump(boolval("false"));
+    var_dump((bool)"0");
 }

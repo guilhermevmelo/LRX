@@ -117,10 +117,22 @@ function atualizarTokens() {
 }
 
 function atualizarCampos() {
-    if (usuario.nivel_acesso < 2) {
+    if (usuario.nivel_acesso !== 2) {
         $("#menuAlunos").hide();
     } else {
         $("#menuAlunos").show();
+    }
+
+    if (usuario.nivel_acesso !== 5 && usuario.nivel_acesso !== 6) {
+        $("#menuUsuarios").hide();
+    } else {
+        $("#menuUsuarios").show();
+    }
+
+    if (usuario.nivel_acesso === 5 || usuario.nivel_acesso === 6) {
+        $("#linkNovaSolicitacao").hide();
+    } else {
+        $("#linkNovaSolicitacao").show();
     }
 
     var token;
@@ -368,9 +380,205 @@ function obterDetalhesAluno(id) {
                 // });
 
                 $("#DetalheAluno").fadeIn("slow").addClass("ativo");
-
             }
         });
+    });
+}
+
+function preencherUsuarios(professores, alunos, apenasOperadores, apenasNaoConfirmados) {
+    $("#ListaUsuarios").empty();
+    $("#DetalheUsuario").fadeOut("slow");
+    $("#NenhumUsuario").fadeOut("slow");
+    $.ajax({
+        url: "acao.php",
+        type: "get",
+        async: false,
+        data: {
+            q: "obterListaUsuarios",
+            id: usuario.id,
+            nivel_acesso: usuario.nivel_acesso,
+            professores: professores?1:0,
+            alunos: alunos?1:0,
+            operadores: apenasOperadores?1:0,
+            nao_confirmados: apenasNaoConfirmados?1:0
+        }
+    }).done(function (r) {
+        if (r.codigo !== 200) {
+            apresentarErro(r);
+        } else {
+            window.console.log(r);
+            var  n = 0;
+
+            if (r.usuarios.length === 0) {
+                var nenhum_usuario = $("#NenhumUsuario");
+                if (apenasNaoConfirmados) {
+                    nenhum_usuario.html("<li class=\"bloco\"><p>Não solicitações de cadastros novos.</p></li>");
+                } else {
+                    nenhum_usuario.html("<li class=\"bloco\"><p>Ainda não há usuários cadastrados.</p></li>");
+                }
+                nenhum_usuario.fadeIn("slow");
+            }
+
+            r.usuarios.forEach(function(_s) {
+                var elementoLi = document.createElement("li");
+                elementoLi.classList.add("bloco");
+                elementoLi.classList.add("relativo");
+                elementoLi.classList.add("escondido");
+
+                elementoLi.id = "_usu" + _s.id_usuario;
+
+                var identificacaoH3 = document.createElement("h3");
+                identificacaoH3.classList.add("usuarioNome");
+                identificacaoH3.innerHTML = _s.nome;
+                elementoLi.appendChild(identificacaoH3);
+
+                var statusH4 = document.createElement("h4");
+
+                if(_s.confirmado) {
+                    if (_s.nivel_acesso === 1) {
+                        switch (_s.vinculo) {
+                            case 1:
+                                statusH4.classList.add("cinza");
+                                statusH4.innerHTML = "Iniciação Científica";
+                                break;
+
+                            case 2:
+                                statusH4.classList.add("azul");
+                                statusH4.innerHTML = "Mestrado";
+                                break;
+
+                            case 3:
+                                statusH4.classList.add("verde");
+                                statusH4.innerHTML = "Doutorado";
+                                break;
+
+                            case 4:
+                                statusH4.classList.add("amarelo");
+                                statusH4.innerHTML = "Técnico";
+                                break;
+
+                            case 5:
+                                statusH4.classList.add("amarelo");
+                                statusH4.innerHTML = "Pesquisador";
+                                break;
+                        }
+                        statusH4.innerHTML += " - ";
+                    }
+                    statusH4.innerHTML += _s.em_andamento + " solicitações em andamento.";
+                } else {
+                    statusH4.classList.add("vermelho");
+                    statusH4.innerHTML = _s.nivel_acesso === 1 ? "Usuário ainda não completou cadastro no sistema." : "Usuário ainda não confirmado";
+                }
+
+                elementoLi.appendChild(statusH4);
+                var jElementoLi = $(elementoLi);
+
+                jElementoLi.click(function() {
+                    $("#DetalheUsuario").fadeOut("slow", function() {
+                        $("#detalheUsuario_Identificacao").html(_s.nome);
+
+                        if (!_s.confirmado) {
+                            if (_s.nivel_acesso === 2) {
+                                $("#detalheUsuario_Status").html("Usuario ainda não foi confirmado").show();
+                                $("#detalheUsuario_linkConfirmar").click(function(evento) {
+                                    evento.stopPropagation();
+                                    evento.preventDefault();
+
+                                    $.ajax({
+                                        url: "acao.php",
+                                        type: "get",
+                                        data: {
+                                            q: "confirmarUsuario",
+                                            id: _s.id_usuario,
+                                            id_operador: usuario.id,
+                                            nivel_acesso: usuario.nivel_acesso
+                                        }
+                                    }).done(function (q) {
+                                        if (q.codigo !== 200) {
+                                            apresentarErro(q);
+                                        } else {
+                                            $("#detalheUsuario_Status").slideUp("fast");
+                                            $("#detalheUsuario_Confirmar").slideUp("fast");
+                                            apresentarErro(q);
+                                        }
+                                    });
+                                });
+                                $("#detalheUsuario_Confirmar").show();
+                            } else {
+                                $("#detalheUsuario_Status").html("Usuario ainda não completou o cadastro").show();
+                            }
+
+                        } else {
+                            $("#detalheUsuario_Status").hide();
+                            $("#detalheUsuario_Confirmar").hide();
+                            if (_s.nivel_acesso === 1) {
+                                var vinculo = "";
+                                switch (_s.vinculo) {
+                                    case 1:
+                                        vinculo = "Iniciação Científica";
+                                        break;
+                                    case 2:
+                                        vinculo = "Mestrado";
+                                        break;
+                                    case 3:
+                                        vinculo = "Doutorado";
+                                        break;
+                                    case 4:
+                                        vinculo = "Técnico";
+                                        break;
+                                    case 5:
+                                        vinculo = "Pesquisador";
+                                        break;
+                                }
+
+                                $("#detalheUsuario_Vinculo").html(vinculo);
+                                $("#detalheUsuario_Vinculo").show();
+                            } else {
+                                $("#detalheUsuario_Vinculo").hide();
+                            }
+
+
+                            $("#detalheUsuario_CPF").html(montarCpf(_s.cpf));
+                            $("#detalheUsuario_Telefone").html(_s.telefone);
+                            $("#detalheUsuario_Area").html(_s.area_de_pesquisa);
+                            $("#detalheUsuario_Email").html(_s.email);
+                            $("#detalheUsuario_NumeroSolicitacoes").html(_s.em_andamento + "/" + _s.limite);
+                        }
+
+                        // $("#detalheUsuario_Cancelar").click(function() {
+                        //     //TODO adicionar confirmacao
+                        //     $(this).off("click");
+                        //     $("#Detalhe").removeClass("ativo").fadeOut("slow");
+                        //     $("#_sol" + r.usuario.id_solicitacao).effect("blind");
+                        //
+                        //     $.ajax({
+                        //         url: "acao.php",
+                        //         type: "get",
+                        //         data: {
+                        //             q: "cancelarSolicitacao",
+                        //             id: r.usuario.id_solicitacao,
+                        //             uid: usuario.uid,
+                        //             nivel_acesso: usuario.nivel_acesso
+                        //         }
+                        //     }).done(function (re) {
+                        //         if (re.codigo !== 200) {
+                        //             apresentarErro(re);
+                        //         }
+                        //     });
+                        // });
+
+                        $("#DetalheUsuario").fadeIn("slow").addClass("ativo");
+                    });
+                });
+
+                $("#ListaUsuarios").append(elementoLi);
+
+                setTimeout(function(){
+                    $(elementoLi).fadeIn("slow").removeClass("escondido");
+                }, 100*n++);
+
+            });
+        }
     });
 }
 
@@ -467,6 +675,7 @@ function preencherAlunos() {
     });
 }
 
+// TODO: Juntar as duas funções abaixo em uma só
 function preencherSolicitacoes() {
     $("#ListaSolicitacoes").empty();
     $("#Detalhe").fadeOut("slow");
@@ -828,6 +1037,27 @@ function exibirSecao() {
                         $(this).addClass("estadoAtual");
                         $("#ListaAlunos").addClass("ativo");
                         preencherAlunos();
+                    });
+                });
+            }
+            break;
+
+        case "Usuarios":
+            if (usuario === null || (usuario.nivel_acesso !== 5 && usuario.nivel_acesso !== 6)) {
+                location.hash = "#/Inicio";
+            } else {
+                if (usuario.nivel_acesso !== 6) {
+                    $("#linkListarOperadores").hide();
+                } else {
+                    $("#linkListarOperadores").show();
+                }
+
+                estadoAtual.fadeOut("slow", function () {
+                    $(this).removeClass("estadoAtual");
+                    $("#Usuarios").fadeIn("slow", function () {
+                        $(this).addClass("estadoAtual");
+                        $("#ListaUsuarios").addClass("ativo");
+                        preencherUsuarios(true, false, false, true);
                     });
                 });
             }
@@ -1359,6 +1589,37 @@ $(document).ready(function () {
             preencherAlunos();
         });
     });
+
+    $("#linkListarUsuarios").click(function () {
+        $(".ativo").removeClass("ativo").fadeOut("slow", function () {
+            $("#ListaUsuarios").addClass("ativo").fadeIn("slow");
+            preencherUsuarios(true, true, false, false);
+        });
+    });
+
+    $("#linkListarProfessores").click(function () {
+        $(".ativo").removeClass("ativo").fadeOut("slow", function () {
+            $("#ListaUsuarios").addClass("ativo").fadeIn("slow");
+            preencherUsuarios(true, false, false, false);
+        });
+    });
+
+    $("#linkListarAlunosCadastrados").click(function () {
+        $(".ativo").removeClass("ativo").fadeOut("slow", function () {
+            $("#ListaUsuarios").addClass("ativo").fadeIn("slow");
+            preencherUsuarios(false, true, false, false);
+        });
+    });
+
+    $("#linkListarUsuariosPendentes").click(function () {
+        $(".ativo").removeClass("ativo").fadeOut("slow", function () {
+            $("#ListaUsuarios").addClass("ativo").fadeIn("slow");
+            preencherUsuarios(true, false, false, true);
+        });
+    });
+
+
+
 
     $("#linkListarSolicitacoesAbertas").click(function () {
         $(".ativo").removeClass("ativo").fadeOut("slow", function () {

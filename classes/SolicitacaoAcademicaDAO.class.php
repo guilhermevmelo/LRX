@@ -257,9 +257,10 @@ class SolicitacaoAcademicaDAO {
         return $solicitacoes;
     }
 
-    public function obterTodasConcluidasPorUsuario($id, $emArray = true) {
-        $sql = sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s.id_solicitacao and sa.id_usuario = u.id_usuario and sa.id_usuario
- = :id and (s.status < 0 or s.status = 7) order by data_conclusao desc");
+    public function obterTodasConcluidasPorUsuario($id, $incluirAlunos = true, $emArray = true) {
+        $sql = $incluirAlunos === true ?
+            sprintf("select distinct sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u, alunos a where sa.id_solicitacao = s.id_solicitacao and ((u.id_usuario = sa.id_usuario and sa.id_usuario = :id) or (sa.id_usuario = u.id_usuario and u.id_usuario = a.id_aluno and a.id_professor = :id and sa.id_usuario != :id)) and (s.status = 7 or s.status < 0)") :
+            sprintf("select distinct sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s.id_solicitacao and u.id_usuario = sa.id_usuario and sa.id_usuario = :id and (s.status = 7 or s.status < 0)");
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(':id', $id, \PDO::PARAM_INT);
         $consulta->execute();
@@ -347,7 +348,12 @@ class SolicitacaoAcademicaDAO {
         return $solicitacoes;
     }
 
-    public function obterTodasIncompletas( $somenteAutorizadas = false, $emArray = true) {
+    /**
+     * @param bool $somenteAutorizadas Se true, a função adiciona à resposta somente aquelas solicitações que já foram autorizadas pelo professor responsável.
+     * @param bool $emArray se true, adiciona cada solicitação como um array; se false, adiciona como um objeto.
+     * @return array
+     */
+    public function obterTodasIncompletas($somenteAutorizadas = false, $emArray = true) {
         $sql = sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s
         .id_solicitacao and sa.id_usuario = u.id_usuario and s.status < 7 and s.status > %d", $somenteAutorizadas? 1 : 0);
         $consulta = $this->conexao->prepare($sql);
@@ -436,7 +442,7 @@ class SolicitacaoAcademicaDAO {
     }
 
     public function obterTodasConcluidas($emArray = true) {
-        $sql = sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s.id_solicitacao and sa.id_usuario = u.id_usuario and (s.status < 0 or s.status = 7)");
+        $sql = sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s.id_solicitacao and sa.id_usuario = u.id_usuario and (s.status < 0 or s.status = 7) order by data_conclusao desc");
         $consulta = $this->conexao->prepare($sql);
         $consulta->execute();
 

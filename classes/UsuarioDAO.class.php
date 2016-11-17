@@ -215,6 +215,22 @@ class UsuarioDAO {
         return intval($tupla["nivel_acesso"]);
     }
 
+    public static function nivelDeAcessoPorId($id) {
+        $conexao = new \PDO(DSN, USUARIO, SENHA);
+
+        $sql = sprintf("select * from usuarios where id_usuario = :id");
+        $consulta = $conexao->prepare($sql);
+        $consulta->bindValue(':id', $id);
+
+        $consulta->execute();
+
+        $tupla = $consulta->fetch(\PDO::FETCH_ASSOC);
+
+        if ($tupla === false)
+            return false;
+        return intval($tupla["nivel_acesso"]);
+    }
+
     public static function login($email, $senha) {
         $conexao = new \PDO(DSN, USUARIO, SENHA);
         $sql = sprintf("select id_usuario, nivel_acesso from usuarios where email = :email and senha = :senha limit 1");

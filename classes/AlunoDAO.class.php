@@ -155,6 +155,11 @@ class AlunoDAO /*extends DAO*/ {
         return $a;
     }
 
+    /**
+     * @param $uid
+     * @param bool $em_array
+     * @return array|bool
+     */
     public function obterPorUid($uid, $em_array = false) {
         $sql = sprintf("select u.*, a.id_grupo, a.id_professor, a.vinculo
                         from usuarios u, alunos a
@@ -242,29 +247,58 @@ class AlunoDAO /*extends DAO*/ {
         // TODO: Implement deletar() method.
     }
 
-    public function obterTodos() {
-        $sql = sprintf("select u.*, a.id_grupo, a.id_professor, a.vinculo
+    public function obterTodos($em_array = false, $apenas_nao_confirmados = false) {
+        $sql = $apenas_nao_confirmados ?
+            sprintf("select u.*, a.id_grupo, a.id_professor, a.vinculo
+                        from usuarios u, alunos a
+                        where a.id_aluno = u.id_usuario and confirmado = 0
+                        order by u.id_usuario desc") :
+            sprintf("select u.*, a.id_grupo, a.id_professor, a.vinculo
                         from usuarios u, alunos a
                         where a.id_aluno = u.id_usuario
                         order by u.id_usuario desc");
 
         $alunos = array();
-
+        $saDAO = new SolicitacaoAcademicaDAO();
         foreach ($this->conexao->query($sql) as $tupla) {
-            $a = new Aluno($tupla['nome'], $tupla['email'], $tupla['cpf'], $this->pDAO->obter($tupla['id_professor']),
-                $tupla['vinculo'], (int) $tupla['limite'], $tupla['uid'], (int) $tupla['id_usuario']);
-            $a->setConfirmado($tupla['confirmado'] == 1 ? true : false);
-            $a->setCidade($tupla['cidade']);
-            $a->setEstado($tupla['estado']);
-            $a->setSenha($tupla['senha']);
-            $a->setAreaDePesquisa($tupla['area_de_pesquisa']);
-            $a->setDepartamento($tupla['departamento']);
-            $a->setLaboratorio($tupla['laboratorio']);
-            $a->setEmailAlternativo($tupla['email_alternativo']);
-            $a->setNivelAcesso((int) $tupla['nivel_acesso']);
-            $a->setGenero((int) $tupla['genero']);
-            $a->setTelefone($tupla['telefone']);
-            $a->setTitulo((int) $tupla['titulo']);
+            if ($em_array) {
+                $a = array();
+                $a["id_usuario"] = intval($tupla["id_usuario"]);
+                $a["nome"] = $tupla["nome"];
+                $a["email"] = $tupla["email"];
+                $a["cpf"] = $tupla["cpf"];
+                $a["professor"] = $this->pDAO->obter(intval($tupla['id_professor']))->getNome();
+                $a["cidade"] = $tupla["cidade"];
+                $a["estado"] = $tupla["estado"];
+                $a["area_de_pesquisa"] = $tupla["area_de_pesquisa"];
+                $a["laboratorio"] = $tupla["laboratorio"];
+                $a["ies"] = $tupla["ies"];
+                $a["genero"] = intval($tupla["genero"]);
+                $a["telefone"] = $tupla["telefone"];
+                $a["uid"] = $tupla["uid"];
+                $a["limite"] = intval($tupla["limite"]);
+                $a["departamento"] = $tupla["departamento"];
+                $a["vinculo"] = intval($tupla["vinculo"]);
+                $a["nivel_acesso"] = intval($tupla["nivel_acesso"]);
+                $a["em_andamento"] = $saDAO->obterNumeroSolicitacoesEmAndamento(intval($tupla["id_usuario"]))["aprovadas"];
+                $a["confirmado"] = $tupla["confirmado"] == 1 ? true : false;
+            } else {
+                $a = new Aluno($tupla['nome'], $tupla['email'], $tupla['cpf'], $this->pDAO->obter(intval($tupla['id_professor'])),
+                    $tupla['vinculo'], (int) $tupla['limite'], $tupla['uid'], (int) $tupla['id_usuario']);
+                $a->setConfirmado($tupla['confirmado'] == 1 ? true : false);
+                $a->setCidade($tupla['cidade']);
+                $a->setEstado($tupla['estado']);
+                $a->setSenha($tupla['senha']);
+                $a->setAreaDePesquisa($tupla['area_de_pesquisa']);
+                $a->setDepartamento($tupla['departamento']);
+                $a->setLaboratorio($tupla['laboratorio']);
+                $a->setEmailAlternativo($tupla['email_alternativo']);
+                $a->setNivelAcesso((int) $tupla['nivel_acesso']);
+                $a->setGenero((int) $tupla['genero']);
+                $a->setTelefone($tupla['telefone']);
+                $a->setTitulo((int) $tupla['titulo']);
+            }
+
 
             array_push($alunos, $a);
         }

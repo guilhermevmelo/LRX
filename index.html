@@ -64,6 +64,7 @@
                 <li><a href="#/Dashboard">Solicitações</a></li>
                 <!--<li><a href="#">Resultados</a></li>-->
                 <li id="menuAlunos"><a href="#/Alunos">Alunos</a></li>
+                <li id="menuUsuarios"><a href="#/Usuarios">Usuários</a></li>
                 <!--<li><a href="#">Configurações</a></li>-->
                 <!--<li><a href="#">Ajuda</a></li>-->
             </ul>
@@ -792,39 +793,47 @@
             </div>
         </section>
 
-        <section id="CadastroAluno" class="secao">
-            <div class="bloco">
-                aqui vai o complemento
+        <section id="Usuarios" class="secao">
+            <div class="bloco DivMenuLateral">
+                <h3 class="cabecalho">Usuários</h3>
+                <nav class="NavMenuLateral">
+                    <ul class="MenuLateral">
+                        <li id="linkListarUsuariosPendentes">Usuários não confirmados</li>
+                        <li id="linkListarUsuarios">Todos os usuários</li>
+                        <li id="linkListarProfessores">Professores</li>
+                        <li id="linkListarAlunosCadastrados">Alunos</li>
+                        <!--<li id="linkListarOperadores">Operadores</li>-->
+                    </ul>
+                </nav>
+            </div>
+            <div id="DetalheUsuario">
+                <div class="bloco relativo">
+                    <!--<span class="solicitacaoMenuFlutuante floatRight"><a id="detalhe_Cancelar">desvincular</a></span>-->
+                    <h3 class="identificacao" id="detalheUsuario_Identificacao"></h3>
+                    <h4 id="detalheUsuario_Status">Aluno ainda não completou o cadastro</h4>
+                    <span id="detalheUsuario_Confirmar"><a id="detalheUsuario_linkConfirmar">confirmar</a></span>
+                    <p>
+                        CPF: <span id="detalheUsuario_CPF"></span><br>
+                        Email: <span id="detalheUsuario_Email"></span><br>
+                        Telefone: <span id="detalheUsuario_Telefone"></span><br>
+                        Análises em andamento: <span id="detalheUsuario_NumeroSolicitacoes"></span><br>
+                        Vínculo: <span id="detalheUsuario_Vinculo"></span><br>
+                        Área de Pesquisa: <span id="detalheUsuario_Area"></span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="Principal">
+                <ul class="lista" id="NenhumUsuario">
+                    <li class="bloco">
+                        <p>Ainda não há usuários cadastrados.</p>
+                    </li>
+                </ul>
+                <ul class="lista" id="ListaUsuarios"></ul>
             </div>
         </section>
 
-        <!--div class="bloco">
-            <ul class="listaSolicitacoes">
-                <li>
-                    <span class="button floatRight">Enviar ao LRX</span>
-                    <h3>Nome da amostra</h3>
-                    <p>Aluno: Fulano de tal</p>
-                </li>
 
-                <li>
-                    <span class="button floatRight">Enviar ao LRX</span>
-                    <h3>Nome da amostra</h3>
-                    <p>Aluno: Fulano de tal</p>
-                </li>
-
-                <li>
-                    <span class="button floatRight">Enviar ao LRX</span>
-                    <h3>Nome da amostra</h3>
-                    <p>Aluno: Fulano de tal</p>
-                </li>
-
-                <li>
-                    <span class="button floatRight">Enviar ao LRX</span>
-                    <h3>Nome da amostra</h3>
-                    <p>Aluno: Fulano de tal</p>
-                </li>
-            </ul>
-        </div-->
         <div class="clear"> </div>
     </main>
     <footer role="contentinfo">
