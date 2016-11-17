@@ -355,7 +355,7 @@ class SolicitacaoAcademicaDAO {
      */
     public function obterTodasIncompletas($somenteAutorizadas = false, $emArray = true) {
         $sql = sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s
-        .id_solicitacao and sa.id_usuario = u.id_usuario and s.status < 7 and s.status > %d", $somenteAutorizadas? 1 : 0);
+        .id_solicitacao and sa.id_usuario = u.id_usuario and s.status < 7 and s.status > %d order by status desc, data_solicitacao asc", $somenteAutorizadas? 1 : 0);
         $consulta = $this->conexao->prepare($sql);
         $consulta->execute();
 

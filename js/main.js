@@ -387,6 +387,7 @@ function obterDetalhesAluno(id) {
 
 function preencherUsuarios(professores, alunos, apenasOperadores, apenasNaoConfirmados) {
     $("#ListaUsuarios").empty();
+    $("#ListaUsuarios").show();
     $("#DetalheUsuario").fadeOut("slow");
     $("#NenhumUsuario").fadeOut("slow");
     $.ajax({
@@ -539,8 +540,12 @@ function preencherUsuarios(professores, alunos, apenasOperadores, apenasNaoConfi
                             }
                             $("#detalheUsuario_Vinculo").html(vinculo);
                             $("#detalheUsuario_VinculoContainer").show();
+
+                            $("#detalheUsuario_Professor").html(_s.professor);
+                            $("#detalheUsuario_ProfessorContainer").show();
                         } else {
                             $("#detalheUsuario_VinculoContainer").hide();
+                            $("#detalheUsuario_ProfessorContainer").hide();
                         }
                         $("#detalheUsuario_CPF").html(montarCpf(_s.cpf));
                         $("#detalheUsuario_Telefone").html(_s.telefone);
