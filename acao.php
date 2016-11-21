@@ -368,12 +368,12 @@ if (isset($q) && $q == "aprovarSolicitacao") {
     $saDAO = new SolicitacaoAcademicaDAO();
 
     $id_professor = intval($_GET["id_professor"]);
+    $nivel_acesso_professor = UsuarioDAO::nivelDeAcessoPorId($id_professor);
 
-    if (UsuarioDAO::nivelDeAcessoPorId($id_professor != 2)) {
+    if ($nivel_acesso_professor != 2 && $nivel_acesso_professor != 6) {
         Erro::lancarErro(array("codigo" => 300, "mensagem" => "Você não tem permissão para executar essa ação"));
         return;
     }
-
 
     $p = $pDAO->obter($id_professor);
 
@@ -391,7 +391,8 @@ if (isset($q) && $q == "aprovarSolicitacao") {
             $solicitante = $s->getSolicitante();
             $nSolicitacoesAndamentoSolicitante = $saDAO->obterNumeroSolicitacoesEmAndamento($solicitante);
 
-            if ($nSolicitacoesAndamentoSolicitante["aprovadas"] < $nSolicitacoesAndamentoSolicitante["limite"]) {
+            if ($nSolicitacoesAndamentoSolicitante["aprovadas"] == 0 ||
+                $nSolicitacoesAndamentoSolicitante["aprovadas"] < $nSolicitacoesAndamentoSolicitante["limite"]) {
                 $s->setStatus(2);
                 $saDAO->atualizar($s);
                 header('Content-Type: application/json');
@@ -474,7 +475,7 @@ if (isset($q) && $q == "cancelarSolicitacao") {
     $s->setDataConclusao(new \DateTime());
     $s->setDataRecebimento(null);
 
-    if (intval($_GET['nivel_acesso']) == 5)
+    if (intval($_GET['nivel_acesso']) == 5 || intval($_GET['nivel_acesso']) == 6)
         $s->setStatus(-2);
     else
         $s->setStatus(-1);
@@ -799,6 +800,32 @@ if (isset($q) && $q == "confirmarUsuario") {
 
 /********** TESTES **********/
 if (isset($q) && $q == "test") {
-    var_dump(boolval("false"));
-    var_dump((bool)"0");
+    $id_professor = intval($_GET["id_professor"]);
+    $pDAO = new ProfessorDAO();
+    $saDAO = new SolicitacaoAcademicaDAO();
+    $p = $pDAO->obter($id_professor);
+    $nSolicitacoesAndamento = $saDAO->obterNumeroSolicitacoesEmAndamento($id_professor)["aprovadas"];
+    $limite = $p->getLimite();
+
+    // Verifica se o professor ainda tem limite para aprovar solicitações
+    if ($nSolicitacoesAndamento < $limite) {
+        $s = $saDAO->obter(intval($_GET["id_solicitacao"]), false);
+
+        // Verifica se o solicitante (que pode ser um aluno) tem limite para que sua solicitação seja aprovada
+        $solicitante = $s->getSolicitante();
+        $nSolicitacoesAndamentoSolicitante = $saDAO->obterNumeroSolicitacoesEmAndamento($solicitante);
+
+        var_dump($nSolicitacoesAndamentoSolicitante);
+
+        if ($nSolicitacoesAndamentoSolicitante["aprovadas"] == 0 || $nSolicitacoesAndamentoSolicitante["aprovadas"] < $nSolicitacoesAndamentoSolicitante["limite"]) {
+            //$s->setStatus(2);
+            //$saDAO->atualizar($s);
+            header('Content-Type: application/json');
+            echo json_encode(array("codigo" => 200));
+        } else {
+            Erro::lancarErro(array("codigo" => 4001, "mensagem" => "Limite de solicitações do solicitante atingido"));
+        }
+    } else {
+        Erro::lancarErro(array("codigo" => 4000, "mensagem" => "Limite de solicitações do professor atingido"));
+    }
 }

@@ -202,8 +202,10 @@ footer nav#MenuRodape {
 #Dashboard .DivMenuLateral,
 #Alunos .DivMenuLateral,
 #Usuarios .DivMenuLateral {
-    width: 25%;
-    float: left;
+    width: calc(25% - 15px);/*25%;*/
+    /*float: left;*/
+    position: absolute;
+    left: 30px;
 }
 
 #Dashboard .Principal,
@@ -212,7 +214,7 @@ footer nav#MenuRodape {
 #Dashboard #NovaSolicitacao*/ {
     float: left;
     width: calc(45% - 10px);
-    margin-left: 10px;
+    margin-left: calc(25% + 10px); /*10px*/
 }
 
 .Principal #NovaSolicitacao,
@@ -524,6 +526,10 @@ input[type="submit"]:hover,
     font-size: 1.3em;
     text-align: center;
     font-weight: bold;
+}
+
+.secao {
+    /*position: relative;*/
 }
 
 .secao,

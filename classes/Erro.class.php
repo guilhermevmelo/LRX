@@ -8,7 +8,6 @@
 
 namespace LRX;
 
-
 class Erro {
     private function __construct() {
 
@@ -16,9 +15,7 @@ class Erro {
 
     public static function lancarErro(array $erro) {
         header('Content-type: application/json');
-
         array_merge($erro, array('tipo_resposta' => 'erro'));
-
         echo json_encode($erro);
     }
 }
