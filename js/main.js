@@ -984,7 +984,7 @@ function exibirSecao() {
     window.console.log(hash, usuario);
 
     switch (hash) {
-        case "Inicio":
+        case "Inicio": {
             if (usuario !== null) {
                 location.hash = "#/Dashboard";
             } else {
@@ -996,8 +996,9 @@ function exibirSecao() {
                 });
             }
             break;
+        }
 
-        case "Dashboard":
+        case "Dashboard": {
             if (usuario === null) {
                 location.hash = "#/Inicio";
             } else {
@@ -1011,8 +1012,9 @@ function exibirSecao() {
                 });
             }
             break;
+        }
 
-        case "Alunos":
+        case "Alunos": {
             if (usuario === null || usuario.nivel_acesso < 2) {
                 location.hash = "#/Inicio";
             } else {
@@ -1026,8 +1028,9 @@ function exibirSecao() {
                 });
             }
             break;
+        }
 
-        case "Usuarios":
+        case "Usuarios": {
             if (usuario === null || (usuario.nivel_acesso !== 5 && usuario.nivel_acesso !== 6)) {
                 location.hash = "#/Inicio";
             } else {
@@ -1047,9 +1050,9 @@ function exibirSecao() {
                 });
             }
             break;
+        }
 
-        case "NovoUsuario":
-            // TODO: Terminar
+        case "NovoUsuario": {
             if (obterParteDoHash(2) === "Confirmar") {
                 $.ajax({
                     url: "acao.php",
@@ -1075,7 +1078,7 @@ function exibirSecao() {
                     $("#NovoUsuarioPasso1").addClass("passoAtual").show();
 
                     frmNovoUsuario.off();
-                    frmNovoUsuario.submit(function(evento) {
+                    frmNovoUsuario.submit(function (evento) {
                         enviarFormNovoUsuario(evento, "cadastrarUsuario");
                     });
                     $("#NovoUsuario").fadeIn("slow", function () {
@@ -1084,8 +1087,54 @@ function exibirSecao() {
                 });
             }
             break;
+        }
 
-        case "NovoAluno":
+        case "RecuperarConta": {
+            if (obterParteDoHash(2) === "NovaSenha") {
+                $.ajax({
+                    url: "acao.php",
+                    type: "get",
+                    data: {
+                        q: "novaSenha",
+                        uid: obterParteDoHash(3)
+                    }
+                }).done(function (r) {
+                    apresentarErro(r);
+                });
+                window.location.hash = "#/Inicio";
+            } else {
+                estadoAtual.fadeOut("slow", function () {
+                    var frmRecuperarConta = $("#frmRecuperarConta");
+                    frmRecuperarConta.trigger("reset");
+                    $(this).removeClass("estadoAtual");
+
+                    frmRecuperarConta.off();
+                    frmRecuperarConta.submit(function (evento) {
+                        evento.stopPropagation();
+                        evento.preventDefault();
+
+                        var _cpf = $("#frm_recuperar_conta_documento").val();
+
+                        $.ajax({
+                            url: "acao.php",
+                            type: "get",
+                            data: {
+                                q: "novaSenhaEnviarEmail",
+                                cpf: _cpf
+                            }
+                        }).done(function (r) {
+                            apresentarErro(r);
+                        });
+                    });
+                    $("#RecuperarConta").fadeIn("slow", function () {
+                        $(this).addClass("estadoAtual");
+                    });
+                });
+            }
+            break;
+        }
+
+        case "NovoAluno": {
             $.ajax({
                 url: "acao.php",
                 type: "get",
@@ -1094,7 +1143,7 @@ function exibirSecao() {
                     q: "completarCadastroAluno",
                     uid: obterParteDoHash(2)
                 }
-            }).done(function(r) {
+            }).done(function (r) {
                 $("#frm_novo_usuario_documento").val(montarCpf(r.aluno.cpf));
                 $("#frm_novo_usuario_email").val(r.aluno.email);
                 $("#frm_novo_usuario_nome").val(r.aluno.nome);
@@ -1103,7 +1152,7 @@ function exibirSecao() {
 
                 var frmNovoUsuario = $("#frmNovoUsuarioPasso3");
                 frmNovoUsuario.off();
-                frmNovoUsuario.submit(function(evento) {
+                frmNovoUsuario.submit(function (evento) {
                     enviarFormNovoUsuario(evento, "cadastrarAluno");
                 });
 
@@ -1112,22 +1161,24 @@ function exibirSecao() {
                 });
 
 
-                estadoAtual.fadeOut("slow", function() {
+                estadoAtual.fadeOut("slow", function () {
                     $("#NovoUsuario").fadeIn("slow", function () {
                         $(this).addClass("estadoAtual");
                     });
                 });
             });
             break;
+        }
 
-        case "NovaSolicitacao":
+        case "NovaSolicitacao": {
             $(".Principal, #Detalhe").fadeOut("slow", function () {
                 obterEquipamentos();
                 $("#NovaSolicitacao").fadeIn("slow");
             });
             break;
+        }
 
-        case "Sair":
+        case "Sair": {
             $("#ListaSolicitacoes").empty();
             $("#Detalhe").fadeOut("slow");
             apagarCookie("uid");
@@ -1136,6 +1187,7 @@ function exibirSecao() {
             $("header").effect("drop", {direction: "up"});
             location.hash = "#/Inicio";
             break;
+        }
 
         default:
             location.hash = "#/Inicio";
@@ -1199,6 +1251,8 @@ function iniciarAplicacao() {
 function definirMascaras() {
     $("#frm_novo_usuario_documento").mask("000.000.000-00", {reverse: true});
     $("#frm_novo_aluno_convite_cpf").mask("000.000.000-00", {reverse: true});
+    $("#frm_recuperar_conta_documento").mask("000.000.000-00", {reverse: true});
+
 
     var options =  {onKeyPress: function(tel, e, field, options){
         var masks = ["(00) 00000-0000', '(00) 0000-00009"];
@@ -1379,7 +1433,7 @@ $(document).ready(function () {
         onModulesLoaded: function () {
             $.setupValidation({
                 lang: "pt",
-                form: "#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3, #FormNovaSolicitacao, #FormLogin, #FormNovoAluno",
+                form: "#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3, #FormNovaSolicitacao, #FormLogin, #FormNovoAluno, #frmRecuperarConta",
                 validate: {
                     "#frm_novo_usuario_documento": {
                         validation: "_cpf"
@@ -1403,6 +1457,9 @@ $(document).ready(function () {
                         "error-msg": "A senha deve conter no mínimo 8 dígitos"
                     },
                     "#frm_novo_aluno_convite_cpf" : {
+                        validation : "_cpf"
+                    },
+                    "#frm_recuperar_conta_documento" : {
                         validation : "_cpf"
                     }
                 }
@@ -1485,6 +1542,7 @@ $(document).ready(function () {
                 $("header").toggle("drop", {direction:"up"});
             }
         });
+        $(this).trigger("reset");
     });
 
     /**

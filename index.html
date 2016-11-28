@@ -41,7 +41,7 @@
     </div>
 </noscript>
 <div id="Pagina">
-    <div id="EmDesenvolvimento"><p>Em desenvolvimento v0.6.3</p></div>
+    <div id="EmDesenvolvimento"><p>Em desenvolvimento v0.7</p></div>
 
     <div id="DivErro">
         <div id="Erro">
@@ -52,12 +52,12 @@
     <header role="presentation">
         <p id="BoasVindas">
             <span id="_cumprimento">
-                Olá <span id="_titulo" class="escondido"></span> <span id="_nome"></span> (<a href="#/Sair">sair</a>).
+                Olá <span id="_titulo" class="escondido"></span> <span id="_nome"></span> <a href="#/Sair">sair</a>
             </span>
             <br>
-            <!--<span id="_segunda_linha">-->
-                <!--<span id="_Vocativo"></span> <span id="_possui_mensagens"></span> não lidas.-->
-            <!--</span>-->
+            <span id="_segunda_linha">
+                <span id="_Vocativo"></span> <span id="_possui_mensagens"></span> não lidas.
+            </span>
         </p>
         <nav>
             <ul>
@@ -76,7 +76,7 @@
                 <div class="conteiner">
                     <form id="FormLogin" name="FormLogin" action="#/Login" method="post">
                         <fieldset>
-                            <label for="frm_login_email">email</label>
+                            <label for="frm_login_email">Email</label>
                             <input type="email" name="frm_login_email" id="frm_login_email" required>
                         </fieldset>
                         <fieldset>
@@ -102,8 +102,8 @@
                             </fieldset>
                         </div>
                         <p class="clear">
-                            <a href="#/RecuperarConta">Recuperar senha</a><br>
-                            <a href="#/NovoUsuario">Cadastrar-se</a>
+                            <!--<a href="#/RecuperarConta">Recuperar senha</a><br>-->
+                            <a href="#/NovoUsuario">Novo Usuário</a>
                         </p>
                     </form>
                 </div>
@@ -161,8 +161,8 @@
                     <span id="detalhe_DataRecebimento">Entregue em 15 de Abril</span>
                     </p>
                     <p>
-                        Tipo: <span id="detalhe_Tipo"></span><br>
-                        Equipamento: <span id="detalhe_Equipamento"></span>
+                        <strong>Tipo:</strong> <span id="detalhe_Tipo"></span><br>
+                        <strong>Equipamento:</strong> <span id="detalhe_Equipamento"></span>
                     </p>
                     <!--<p class="alignCenter"><span class="bandeiraEquipamentoDetalhe panalytical"></span></p>-->
 
@@ -810,13 +810,13 @@
                     <h4 id="detalheUsuario_Status">Aluno ainda não completou o cadastro</h4>
                     <span id="detalheUsuario_Confirmar"><a id="detalheUsuario_linkConfirmar">confirmar</a></span>
                     <p>
-                        <span id="detalheUsuario_ProfessorContainer">Professor: <span id="detalheUsuario_Professor"></span><br></span>
-                        CPF: <span id="detalheUsuario_CPF"></span><br>
-                        Email: <span id="detalheUsuario_Email"></span><br>
-                        Telefone: <span id="detalheUsuario_Telefone"></span><br>
-                        Análises em andamento: <span id="detalheUsuario_NumeroSolicitacoes"></span><br>
-                        <span id="detalheUsuario_VinculoContainer">Vínculo: <span id="detalheUsuario_Vinculo"></span><br></span>
-                        Área de Pesquisa: <span id="detalheUsuario_Area"></span>
+                        <span id="detalheUsuario_ProfessorContainer"><strong>Professor:</strong> <span id="detalheUsuario_Professor"></span><br></span>
+                        <strong>CPF:</strong> <span id="detalheUsuario_CPF"></span><br>
+                        <strong>Email:</strong> <span id="detalheUsuario_Email"></span><br>
+                        <strong>Telefone:</strong> <span id="detalheUsuario_Telefone"></span><br>
+                        <strong>Análises em andamento:</strong> <span id="detalheUsuario_NumeroSolicitacoes"></span><br>
+                        <span id="detalheUsuario_VinculoContainer"><strong>Vínculo:</strong> <span id="detalheUsuario_Vinculo"></span><br></span>
+                        <strong>Área de Pesquisa:</strong> <span id="detalheUsuario_Area"></span>
                     </p>
                 </div>
             </div>
@@ -831,25 +831,45 @@
             </div>
         </section>
 
-
+        <section id="RecuperarConta" class="secao">
+            <div class="bloco">
+                <h1>Recuperar conta</h1>
+                <p>Caso tenha perdido acesso à sua conta, utilize o formulário abaixo para solicitar uma nova senha.
+                Será enviado para o email principal associado ao CPF informado, caso esteja cadastrado, um link com o
+                qual você será capaz de redefinir sua senha.</p>
+                <form id="frmRecuperarConta" name="frmRecuperarConta" method="post" action="#">
+                <fieldset>
+                    <label for="frm_recuperar_conta_documento">Qual o CPF cadastrado?</label>
+                    <input type="text" name="frm_recuperar_conta_documento"  id="frm_recuperar_conta_documento" required>
+                </fieldset>
+                <fieldset>
+                    <a href="#/Inicio" title="Voltar à tela inicial" class="botao vermelho">Voltar à tela inicial</a>
+                    <input type="submit" value="Enviar email de recuperação" id="sbmtRecuperarConta" name="sbmtRecuperarConta">
+                </fieldset>
+                </form>
+            </div>
+        </section>
         <div class="clear"> </div>
     </main>
     <footer role="contentinfo">
         <p id="Fomentadores">
-            <img src="imagens/logo_lrx_pequena.png" alt="Laboratório de Raios X" class="floatLeft">
-            <img src="imagens/logo_ufc_vertical_pequena.png" alt="Laboratório de Raios X" class="floatLeft">
-            <img src="imagens/logo_cnpq_pequena.png" alt="Laboratório de Raios X">
+            <img src="imagens/logo_lrx.png" alt="Laboratório de Raios X" class="logoRodape">
+            <img src="imagens/logo_cnpq_pequena.png" alt="Laboratório de Raios X" class="logoRodape">
+            <img src="imagens/logo_ufc_pequena.png" alt="Laboratório de Raios X" class="logoRodape">
         </p>
         <address>
-            Universidade Federal do Ceará - UFC<br>
-            Departamento de Física<br>
-            Bloco 928, sala 34<br>
-            Caixa Postal 6030<br>
-            Campus do Pici<br>
-            CEP 60455-970, Fortaleza - Ceará - Brazil<br>
-            +55 85 3366 9917<br>
-            +55 85 3366 9013<br>
-            FAX: 55 (0xx85) 3366 9450
+            <p id="address_telefones">
+                +55 85 3366 9013 / 3366 9917<br>
+                +55 85 3366 9450 (fax)
+            </p>
+            <p id="address_endereco">
+                Bloco 928, Sala 34 &dash; Campus do Pici<br>
+                Caixa Postal 6030<br>
+                Fortaleza&dash;CE<br>
+            </p>
+            <p id="address_cep">
+                CEP 60455-970
+            </p>
         </address>
         <!--<nav id="MenuRodape">-->
             <!--<ul>-->

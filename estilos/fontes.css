@@ -1,0 +1,40 @@
+/**
+ * arquivo: 	estilos/fontes.css
+ * data:		27/11/2015
+ * autor:		Guilherme Vieira
+ * descrição:	Importa as fontes.
+ */
+
+@font-face {
+    font-family: 'DINPro';
+    src:    url('fontes/DINPro/DINPro-Regular.eot?#iefix') format('embedded-opentype'),
+            url('fontes/DINPro/DINPro-Regular.otf')  format('opentype'),
+            url('fontes/DINPro/DINPro-Regular.woff') format('woff'),
+            url('fontes/DINPro/DINPro-Regular.ttf')  format('truetype'),
+            url('fontes/DINPro/DINPro-Regular.svg#DINPro-Regular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DINPro';
+    src:    url('fontes/DINPro/DINPro-Light.eot?#iefix') format('embedded-opentype'),
+            url('fontes/DINPro/DINPro-Light.otf')  format('opentype'),
+            url('fontes/DINPro/DINPro-Light.woff') format('woff'),
+            url('fontes/DINPro/DINPro-Light.ttf')  format('truetype'),
+            url('fontes/DINPro/DINPro-Light.svg#DINPro-Light') format('svg');
+    font-weight: 100;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'DINPro';
+    src:    url('fontes/DINPro/DINPro-Bold.eot?#iefix') format('embedded-opentype'),
+            url('fontes/DINPro/DINPro-Bold.otf')  format('opentype'),
+            url('fontes/DINPro/DINPro-Bold.woff') format('woff'),
+            url('fontes/DINPro/DINPro-Bold.ttf')  format('truetype'),
+            url('fontes/DINPro/DINPro-Bold.svg#DINPro-Bold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}

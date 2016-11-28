@@ -50,3 +50,5 @@ fabric.properties
 resultados/
 configuracao.ini
 .DS_Store
+*.psd
+*.ai

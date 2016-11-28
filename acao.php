@@ -17,6 +17,8 @@ session_start();
 //$q = isset($_GET["q"])? $_GET["q"] : (isset($_POST["q"]) ? $_POST["q"] : NULL);
 $q = $_GET["q"] ?? $_POST["q"] ?? null;
 
+$host = "http://guilhermevieira.com.br/raiosx/";
+
 /**
  *
  */
@@ -140,6 +142,7 @@ if (isset($q) && $q == "obterListaUsuarios") {
     $alunos = boolval($_GET['alunos']);
     $operadores = boolval($_GET['operadores']);
     $nao_confirmados = boolval($_GET['nao_confirmados']);
+
     if ($nivel_acesso !== UsuarioDAO::nivelDeAcessoPorId($id)) {
         Erro::lancarErro(array("codigo" => 303, "mensagem" => "Você não tem permissão para executar essa ação"));
         die();
@@ -439,7 +442,6 @@ if (isset($q) && $q == "confirmarEmail") {
                 break;
 
             case 5:
-                // TODO: Consertar isso
                 $uDAO = new AlunoDAO();
                 break;
 
@@ -457,6 +459,65 @@ if (isset($q) && $q == "confirmarEmail") {
     }
 
 }
+
+/**
+ *
+ */
+if (isset($q) && $q == "novaSenha") {
+    $uid = addslashes($_GET["uid"]);
+    $uid = strrev($uid);
+
+
+}
+
+/**
+ *
+ */
+if (isset($q) && $q == "novaSenhaEnviarEmail") {
+    $cpf = addslashes($_GET["cpf"]);
+    $cpf = desformatarCPF($cpf);
+    $nivel_acesso = UsuarioDAO::nivelDeAcessoPorDocumento($cpf);
+
+    switch ($nivel_acesso) {
+        case 1:
+            $uDAO = new AlunoDAO();
+            break;
+        case 2:
+            $uDAO = new ProfessorDAO();
+            break;
+        case 3:
+            //TODO Empresa
+            break;
+        case 4:
+            //TODO Financeiro
+            break;
+        case 5:
+            $uDAO = new AlunoDAO();
+            break;
+        case 6:
+            $uDAO = new ProfessorDAO();
+            break;
+
+        default:
+            Erro::lancarErro(array("codigo" => 300, "mensagem" => "Usuário não encontrado."));
+            exit();
+    }
+
+    $u = $uDAO->obterPorDocumento($cpf);
+
+    $link = $host."#/RecuperarConta/NovaSenha/".strrev($u->getUid());
+
+    $assunto = '[LRX] Recuperação de conta '.$u->getNome();
+    $corpo_da_mensagem = '
+                <p>Olá '.$u->getNome().',<br>foi solicitada redefinição de senha para sua conta no LRX. Utilize o link abaixo para continuar o processo.
+                Caso essa solicitação não tenha sido feita por você, basta ignorar este email. </p>
+                <p>Utilize o seguinte link a qualquer momento para redefinir sua senha: <a href="'.$link.'" target="_blank">'.$link.'</a></p>
+            ';
+    $correio = new Correio($u->getEmail(), $assunto, $corpo_da_mensagem);
+    $correio->enviar();
+
+}
+
 
 /**
  *
@@ -567,8 +628,7 @@ if (isset($q) && $q == "vincularAluno") {
 
             $aDAO->criar($aluno);
 
-            $link = "http://guilhermevieira.com.br/raiosx/#/NovoAluno/".$aluno->getUid();
-
+            $link = $host."#/NovoAluno/".$aluno->getUid();
 
             $assunto = '[Convite para Cadastro no LRX] '.$aluno->getNome();
             $corpo_da_mensagem = '
@@ -658,7 +718,7 @@ if (isset($q) && $q == "cadastrarUsuario") {
     try {
         $pDAO->criar($p);
 
-        $link = "http://guilhermevieira.com.br/raiosx/#/NovoUsuario/Confirmar/".$p->getUid();
+        $link = $host."#/NovoUsuario/Confirmar/".$p->getUid();
         $assunto = '[Confirmação de Cadastro LRX] '.$p->getNome();
         $corpo_da_mensagem = '<p>Confirmar: <a href="'.$link.'">'.$link.'</a></p>';
 
@@ -724,7 +784,7 @@ if (isset($q) && $q == "cadastrarAluno") {
     try {
         $aDAO->atualizar($a);
 
-        $link = "http://guilhermevieira.com.br/raiosx/#/NovoUsuario/Confirmar/".$a->getUid();
+        $link = $host."#/NovoUsuario/Confirmar/".$a->getUid();
         $assunto = '[Confirmação de Cadastro LRX] '.$a->getNome();
 
         $corpo_da_mensagem = '<p>Confirmar: <a href="'.$link.'">'.$link.'</a></p>';
@@ -776,7 +836,7 @@ if (isset($q) && $q == "confirmarUsuario") {
         $uDAO->atualizar($u);
 
         $assunto = "[LRX] Liberação de cadastro";
-        $link = "http://guilhermevieira.com.br/raiosx/";
+        $link = $host;
         $mensagem = "<p>Olá professor ".$u->getNome().",<br>confirmamos seu cargo de professor e liberamos seu cadastro 
             para solicitações.</p>
             <p>Acesse o sistema em <a href='".$link."' target='_blank'>".$link."</a> e cadastre individualmente seus alunos
@@ -799,33 +859,19 @@ if (isset($q) && $q == "confirmarUsuario") {
 //echo date_default_timezone_get();
 
 /********** TESTES **********/
-if (isset($q) && $q == "test") {
-    $id_professor = intval($_GET["id_professor"]);
-    $pDAO = new ProfessorDAO();
-    $saDAO = new SolicitacaoAcademicaDAO();
-    $p = $pDAO->obter($id_professor);
-    $nSolicitacoesAndamento = $saDAO->obterNumeroSolicitacoesEmAndamento($id_professor)["aprovadas"];
-    $limite = $p->getLimite();
-
-    // Verifica se o professor ainda tem limite para aprovar solicitações
-    if ($nSolicitacoesAndamento < $limite) {
-        $s = $saDAO->obter(intval($_GET["id_solicitacao"]), false);
-
-        // Verifica se o solicitante (que pode ser um aluno) tem limite para que sua solicitação seja aprovada
-        $solicitante = $s->getSolicitante();
-        $nSolicitacoesAndamentoSolicitante = $saDAO->obterNumeroSolicitacoesEmAndamento($solicitante);
-
-        var_dump($nSolicitacoesAndamentoSolicitante);
-
-        if ($nSolicitacoesAndamentoSolicitante["aprovadas"] == 0 || $nSolicitacoesAndamentoSolicitante["aprovadas"] < $nSolicitacoesAndamentoSolicitante["limite"]) {
-            //$s->setStatus(2);
-            //$saDAO->atualizar($s);
-            header('Content-Type: application/json');
-            echo json_encode(array("codigo" => 200));
-        } else {
-            Erro::lancarErro(array("codigo" => 4001, "mensagem" => "Limite de solicitações do solicitante atingido"));
-        }
-    } else {
-        Erro::lancarErro(array("codigo" => 4000, "mensagem" => "Limite de solicitações do professor atingido"));
-    }
+if (isset($q) && $q == "teste") {
+    $c = new Correio();
+    $c->setAssunto("[LRX] ".$_GET["a"]);
+    $c->setDestinatario("guilhermevmelo@gmail.com");
+    $c->setMensagem("<p>Olá professor Guilherme,<br>confirmamos seu cargo de professor e liberamos seu cadastro 
+            para solicitações.</p>
+            <p>Acesse o sistema em <a href='http://localhost' target='_blank'>http://localhost</a> e cadastre individualmente seus alunos
+            na opção <strong>Vincular Aluno</strong> do menu <strong>Alunos</strong> para que também possam fazer solicitações.</p>
+            <p>Observe que todas as solicitações, tanto suas quanto de seus alunos, <span style='color:red;'>devem ser aprovadas pelo senhor</span> 
+            antes de serem enviadas ao laboratório. Observe também que cada professor possui um limite todal de vinte solicitações
+            simultâneas em andamento, somadas as suas e a de seus alunos. Contamos, portanto, com sua colaboração para que não forneça
+            seus dados de login arbitrariamente para seus alunos, deixe que tenham cada qual seu próprio cadastro.</p>
+            <p>Agradecemos a compreensão e seja bem vindo!<br>Equipe LRX</p>");
+    $c->visualizar();
+    $c->enviar();
 }

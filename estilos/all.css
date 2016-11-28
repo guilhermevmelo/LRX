@@ -6,9 +6,7 @@
  */
 
 /** Imports **/
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700);
-@import url(http://fonts.googleapis.com/css?family=PT+Sans);
-@import url(http://fonts.googleapis.com/css?family=Lato:100,300|Bilbo);
+@import url(fontes.css);
 
 /** Reseta os estilos nativos do navegador **/
 html, body, p, div, blockquote, article, fieldset, nav, ul, ol, dl {
@@ -27,17 +25,18 @@ html, body {
 }
 
 body {
-    font-family: 'PT Sans', sans-serif;
+    font-family: 'DINPro', sans-serif;
     letter-spacing: 1px;
     font-size: 15px;
-
-    background-image: url("../imagens/stardust.png");
+    background-color: #72cac4;
+    background-image: url("../imagens/lrx_background.png");
+    background-size: 800px 600px;
 }
 
 @media all and (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
     body {
-        background-image: url("../imagens/stardust@2x.png");
-        background-size: 399px 399px;
+        background-image: url("../imagens/lrx_background@2x.png");
+        background-size: 800px 600px;
     }
 }
 
@@ -45,7 +44,7 @@ body {
 header {
     height: 60px;
     background-color: rgba(255, 255, 255, 0.9);
-    border-bottom: 1px solid #dcdcdc;
+    border-bottom: 1px solid #46b4ac;
     position: absolute;
     top: 0;
     width: 100%;
@@ -77,7 +76,7 @@ footer {
     height: 200px;
     width: 100%;
     font-size: 0.8em;
-    text-shadow: 1px 1px 1px #000;
+    /*text-shadow: 1px 1px 1px #000;*/
 }
 
 header nav {
@@ -90,18 +89,18 @@ header nav ul li {
     height: 30px;
     font-size: 20px;
     padding: 17px 13px 0;
-    color: #666;
-    font-family: 'Lato', sans-serif;
-    font-weight: 300;
+    color: #2b3990;
+    font-family: 'DINPro', sans-serif;
+    font-weight: 100;
 }
 
 header nav a {
-    color: #666;
+    color: #2b3990;
 }
 
 header nav a:hover {
-    color: #dc1f18;
-    text-shadow: 0 0 15px #dc1f18;
+    color: #9b2e44;
+    text-shadow: 0 0 15px #9b2e44;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -109,7 +108,7 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0;
     padding: 0;
 
-    font-family: 'Lato', sans-serif;
+    font-family: 'DINPro', sans-serif;
     font-size: 1em;
 }
 
@@ -124,18 +123,18 @@ h3 {
 
 h3.cabecalho {
     padding: 10px;
-    color: #666;
-    border-bottom: 2px solid #dedede;
+    color: #2b3990;
+    border-bottom: 2px solid #46b4ac;
 }
 
 p {
-    margin: 10px auto;
+    margin: 15px auto;
 }
 
-a/*,
-nav ul li */{
+a,
+nav ul li {
     text-decoration: none;
-    color: #dc8938;
+    color: #902b8b;
 
     -webkit-transition: color .5s, text-shadow .5s;
     -moz-transition: color .5s, text-shadow .5s;
@@ -144,9 +143,11 @@ nav ul li */{
     transition: color .5s, text-shadow .5s;
 }
 
+nav ul li { color: #2b3990; }
+
 a:hover,
 nav ul li:hover {
-    color: #dc1f18;
+    color: #98a230;
     cursor: pointer;
 }
 
@@ -156,7 +157,15 @@ address {
     font-style: normal !important;
     margin-right: 25px;
     margin-top: 15px;
+    color: #2b3990;
+    text-shadow: none;
 }
+
+address #address_telefones,
+address #address_cep {
+    font-weight: bold;
+}
+
 
 article p {
     margin: 0 0 10px 0;
@@ -167,7 +176,7 @@ article p {
 .Principal #NovaSolicitacao,
 .Principal #NovoAluno {
     background-color: rgba(255, 255, 255, 1);
-    box-shadow: 0 2px 4px #222;
+    /*box-shadow: 0 2px 4px #444;*/
     padding: 10px;
 }
 
@@ -177,11 +186,16 @@ footer #Fomentadores {
     margin-top: 15px;
 }
 
-
 footer nav#MenuRodape {
     margin: 0 auto;
     width: 600px;
 }
+
+.logoRodape {
+    float: left;
+    margin: 40px 20px 0 0;
+}
+
 #Inicio #DivLogin {
     float: right;
     width: 30%;
@@ -192,6 +206,15 @@ footer nav#MenuRodape {
     /*float: left;*/
     margin-right: 30%;
     width: 65%;
+}
+
+#Apresentacao ul {
+    margin-left: 25px;
+}
+
+#Apresentacao p {
+    line-height: 1.5em;
+    margin: 20px auto;
 }
 
 #DivLogin .conteiner {
@@ -261,7 +284,7 @@ footer nav#MenuRodape {
 }
 
 .MenuLateral li:hover {
-    background-color: rgba(220, 31, 24, 0.12);
+    background-color: rgba(152, 162, 48, 0.12);
     cursor: pointer;
 }
 
@@ -272,7 +295,7 @@ header {
 header p#BoasVindas {
     float: right;
     text-align: right;
-    padding-top: 15px;
+    /*padding-top: 15px;*/
     margin-right: 30px;
     font-size: 0.8em;
 }
@@ -301,7 +324,7 @@ header p#BoasVindas {
     margin: 100px auto 0;
     padding: 20px;
     max-width: 600px;
-    color: #dc1f18;
+    color: #9b2e44;
     text-shadow: 1px 1px 2px #000;
     text-align: center;
 }
@@ -321,18 +344,18 @@ ul.lista {
 ul.lista li {
     /*border: 1px solid gray;*/
     background-color: rgba(255, 255, 255, 1);
-    box-shadow: 0 2px 4px #222;
+    /*box-shadow: 0 2px 4px #444;*/
     padding: 10px;
     margin: 0 5px 5px 5px;
 
     height: auto;
     /*overflow: hidden;*/
 
-    transition: background-color, height 0.5s;
+    transition: background-color 0.5s;
 }
 
 ul.lista li:hover {
-    background-color: #ffebef;
+    background-color: #ecfffe;
     cursor: pointer;
 }
 
@@ -399,7 +422,7 @@ input[type="checkbox"] + label{
 
 input[type="radio"]:checked + label,
 input[type="checkbox"]:checked + label{
-    color: green;
+    color: #55962d;
 }
 
 input[type="radio"]:disabled + label,
@@ -450,7 +473,7 @@ input[type="email"]:hover,
 input[type="date"]:hover,
 input[type="tel"]:hover,
 input[type="file"]:hover {
-    border: 1px solid #2d2fdc;
+    border: 1px solid #2b3990;
 }
 
 input[type="text"]:focus,
@@ -460,8 +483,8 @@ input[type="email"]:focus,
 input[type="date"]:focus,
 input[type="tel"]:focus,
 input[type="file"]:focus {
-    border: 1px solid #2d2fdc;
-    box-shadow: 0 0 3px #2d2fdc ;
+    border: 1px solid #2b3990;
+    box-shadow: 0 0 3px #2b3990 ;
 }
 
 input[type="button"],
@@ -469,8 +492,8 @@ input[type="reset"],
 input[type="submit"],
 .botao {
     padding: 7px;
-    border: 1px solid #4145dc;
-    color: #4145dc !important;
+    border: 1px solid #2b3990;
+    color: #2b3990 !important;
     background-color: #d8d9f8;
     /*border-radius: 4px;*/
     font-size: 0.8em;
@@ -506,12 +529,12 @@ input[type="submit"]:hover,
 #Erro {
     max-width: 450px;
     /*border-radius: 5px;*/
-    color: #dc1f18;
+    color: #9b2e44;
     /*border: 1px solid #dc1f18;*/
     background-color: #f9c9c7; /*#ffd8dc;*/
     margin: 25px auto;
     padding: 10px;
-    box-shadow: 0 3px 5px #333;
+    /*box-shadow: 0 3px 5px #333;*/
 }
 
 #ErroP {
@@ -538,7 +561,8 @@ input[type="submit"]:hover,
     display: none;
 }
 
-#NovoUsuario .bloco {
+#NovoUsuario .bloco,
+#RecuperarConta .bloco {
     width: 50%;
     margin: 0 auto;
 }
@@ -570,24 +594,24 @@ input[type="submit"]:hover,
 
 .cinza { color: #666; }
 .amarelo { color: #feff5f; }
-.azul { color: #4145dc;}
-.verde { color: #51dc5d; }
+.azul { color: #2b3990;}
+.verde { color: #55962d; }
 input[type="button"].verde:hover,
 input[type="reset"].verde:hover,
 input[type="submit"].verde:hover,
 .botao.verde:hover{
     background-color: #d0f6d4;
-    border-color: #2ad038;
-    color: #2ad038 !important;
+    border-color: #55962d;
+    color: #55962d !important;
 }
-.vermelho { color: #dc1f18; }
+.vermelho { color: #9b2e44; }
 input[type="button"].vermelho:hover,
 input[type="reset"].vermelho:hover,
 input[type="submit"].vermelho:hover,
 .botao.vermelho:hover{
     background-color: #f9c9c7;
-    border-color: #dc1f18;
-    color: #dc1f18 !important;
+    border-color: #9b2e44;
+    color: #9b2e44 !important;
 }
 
 input[type="button"]:disabled,
@@ -606,17 +630,24 @@ input[type="submit"]:disabled:hover,
 }
 
 .error {
-    border-color: #dc1f18;
-    color: #dc1f18;
+    border-color: #9b2e44 !important;
+    color: #9b2e44 !important;
+}
+.error:focus {
+    box-shadow: 0 0 5px #9b2e44 !important;
 }
 
 .valid {
-    border-color: #2ad038 !important;
-    color: #2ad038;
+    border-color: #55962d !important;
+    color: #55962d !important;
+}
+
+.valid:focus {
+    box-shadow: 0 0 5px #55962d !important;
 }
 
 .form-error {
-    color: #dc1f18;
+    color: #9b2e44;
 }
 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
@@ -638,12 +669,12 @@ input[type="submit"]:disabled:hover,
 
 #EmDesenvolvimento {
     position: fixed;
-    top: 70px;
+    top: 60px;
     right: 25px;
 }
 
 #EmDesenvolvimento p {
-    font-size:1.3em;
+    font-size:1em;
     color: #ffffff;
-    text-shadow: 1px 1px 3px #333;
+    /*text-shadow: 1px 1px 3px #333;*/
 }
