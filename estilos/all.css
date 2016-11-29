@@ -26,7 +26,7 @@ html, body {
 
 body {
     font-family: 'DINPro', sans-serif;
-    letter-spacing: 1px;
+    /*letter-spacing: 1px;*/
     font-size: 15px;
     background-color: #72cac4;
     background-image: url("../imagens/lrx_background.png");
@@ -45,7 +45,8 @@ header {
     height: 60px;
     background-color: rgba(255, 255, 255, 0.9);
     border-bottom: 1px solid #46b4ac;
-    position: absolute;
+    position: fixed;
+    z-index: 60;
     top: 0;
     width: 100%;
 }
@@ -53,7 +54,7 @@ header {
 main {
     margin: 0 30px;
     /*max-width: 1000px;*/
-    padding: 100px 0 220px;
+    padding: 91px 0 220px;
 }
 
 footer {
@@ -227,17 +228,18 @@ footer nav#MenuRodape {
 #Usuarios .DivMenuLateral {
     width: calc(25% - 15px);/*25%;*/
     /*float: left;*/
-    position: absolute;
+    position: fixed;
     left: 30px;
+    /*top: 91px;*/
 }
 
 #Dashboard .Principal,
 #Alunos .Principal,
 #Usuarios .Principal/*,
 #Dashboard #NovaSolicitacao*/ {
-    float: left;
-    width: calc(45% - 10px);
-    margin-left: calc(25% + 10px); /*10px*/
+    width: 45%;
+    margin-left: 25%;
+    margin-right: 30%;
 }
 
 .Principal #NovaSolicitacao,
@@ -249,9 +251,9 @@ footer nav#MenuRodape {
 #Dashboard #Detalhe,
 #Alunos #DetalheAluno,
 #Usuarios #DetalheUsuario {
-    float: right;
-    width: calc(30% - 10px);
-    margin-left: 10px;
+    width: calc(30% - 18px);
+    position: fixed;
+    right: 30px;
     display: none;
 }
 
@@ -449,8 +451,10 @@ input[type="number"],
 input[type="email"],
 input[type="date"],
 input[type="tel"],
-input[type="file"] {
-    font-family: 'Lato', sans-serif;
+input[type="file"],
+textarea {
+    font-family: 'DINPro', sans-serif;
+    font-weight: normal;
     outline: none;
     margin: 0;
     padding: 3px;
@@ -472,7 +476,8 @@ input[type="number"]:hover,
 input[type="email"]:hover,
 input[type="date"]:hover,
 input[type="tel"]:hover,
-input[type="file"]:hover {
+input[type="file"]:hover,
+textarea {
     border: 1px solid #2b3990;
 }
 
@@ -482,7 +487,8 @@ input[type="number"]:focus,
 input[type="email"]:focus,
 input[type="date"]:focus,
 input[type="tel"]:focus,
-input[type="file"]:focus {
+input[type="file"]:focus,
+textarea:focus{
     border: 1px solid #2b3990;
     box-shadow: 0 0 3px #2b3990 ;
 }
@@ -517,7 +523,7 @@ input[type="submit"]:hover,
     top: 0;
     left: 0;
 
-    z-index: 99;
+    z-index: 90;
 
     width: 100%;
 }
@@ -559,6 +565,7 @@ input[type="submit"]:hover,
 #NovaSolicitacaoIdentificador,
 #NovoAlunoEnviado {
     display: none;
+    margin: 0 5px;
 }
 
 #NovoUsuario .bloco,

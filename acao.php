@@ -6,9 +6,10 @@
  * descrição:	Manipula requisiçoes da index.
  */
 
-namespace LRX;
+use LRX\Erro;
+use LRX\Usuarios\UsuarioDAO;
 
-require_once "classes/autoload.php";
+require_once "classes/LRX/autoload.php";
 
 session_start();
 
@@ -705,7 +706,7 @@ if (isset($q) && $q == "cadastrarUsuario") {
     $p->setEstado($estado);
     $p->setConfirmado(false);
     $p->setEmailConfirmado(false);
-    $p->setGenero($genero);
+    $p->setGenero($genero == 'M' ? 1 : 2);
     $p->setDepartamento($departamento);
     $p->setSenha($senha);
     $p->setTitulo(intval($titulo));
@@ -766,12 +767,14 @@ if (isset($q) && $q == "cadastrarAluno") {
     $aDAO = new AlunoDAO();
 
     $a = $aDAO->obterPorUid($uid);
+    $a->setNome($nome);
+    $a->setDocumento($cpf);
     $a->setAreaDePesquisa($area_de_pesquisa);
     $a->setCidade($cidade);
     $a->setEstado($estado);
     $a->setConfirmado(true);
     $a->setEmailConfirmado(false);
-    $a->setGenero($genero);
+    $a->setGenero($genero == 'M' ? 1 : 2);
     $a->setDepartamento($departamento);
     $a->setSenha($senha);
     $a->setTitulo(intval($titulo));

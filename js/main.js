@@ -331,8 +331,10 @@ function obterDetalhesAluno(id) {
 
                 if (!r.aluno.confirmado) {
                     $("#detalheAluno_Status").html("Aluno ainda não completou o cadastro").show();
+                    $("#detalheAluno_Detalhes").hide();
                 } else {
                     $("#detalheAluno_Status").hide();
+                    $("#detalheAluno_Detalhes").show();
                     var vinculo = "";
                     switch (r.aluno.vinculo) {
                         case 1:
@@ -1788,7 +1790,5 @@ $(document).ready(function () {
                 });
             }
         });
-
     });
-
 });

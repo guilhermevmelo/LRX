@@ -8,7 +8,7 @@
 
 namespace LRX;
 
-require_once __DIR__."/../classes/autoload.php";
+require_once __DIR__ . "/../classes/autoload.php";
 
 class UtilTest extends \PHPUnit_Framework_TestCase {
 
