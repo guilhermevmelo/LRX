@@ -183,7 +183,7 @@ abstract class Usuario {
     }
 
     /**
-     * @param mixed $mensagens
+     * @param $mensagem string
      */
     public function addMensagem($mensagem) {
         array_push($this->mensagens, $mensagem);

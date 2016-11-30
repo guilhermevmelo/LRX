@@ -10,8 +10,6 @@ namespace LRX\Solicitacoes;
 
 use LRX\Equipamentos\Equipamento;
 
-
-
 class Solicitacao {
     const TIPO_PO = 1;
     const TIPO_FILME = 2;

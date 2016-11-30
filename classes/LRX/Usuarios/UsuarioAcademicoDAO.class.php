@@ -9,6 +9,7 @@
 namespace LRX\Usuarios;
 
 use LRX\Erro;
+use function LRX\print_p;
 
 class UsuarioAcademicoDAO {
 
@@ -25,7 +26,8 @@ class UsuarioAcademicoDAO {
     }
 
     /**
-     * @param Usuario $usuario
+     * @param UsuarioAcademico $usuario
+     * @return bool|null
      */
     public function criar(UsuarioAcademico &$usuario) {
 
@@ -119,6 +121,10 @@ class UsuarioAcademicoDAO {
 //
 //    }
 
+    /**
+     * @param int $id_usuario
+     * @return bool
+     */
     public function existeId(int $id_usuario) : bool {
         $sql = sprintf("select * from usuarios where id_usuario = :id_usuario");
         $consulta = $this->conexao->prepare($sql);
@@ -131,6 +137,10 @@ class UsuarioAcademicoDAO {
         return true;
     }
 
+    /**
+     * @param string $documento
+     * @return bool
+     */
     public function existeDocumento($documento) : bool {
         $sql = sprintf("select * from usuarios where cpf = :documento");
         $consulta = $this->conexao->prepare($sql);
@@ -144,7 +154,8 @@ class UsuarioAcademicoDAO {
     }
 
     /**
-     * @param Usuario $usuario
+     * @param UsuarioAcademico $usuario
+     * @return bool
      */
     public function atualizar(UsuarioAcademico $usuario) : bool {
         $usuario_antigo = $this->existeId($usuario->getId());
@@ -207,6 +218,6 @@ class UsuarioAcademicoDAO {
      * @return array
      */
     public function obterTodos() : array {
-
+        return array();
     }
 }

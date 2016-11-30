@@ -18,6 +18,7 @@ class SolicitacaoAcademica extends Solicitacao {
     private $solicitante;   // \LRX\Usuario
 
     public function __construct(UsuarioAcademico $solicitante = null, Equipamento $equipamento = null) {
+        parent::__construct($equipamento);
         $this->solicitante = $solicitante;
         $this->equipamento = $equipamento;
         $this->data_solicitacao = date('Y-m-d H:i:s');

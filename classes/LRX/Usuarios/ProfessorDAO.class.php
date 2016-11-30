@@ -92,7 +92,7 @@ class ProfessorDAO /*extends DAO*/ {
      * @param bool $em_array
      * @return Professor|bool
      */
-    public function obter(int $id, $em_array = true) : Professor {
+    public function obter(int $id, $em_array = false) : Professor {
         $sql = sprintf("select u.*, p.id_grupo from usuarios u, professores p where u.id_usuario = :id_usuario and p.id_professor = u.id_usuario limit 1");
 
         $consulta = $this->conexao->prepare($sql);
@@ -105,23 +105,28 @@ class ProfessorDAO /*extends DAO*/ {
         if ($tupla === false)
             return false;
 
-        $p = new Professor($tupla['nome'], $tupla['email'], $tupla['cpf'], (int) $tupla['id_usuario'], $tupla['uid'],
-            (int)$tupla['limite']);
-        $p->setConfirmado(intval($tupla['confirmado']) == 1 ? true : false);
-        $p->setEmailConfirmado(intval($tupla['email_confirmado']) == 1 ? true : false);
-        $p->setCidade($tupla['cidade']);
-        $p->setEstado($tupla['estado']);
-        $p->setSenha($tupla['senha']);
-        $p->setAreaDePesquisa($tupla['area_de_pesquisa']);
-        $p->setDepartamento($tupla['departamento']);
-        $p->setLaboratorio($tupla['laboratorio']);
-        $p->setEmailAlternativo($tupla['email_alternativo']);
-        $p->setNivelAcesso((int) $tupla['nivel_acesso']);
-        $p->setGenero((int) $tupla['genero']);
-        $p->setTelefone($tupla['telefone']);
-        $p->setTitulo((int) $tupla['titulo']);
-        $p->setIes($tupla['ies']);
-        $p->setSaudacao((int) $tupla['saudacao']);
+        if ($em_array) {
+            $p = array();
+            // TODO: Terminar essa implementação
+        } else {
+            $p = new Professor($tupla['nome'], $tupla['email'], $tupla['cpf'], (int) $tupla['id_usuario'], $tupla['uid'],
+                (int)$tupla['limite']);
+            $p->setConfirmado(intval($tupla['confirmado']) == 1 ? true : false);
+            $p->setEmailConfirmado(intval($tupla['email_confirmado']) == 1 ? true : false);
+            $p->setCidade($tupla['cidade']);
+            $p->setEstado($tupla['estado']);
+            $p->setSenha($tupla['senha']);
+            $p->setAreaDePesquisa($tupla['area_de_pesquisa']);
+            $p->setDepartamento($tupla['departamento']);
+            $p->setLaboratorio($tupla['laboratorio']);
+            $p->setEmailAlternativo($tupla['email_alternativo']);
+            $p->setNivelAcesso((int) $tupla['nivel_acesso']);
+            $p->setGenero((int) $tupla['genero']);
+            $p->setTelefone($tupla['telefone']);
+            $p->setTitulo((int) $tupla['titulo']);
+            $p->setIes($tupla['ies']);
+            $p->setSaudacao((int) $tupla['saudacao']);
+        }
 
         return $p;
     }
@@ -144,23 +149,28 @@ class ProfessorDAO /*extends DAO*/ {
         if ($tupla === false)
             return false;
 
-        $p = new Professor($tupla['nome'], $tupla['email'], $tupla['cpf'], (int) $tupla['id_usuario'], $tupla['uid'],
-            (int)$tupla['limite']);
-        $p->setConfirmado(intval($tupla['confirmado']) == 1 ? true : false);
-        $p->setEmailConfirmado(intval($tupla['email_confirmado']) == 1 ? true : false);
-        $p->setCidade($tupla['cidade']);
-        $p->setEstado($tupla['estado']);
-        $p->setSenha($tupla['senha']);
-        $p->setAreaDePesquisa($tupla['area_de_pesquisa']);
-        $p->setDepartamento($tupla['departamento']);
-        $p->setLaboratorio($tupla['laboratorio']);
-        $p->setEmailAlternativo($tupla['email_alternativo']);
-        $p->setNivelAcesso((int) $tupla['nivel_acesso']);
-        $p->setGenero((int) $tupla['genero']);
-        $p->setTelefone($tupla['telefone']);
-        $p->setTitulo((int) $tupla['titulo']);
-        $p->setIes($tupla['ies']);
-        $p->setSaudacao((int) $tupla['saudacao']);
+        if ($em_array) {
+            $p = array();
+            // TODO: Terminar implementação.
+        } else {
+            $p = new Professor($tupla['nome'], $tupla['email'], $tupla['cpf'], (int) $tupla['id_usuario'], $tupla['uid'],
+                (int)$tupla['limite']);
+            $p->setConfirmado(intval($tupla['confirmado']) == 1 ? true : false);
+            $p->setEmailConfirmado(intval($tupla['email_confirmado']) == 1 ? true : false);
+            $p->setCidade($tupla['cidade']);
+            $p->setEstado($tupla['estado']);
+            $p->setSenha($tupla['senha']);
+            $p->setAreaDePesquisa($tupla['area_de_pesquisa']);
+            $p->setDepartamento($tupla['departamento']);
+            $p->setLaboratorio($tupla['laboratorio']);
+            $p->setEmailAlternativo($tupla['email_alternativo']);
+            $p->setNivelAcesso((int) $tupla['nivel_acesso']);
+            $p->setGenero((int) $tupla['genero']);
+            $p->setTelefone($tupla['telefone']);
+            $p->setTitulo((int) $tupla['titulo']);
+            $p->setIes($tupla['ies']);
+            $p->setSaudacao((int) $tupla['saudacao']);
+        }
 
         return $p;
     }

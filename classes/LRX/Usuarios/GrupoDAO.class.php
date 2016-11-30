@@ -22,9 +22,10 @@ class GrupoDAO {
 
     public function obter(int $id) : Grupo {
         // TODO: Implement obter() method.
+        return null;
     }
 
-    public function atualizar(Grupo $grupo) {
+    public function atualizar(Grupo &$grupo) {
         // TODO: Implement atualizar() method.
     }
 
@@ -34,5 +35,6 @@ class GrupoDAO {
 
     public function obterTodos() : array {
         // TODO: Implement obterTodos() method.
+        return array();
     }
 }

@@ -13,7 +13,7 @@ require "autoload.php";
 /**
  * Obtém apenas as iniciais de $nome e as concatena em maiúsculo.
  *
- * @param $nome     O nome a ter suas iniciais extraidas.
+ * @param $nome string O nome a ter suas iniciais extraidas.
  * @return string   As iniciais concatenadas em maiúsculo.
  */
  function obterIniciais($nome) {
@@ -75,7 +75,7 @@ function print_p($expression) {
  * Adiciona a função tratarExpection como o manipulador padrão de exceções
  */
 // TODO: Habilitar a linha abaixo
-//set_exception_handler('LRX\tratarErro');
+set_exception_handler('LRX\tratarErro');
 
 /**
  * Define o fuso-horário padrão do servidor para UTC-3 (America/Frtaleza)
