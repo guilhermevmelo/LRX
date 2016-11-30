@@ -1,13 +1,24 @@
 <?php
 /**
- * arquivo: 	acao.php
- * data:		04/03/2015
- * autor:		Guilherme Vieira
- * descrição:	Manipula requisiçoes da index.
+ * arquivo:    acao.php
+ * data:        04/03/2015
+ * autor:        Guilherme Vieira
+ * descrição:    Manipula requisiçoes da index.
  */
 
+use LRX\Correio\Correio;
+use LRX\Equipamentos\EquipamentoDAO;
+use LRX\Equipamentos\FendaDAO;
 use LRX\Erro;
+use LRX\Solicitacoes\SolicitacaoAcademica;
+use LRX\Solicitacoes\SolicitacaoAcademicaDAO;
+use LRX\Usuarios\Aluno;
+use LRX\Usuarios\AlunoDAO;
+use LRX\Usuarios\Professor;
+use LRX\Usuarios\ProfessorDAO;
+use LRX\Usuarios\Usuario;
 use LRX\Usuarios\UsuarioDAO;
+use function LRX\desformatarCPF;
 
 require_once "classes/LRX/autoload.php";
 
@@ -35,8 +46,7 @@ if (isset($q) && $q == "login") {
         Erro::lancarErro(array("codigo" => 1002, "mensagem" => "Email não confirmado."));
     } else if ($u->confirmado() != 2) {
         Erro::lancarErro(array("codigo" => 1002, "mensagem" => "Usuário ainda não teve cadastro liberado por um operador."));
-    }
-    else {
+    } else {
         header('Content-Type: application/json');
         $resposta = array(
             "codigo" => 200,
@@ -65,7 +75,7 @@ if (isset($q) && $q == "login") {
 
     //$tipo = $_POST["frm_login_tipo"];
 
-   // $uDAO = new UsuarioAcademicoDAO();
+    // $uDAO = new UsuarioAcademicoDAO();
 
     /** @var  $u Usuario caso dê certo; null caso não dê */
     //$u = $uDAO->login();
@@ -396,7 +406,8 @@ if (isset($q) && $q == "aprovarSolicitacao") {
             $nSolicitacoesAndamentoSolicitante = $saDAO->obterNumeroSolicitacoesEmAndamento($solicitante);
 
             if ($nSolicitacoesAndamentoSolicitante["aprovadas"] == 0 ||
-                $nSolicitacoesAndamentoSolicitante["aprovadas"] < $nSolicitacoesAndamentoSolicitante["limite"]) {
+                $nSolicitacoesAndamentoSolicitante["aprovadas"] < $nSolicitacoesAndamentoSolicitante["limite"]
+            ) {
                 $s->setStatus(2);
                 $saDAO->atualizar($s);
                 header('Content-Type: application/json');
@@ -456,7 +467,7 @@ if (isset($q) && $q == "confirmarEmail") {
         $uDAO->atualizar($p);
         header('Content-Type: application/json');
         //print_r($u);
-        echo json_encode(array("codigo" => 200, "mensagem" => "Seu email foi confirmado, ".$u->getNome()));
+        echo json_encode(array("codigo" => 200, "mensagem" => "Seu email foi confirmado, " . $u->getNome()));
     }
 
 }
@@ -506,13 +517,13 @@ if (isset($q) && $q == "novaSenhaEnviarEmail") {
 
     $u = $uDAO->obterPorDocumento($cpf);
 
-    $link = $host."#/RecuperarConta/NovaSenha/".strrev($u->getUid());
+    $link = $host . "#/RecuperarConta/NovaSenha/" . strrev($u->getUid());
 
-    $assunto = '[LRX] Recuperação de conta '.$u->getNome();
+    $assunto = '[LRX] Recuperação de conta ' . $u->getNome();
     $corpo_da_mensagem = '
-                <p>Olá '.$u->getNome().',<br>foi solicitada redefinição de senha para sua conta no LRX. Utilize o link abaixo para continuar o processo.
+                <p>Olá ' . $u->getNome() . ',<br>foi solicitada redefinição de senha para sua conta no LRX. Utilize o link abaixo para continuar o processo.
                 Caso essa solicitação não tenha sido feita por você, basta ignorar este email. </p>
-                <p>Utilize o seguinte link a qualquer momento para redefinir sua senha: <a href="'.$link.'" target="_blank">'.$link.'</a></p>
+                <p>Utilize o seguinte link a qualquer momento para redefinir sua senha: <a href="' . $link . '" target="_blank">' . $link . '</a></p>
             ';
     $correio = new Correio($u->getEmail(), $assunto, $corpo_da_mensagem);
     $correio->enviar();
@@ -595,7 +606,7 @@ if (isset($q) && $q == "vincularAluno") {
         // TODO: Avisar quando usuario tentar vincular como aluno um usuário já cadastrado como professor
         $podeSerVinculado = false;
         $mensagem = "Existe um professor cadastrado com o CPF informado. Por favor, solicite que este entre em contato com a equipe técnica do laboratório para que o cadastro seja modificado.";
-    } else if ($documentoExiste == 1){
+    } else if ($documentoExiste == 1) {
         // documento cadastrado como aluno: verifica se está desvinculado
         $aDAO = new AlunoDAO();
         $aluno = $aDAO->obterPorDocumento($cpf);
@@ -629,14 +640,14 @@ if (isset($q) && $q == "vincularAluno") {
 
             $aDAO->criar($aluno);
 
-            $link = $host."#/NovoAluno/".$aluno->getUid();
+            $link = $host . "#/NovoAluno/" . $aluno->getUid();
 
-            $assunto = '[Convite para Cadastro no LRX] '.$aluno->getNome();
+            $assunto = '[Convite para Cadastro no LRX] ' . $aluno->getNome();
             $corpo_da_mensagem = '
-                <p>Olá '.$aluno->getNome().',<br>você foi cadastrado no Sistema de Solicitações do Laboratório de Raios X da UFC sob
-                 orientação de '.$professor->getNome().'. Antes de estar apto a solicitar análises, você precisa completar seu cadastro.
+                <p>Olá ' . $aluno->getNome() . ',<br>você foi cadastrado no Sistema de Solicitações do Laboratório de Raios X da UFC sob
+                 orientação de ' . $professor->getNome() . '. Antes de estar apto a solicitar análises, você precisa completar seu cadastro.
                   O que pode ser feito seguindo o link abaixo.</p>
-                <p>Continuar cadastro: <a href="'.$link.'">'.$link.'</a></p>
+                <p>Continuar cadastro: <a href="' . $link . '">' . $link . '</a></p>
             ';
             $correio = new Correio($email, $assunto, $corpo_da_mensagem);
             $correio->enviar();
@@ -719,9 +730,9 @@ if (isset($q) && $q == "cadastrarUsuario") {
     try {
         $pDAO->criar($p);
 
-        $link = $host."#/NovoUsuario/Confirmar/".$p->getUid();
-        $assunto = '[Confirmação de Cadastro LRX] '.$p->getNome();
-        $corpo_da_mensagem = '<p>Confirmar: <a href="'.$link.'">'.$link.'</a></p>';
+        $link = $host . "#/NovoUsuario/Confirmar/" . $p->getUid();
+        $assunto = '[Confirmação de Cadastro LRX] ' . $p->getNome();
+        $corpo_da_mensagem = '<p>Confirmar: <a href="' . $link . '">' . $link . '</a></p>';
 
         $correio = new Correio($email, $assunto, $corpo_da_mensagem);
         $correio->enviar();
@@ -787,10 +798,10 @@ if (isset($q) && $q == "cadastrarAluno") {
     try {
         $aDAO->atualizar($a);
 
-        $link = $host."#/NovoUsuario/Confirmar/".$a->getUid();
-        $assunto = '[Confirmação de Cadastro LRX] '.$a->getNome();
+        $link = $host . "#/NovoUsuario/Confirmar/" . $a->getUid();
+        $assunto = '[Confirmação de Cadastro LRX] ' . $a->getNome();
 
-        $corpo_da_mensagem = '<p>Confirmar: <a href="'.$link.'">'.$link.'</a></p>';
+        $corpo_da_mensagem = '<p>Confirmar: <a href="' . $link . '">' . $link . '</a></p>';
 
         $correio = new Correio($email, $assunto, $corpo_da_mensagem);
         $correio->enviar();
@@ -840,9 +851,9 @@ if (isset($q) && $q == "confirmarUsuario") {
 
         $assunto = "[LRX] Liberação de cadastro";
         $link = $host;
-        $mensagem = "<p>Olá professor ".$u->getNome().",<br>confirmamos seu cargo de professor e liberamos seu cadastro 
+        $mensagem = "<p>Olá professor " . $u->getNome() . ",<br>confirmamos seu cargo de professor e liberamos seu cadastro 
             para solicitações.</p>
-            <p>Acesse o sistema em <a href='".$link."' target='_blank'>".$link."</a> e cadastre individualmente seus alunos
+            <p>Acesse o sistema em <a href='" . $link . "' target='_blank'>" . $link . "</a> e cadastre individualmente seus alunos
             na opção <strong>Vincular Aluno</strong> do menu <strong>Alunos</strong> para que também possam fazer solicitações.</p>
             <p>Observe que todas as solicitações, tanto suas quanto de seus alunos, <span style='color:red;'>devem ser aprovadas pelo senhor</span> 
             antes de serem enviadas ao laboratório. Observe também que cada professor possui um limite todal de vinte solicitações
@@ -853,7 +864,7 @@ if (isset($q) && $q == "confirmarUsuario") {
         $correio->enviar();
 
         header('Content-Type: application/json');
-        echo json_encode(array("codigo" => 200, "mensagem" => "O professor ". $u->getNome(). " foi confirmado"));
+        echo json_encode(array("codigo" => 200, "mensagem" => "O professor " . $u->getNome() . " foi confirmado"));
     }
 }
 
@@ -864,7 +875,7 @@ if (isset($q) && $q == "confirmarUsuario") {
 /********** TESTES **********/
 if (isset($q) && $q == "teste") {
     $c = new Correio();
-    $c->setAssunto("[LRX] ".$_GET["a"]);
+    $c->setAssunto("[LRX] " . $_GET["a"]);
     $c->setDestinatario("guilhermevmelo@gmail.com");
     $c->setMensagem("<p>Olá professor Guilherme,<br>confirmamos seu cargo de professor e liberamos seu cadastro 
             para solicitações.</p>

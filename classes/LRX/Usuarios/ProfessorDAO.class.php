@@ -7,6 +7,9 @@
  */
 
 namespace LRX\Usuarios;
+use LRX\Erro;
+use function LRX\print_p;
+use LRX\Solicitacoes\SolicitacaoAcademicaDAO;
 
 /**
  * Class ProfessorDAO
@@ -86,7 +89,8 @@ class ProfessorDAO /*extends DAO*/ {
 
     /**
      * @param int $id
-     * @return Professor | bool
+     * @param bool $em_array
+     * @return Professor|bool
      */
     public function obter(int $id, $em_array = true) : Professor {
         $sql = sprintf("select u.*, p.id_grupo from usuarios u, professores p where u.id_usuario = :id_usuario and p.id_professor = u.id_usuario limit 1");
@@ -123,8 +127,9 @@ class ProfessorDAO /*extends DAO*/ {
     }
 
     /**
-     * @param int $id
-     * @return Professor | bool
+     * @param string $cpf
+     * @param bool $em_array
+     * @return Professor|bool
      */
     public function obterPorDocumento(string $cpf, $em_array = false) : Professor {
         $sql = sprintf("select u.*, p.id_grupo from usuarios u, professores p where u.cpf = :cpf and p.id_professor = u.id_usuario limit 1");

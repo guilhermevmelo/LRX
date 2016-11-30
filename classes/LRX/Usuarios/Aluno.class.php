@@ -9,7 +9,7 @@
 
 namespace LRX\Usuarios;
 
-require_once "../autoload.php";
+
 
 class Aluno extends UsuarioAcademico {
     private $professor = null;  // LRX\Professor

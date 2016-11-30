@@ -8,9 +8,12 @@
 
 namespace LRX\Usuarios;
 
-require_once "../autoload.php";
+use LRX\Erro;
+use LRX\Solicitacoes\SolicitacaoAcademicaDAO;
 
-class AlunoDAO /*extends DAO*/ {
+
+
+class AlunoDAO {
     private $conexao;
     private $uaDAO;
     private $pDAO;
@@ -31,7 +34,7 @@ class AlunoDAO /*extends DAO*/ {
 
             $this->conexao->beginTransaction();
 
-            $sql = sprintf("insert into alunos values (:id_aluno, :id_professor, :vinculo, :id_grupo)");
+            $sql = sprintf("INSERT INTO alunos VALUES (:id_aluno, :id_professor, :vinculo, :id_grupo)");
             $consulta = $this->conexao->prepare($sql);
 
             $consulta->bindValue(':id_aluno', $aluno->getId());
@@ -42,23 +45,28 @@ class AlunoDAO /*extends DAO*/ {
             $consulta->bindValue(':vinculo', $aluno->getVinculo());
             $consulta->execute();
 
-            print_p($consulta->errorInfo());
+            \LRX\print_p($consulta->errorInfo());
             $this->conexao->commit();
 
             return $aluno;
         } catch (\Exception $pdoe) {
             $this->conexao->rollBack();
-            Erro::lancarErro(array('codigo'    =>  $pdoe->getCode(),
-                                   'mensagem'  =>  $pdoe->getMessage()));
+            Erro::lancarErro(array('codigo' => $pdoe->getCode(),
+                                   'mensagem' => $pdoe->getMessage()));
             return false;
         }
     }
 
+    /**
+     * @param int $id
+     * @param bool $em_array
+     * @return Aluno|array|bool
+     */
     public function obter(int $id, $em_array = false) {
-        $sql = sprintf("select u.*, a.id_grupo, a.id_professor, a.vinculo
-                        from usuarios u, alunos a
-                        where u.id_usuario = :id_usuario
-                          and a.id_aluno = u.id_usuario limit 1");
+        $sql = sprintf("SELECT u.*, a.id_grupo, a.id_professor, a.vinculo
+                        FROM usuarios u, alunos a
+                        WHERE u.id_usuario = :id_usuario
+                          AND a.id_aluno = u.id_usuario LIMIT 1");
 
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(':id_usuario', $id);
@@ -104,11 +112,16 @@ class AlunoDAO /*extends DAO*/ {
         return $a;
     }
 
+    /**
+     * @param $documento
+     * @param bool $em_array
+     * @return Aluno|array|bool
+     */
     public function obterPorDocumento($documento, $em_array = false) {
-        $sql = sprintf("select u.*, a.id_grupo, a.id_professor, a.vinculo
-                        from usuarios u, alunos a
-                        where u.cpf = :documento
-                          and a.id_aluno = u.id_usuario limit 1");
+        $sql = sprintf("SELECT u.*, a.id_grupo, a.id_professor, a.vinculo
+                        FROM usuarios u, alunos a
+                        WHERE u.cpf = :documento
+                          AND a.id_aluno = u.id_usuario LIMIT 1");
 
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(':documento', $documento);
@@ -158,13 +171,13 @@ class AlunoDAO /*extends DAO*/ {
     /**
      * @param $uid
      * @param bool $em_array
-     * @return array|bool
+     * @return Aluno|array|bool
      */
     public function obterPorUid($uid, $em_array = false) {
-        $sql = sprintf("select u.*, a.id_grupo, a.id_professor, a.vinculo
-                        from usuarios u, alunos a
-                        where u.uid = :uid
-                          and a.id_aluno = u.id_usuario limit 1");
+        $sql = sprintf("SELECT u.*, a.id_grupo, a.id_professor, a.vinculo
+                        FROM usuarios u, alunos a
+                        WHERE u.uid = :uid
+                          AND a.id_aluno = u.id_usuario LIMIT 1");
 
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(':uid', $uid);
@@ -221,7 +234,7 @@ class AlunoDAO /*extends DAO*/ {
 
             $this->conexao->beginTransaction();
 
-            $sql = sprintf("update alunos set id_grupo = :id_grupo, vinculo = :vinculo where id_aluno = :id_aluno");
+            $sql = sprintf("UPDATE alunos SET id_grupo = :id_grupo, vinculo = :vinculo WHERE id_aluno = :id_aluno");
             $consulta = $this->conexao->prepare($sql);
 
             $consulta->bindValue(':id_aluno', $aluno->getId());
@@ -231,14 +244,14 @@ class AlunoDAO /*extends DAO*/ {
 
             $consulta->execute();
 
-            print_p($consulta->errorInfo());
+            \LRX\print_p($consulta->errorInfo());
 
             $this->conexao->commit();
             return true;
         } catch (\Exception $pdoe) {
             $this->conexao->rollBack();
-            Erro::lancarErro(array('codigo'    =>  $pdoe->getCode(),
-                                   'mensagem'  =>  $pdoe->getMessage()));
+            Erro::lancarErro(array('codigo' => $pdoe->getCode(),
+                                   'mensagem' => $pdoe->getMessage()));
             return false;
         }
     }
@@ -249,14 +262,14 @@ class AlunoDAO /*extends DAO*/ {
 
     public function obterTodos($em_array = false, $apenas_nao_confirmados = false) {
         $sql = $apenas_nao_confirmados ?
-            sprintf("select u.*, a.id_grupo, a.id_professor, a.vinculo
-                        from usuarios u, alunos a
-                        where a.id_aluno = u.id_usuario and confirmado = 0
-                        order by u.id_usuario desc") :
-            sprintf("select u.*, a.id_grupo, a.id_professor, a.vinculo
-                        from usuarios u, alunos a
-                        where a.id_aluno = u.id_usuario
-                        order by u.id_usuario desc");
+            sprintf("SELECT u.*, a.id_grupo, a.id_professor, a.vinculo
+                        FROM usuarios u, alunos a
+                        WHERE a.id_aluno = u.id_usuario AND confirmado = 0
+                        ORDER BY u.id_usuario DESC") :
+            sprintf("SELECT u.*, a.id_grupo, a.id_professor, a.vinculo
+                        FROM usuarios u, alunos a
+                        WHERE a.id_aluno = u.id_usuario
+                        ORDER BY u.id_usuario DESC");
 
         $alunos = array();
         $saDAO = new SolicitacaoAcademicaDAO();
@@ -283,8 +296,14 @@ class AlunoDAO /*extends DAO*/ {
                 $a["em_andamento"] = $saDAO->obterNumeroSolicitacoesEmAndamento(intval($tupla["id_usuario"]))["aprovadas"];
                 $a["confirmado"] = $tupla["confirmado"] == 1 ? true : false;
             } else {
-                $a = new Aluno($tupla['nome'], $tupla['email'], $tupla['cpf'], $this->pDAO->obter(intval($tupla['id_professor'])),
-                    $tupla['vinculo'], (int) $tupla['limite'], $tupla['uid'], (int) $tupla['id_usuario']);
+                $a = new Aluno($tupla['nome'],
+                    $tupla['email'],
+                    $tupla['cpf'],
+                    $this->pDAO->obter(intval($tupla['id_professor'])),
+                    $tupla['vinculo'],
+                    (int)$tupla['limite'],
+                    $tupla['uid'],
+                    (int)$tupla['id_usuario']);
                 $a->setConfirmado($tupla['confirmado'] == 1 ? true : false);
                 $a->setCidade($tupla['cidade']);
                 $a->setEstado($tupla['estado']);
@@ -293,10 +312,10 @@ class AlunoDAO /*extends DAO*/ {
                 $a->setDepartamento($tupla['departamento']);
                 $a->setLaboratorio($tupla['laboratorio']);
                 $a->setEmailAlternativo($tupla['email_alternativo']);
-                $a->setNivelAcesso((int) $tupla['nivel_acesso']);
-                $a->setGenero((int) $tupla['genero']);
+                $a->setNivelAcesso((int)$tupla['nivel_acesso']);
+                $a->setGenero((int)$tupla['genero']);
                 $a->setTelefone($tupla['telefone']);
-                $a->setTitulo((int) $tupla['titulo']);
+                $a->setTitulo((int)$tupla['titulo']);
             }
 
 
@@ -307,10 +326,10 @@ class AlunoDAO /*extends DAO*/ {
     }
 
     public function obterTodosPorProfessor(int $id, $em_array = false) {
-        $sql = sprintf("select u.*, a.id_grupo, a.id_professor, a.vinculo
-                        from usuarios u, alunos a
-                        where a.id_aluno = u.id_usuario and a.id_professor = :id_professor
-                        order by u.id_usuario desc");
+        $sql = sprintf("SELECT u.*, a.id_grupo, a.id_professor, a.vinculo
+                        FROM usuarios u, alunos a
+                        WHERE a.id_aluno = u.id_usuario AND a.id_professor = :id_professor
+                        ORDER BY u.id_usuario DESC");
 
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(':id_professor', $id);
@@ -342,10 +361,10 @@ class AlunoDAO /*extends DAO*/ {
                 $a->setDepartamento($tupla['departamento']);
                 $a->setLaboratorio($tupla['laboratorio']);
                 $a->setEmailAlternativo($tupla['email_alternativo']);
-                $a->setNivelAcesso((int) $tupla['nivel_acesso']);
-                $a->setGenero((int) $tupla['genero']);
+                $a->setNivelAcesso((int)$tupla['nivel_acesso']);
+                $a->setGenero((int)$tupla['genero']);
                 $a->setTelefone($tupla['telefone']);
-                $a->setTitulo((int) $tupla['titulo']);
+                $a->setTitulo((int)$tupla['titulo']);
             }
             array_push($alunos, $a);
         }
@@ -356,7 +375,7 @@ class AlunoDAO /*extends DAO*/ {
     public static function existeDocumento($documento) {
         $conexao = new \PDO(DSN, USUARIO, SENHA);
 
-        $sql = sprintf("select * from usuarios u, alunos a where u.cpf = :documento and a.id_aluno = u.id_usuario");
+        $sql = sprintf("SELECT * FROM usuarios u, alunos a WHERE u.cpf = :documento AND a.id_aluno = u.id_usuario");
         $consulta = $conexao->prepare($sql);
         $consulta->bindValue(':documento', $documento);
 
@@ -369,7 +388,7 @@ class AlunoDAO /*extends DAO*/ {
 
     public static function existeVinculo($id) {
         $conexao = new \PDO(DSN, USUARIO, SENHA);
-        $sql = sprintf("select id_aluno, id_professor from alunos where id_aluno = :id_aluno");
+        $sql = sprintf("SELECT id_aluno, id_professor FROM alunos WHERE id_aluno = :id_aluno");
         $consulta = $conexao->prepare($sql);
         $consulta->bindValue(":id_aluno", $id);
         $consulta->execute();

@@ -8,7 +8,7 @@
 
 namespace LRX\Usuarios;
 
-require_once "../autoload.php";
+
 
 /**
  * Class UsuarioAcademico

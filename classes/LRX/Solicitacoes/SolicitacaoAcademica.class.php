@@ -11,7 +11,7 @@ namespace LRX\Solicitacoes;
 use LRX\Equipamentos\Equipamento;
 use LRX\Usuarios\UsuarioAcademico;
 
-require_once "../autoload.php";
+
 
 
 class SolicitacaoAcademica extends Solicitacao {

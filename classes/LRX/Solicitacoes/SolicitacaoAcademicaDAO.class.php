@@ -14,9 +14,6 @@ use LRX\Usuarios\AlunoDAO;
 use LRX\Usuarios\ProfessorDAO;
 use LRX\Usuarios\UsuarioAcademico;
 
-require_once "../autoload.php";
-
-
 class SolicitacaoAcademicaDAO {
     private $conexao;
 

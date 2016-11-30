@@ -11,7 +11,7 @@ namespace LRX\Propostas;
 use LRX\Solicitacoes\Solicitacao;
 use LRX\Usuarios\Usuario;
 
-require_once "../autoload.php";
+
 
 class Proposta {
     private $id;

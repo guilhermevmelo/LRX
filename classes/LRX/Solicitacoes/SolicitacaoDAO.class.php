@@ -10,7 +10,7 @@ namespace LRX\Solicitacoes;
 
 use LRX\Erro;
 
-require_once "../autoload.php";
+
 
 
 class SolicitacaoDAO {

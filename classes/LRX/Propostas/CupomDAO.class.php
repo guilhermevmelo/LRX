@@ -10,7 +10,7 @@ namespace LRX\Propostas;
 
 use LRX\Erro;
 
-require_once "../autoload.php";
+
 
 /**
  * Class CupomDAO Gerencia as transações no banco de dados para a classe LRX\Cupom.

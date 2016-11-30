@@ -8,7 +8,7 @@
 
 namespace LRX\Equipamentos;
 
-require_once "../autoload.php";
+
 
 class Equipamento {
     const TODOS = 'TODOS';

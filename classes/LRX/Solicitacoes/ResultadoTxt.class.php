@@ -8,7 +8,7 @@
 
 namespace LRX\Solicitacoes;
 
-require_once "../autoload.php";
+
 
 abstract class ResultadoTxt extends Resultado {
 

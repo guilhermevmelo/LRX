@@ -8,7 +8,7 @@
 
 namespace LRX\Propostas;
 
-require_once "../autoload.php";
+
 
 /**
  * Class Cupom Representa a entidade Cupom

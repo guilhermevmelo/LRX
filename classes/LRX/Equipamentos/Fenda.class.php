@@ -8,7 +8,7 @@
 
 namespace LRX\Equipamentos;
 
-require_once "../autoload.php";
+
 
 class Fenda {
     private $id = null;

@@ -10,7 +10,7 @@ namespace LRX\Solicitacoes;
 
 use LRX\Equipamentos\Equipamento;
 
-require_once "../autoload.php";
+
 
 class Solicitacao {
     const TIPO_PO = 1;

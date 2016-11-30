@@ -10,7 +10,7 @@ namespace LRX\Equipamentos;
 
 use LRX\Erro;
 
-require_once "../autoload.php";
+
 
 /**
  * Class FendaDAO
