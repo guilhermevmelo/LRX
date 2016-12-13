@@ -8,7 +8,6 @@
 
 namespace LRX\Correio;
 
-
 class Correio {
     private $cabecalhos;
     private $assunto;
@@ -19,7 +18,8 @@ class Correio {
     public function __construct($destinatario = "", $assunto = "", $mensagem = "") {
         $this->cabecalhos  = 'MIME-Version: 1.0' . "\r\n";
         $this->cabecalhos .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-        $this->cabecalhos .= 'From: LRX <naoresponda@raiosx.fisica.ufc.br>' . "\r\n";
+        $this->cabecalhos .= 'From: Laboratório de Raios-X <naoresponda@csd.fisica.ufc.br>' . "\r\n";
+        $this->cabecalhos .= 'Reply-To: LRX <lrxufc@gmail.com>' . "\r\n";
 
         $this->setDestinatario($destinatario);
         $this->setAssunto($assunto);
@@ -29,21 +29,21 @@ class Correio {
     /**
      * @param string $cabecalhos
      */
-    public function addCabecalhos(string $cabecalhos) {
+    public function addCabecalhos($cabecalhos) {
         $this->cabecalhos .= $cabecalhos;
     }
 
     /**
      * @param string $assunto
      */
-    public function setAssunto(string $assunto) {
+    public function setAssunto($assunto) {
         $this->assunto = $assunto;
     }
 
     /**
      * @param string $destinatario
      */
-    public function setDestinatario(string $destinatario) {
+    public function setDestinatario($destinatario) {
         $this->destinatario = $destinatario;
     }
 
@@ -93,25 +93,26 @@ class Correio {
                     
                     * {margin: 0; padding: 0;}
                     body {max-width: 600px; font-family: "DinPro", sans-serif;}
-                    p {margin: 20px 6.666666%; line-height: 1.5em;}
+                    p {margin: 20px 6.666666%; line-height: 1.5em;max-width:600px;}
                     div, div img {max-width: 100%;}
                     </style>
                 </head>
                 <body>
-                <div><img src="http://guilhermevieira.com.br/raiosx/imagens/lrx_email_cabecalho.gif" alt="Laboratório de Raios X"></div>
+                <div><img src="http://guilhermevieira.com.br/raiosx/imagens/cabecalho_email_lrx_ufc.gif" alt="Laboratório de Raios X"></div>
                 '.
             $this->corpo_da_mensagem
             .'
-                <div><img src="http://guilhermevieira.com.br/raiosx/imagens/lrx_email_assinatura.gif" alt="Bloco 928, sala 34 - Campus do Pici"></div></body>
+                <div><img src="http://guilhermevieira.com.br/raiosx/imagens/rodape_email.gif" alt="Bloco 928, sala 34 - Campus do Pici"></div></body>
             </html>
         ';
     }
 
     /**
-     *
+     * @return bool
      */
     public function visualizar() {
         echo $this->mensagem;
+        return true;
     }
 
     /**

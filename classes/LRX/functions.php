@@ -47,7 +47,7 @@ function tratarErro($ex) {
  * @param $cpf string   Um número de CPF no formato 000.000.000-00
  * @return string       O mesmo cpf sem os pontos e o traço 00000000000
  */
-function desformatarCPF($cpf) : string {
+function desformatarCPF($cpf)  {
     // TODO: Verificar com expressão regular se o argumento está no formato
 
     //Separa o traço
@@ -75,7 +75,7 @@ function print_p($expression) {
  * Adiciona a função tratarExpection como o manipulador padrão de exceções
  */
 // TODO: Habilitar a linha abaixo
-set_exception_handler('LRX\tratarErro');
+//set_exception_handler('LRX\tratarErro');
 
 /**
  * Define o fuso-horário padrão do servidor para UTC-3 (America/Frtaleza)

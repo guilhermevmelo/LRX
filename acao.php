@@ -7,6 +7,7 @@
  */
 
 use LRX\Correio\Correio;
+use LRX\Correio\MalaDireta;
 use LRX\Equipamentos\EquipamentoDAO;
 use LRX\Equipamentos\FendaDAO;
 use LRX\Erro;
@@ -21,7 +22,7 @@ use LRX\Usuarios\UsuarioDAO;
 use function LRX\desformatarCPF;
 
 require_once "classes/LRX/autoload.php";
-
+session_save_path("/tmp");
 session_start();
 
 /** @var  $q string A operação a ser executada. Será o conteúdo de uma reqisição GET ou POST; NULL caso não haja
@@ -873,19 +874,3 @@ if (isset($q) && $q == "confirmarUsuario") {
 //echo date_default_timezone_get();
 
 /********** TESTES **********/
-if (isset($q) && $q == "teste") {
-    $c = new Correio();
-    $c->setAssunto("[LRX] " . $_GET["a"]);
-    $c->setDestinatario("guilhermevmelo@gmail.com");
-    $c->setMensagem("<p>Olá professor Guilherme,<br>confirmamos seu cargo de professor e liberamos seu cadastro 
-            para solicitações.</p>
-            <p>Acesse o sistema em <a href='http://localhost' target='_blank'>http://localhost</a> e cadastre individualmente seus alunos
-            na opção <strong>Vincular Aluno</strong> do menu <strong>Alunos</strong> para que também possam fazer solicitações.</p>
-            <p>Observe que todas as solicitações, tanto suas quanto de seus alunos, <span style='color:red;'>devem ser aprovadas pelo senhor</span> 
-            antes de serem enviadas ao laboratório. Observe também que cada professor possui um limite todal de vinte solicitações
-            simultâneas em andamento, somadas as suas e a de seus alunos. Contamos, portanto, com sua colaboração para que não forneça
-            seus dados de login arbitrariamente para seus alunos, deixe que tenham cada qual seu próprio cadastro.</p>
-            <p>Agradecemos a compreensão e seja bem vindo!<br>Equipe LRX</p>");
-    $c->visualizar();
-    $c->enviar();
-}
