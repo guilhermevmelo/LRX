@@ -13,7 +13,10 @@ use LRX\Equipamentos\EquipamentoDAO;
 use LRX\Erro;
 use LRX\Usuarios\AlunoDAO;
 use LRX\Usuarios\ProfessorDAO;
-use LRX\Usuarios\UsuarioAcademico;
+use const LRX\DSN;
+use const LRX\USUARIO;
+use const LRX\SENHA;
+
 
 class SolicitacaoAcademicaDAO {
     private $conexao;

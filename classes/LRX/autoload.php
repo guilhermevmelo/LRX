@@ -2,7 +2,7 @@
 
 namespace LRX;
 
-//require_once "configuracao.php";
+require_once "configuracao.php";
 //require_once "functions.php";
 
 /**

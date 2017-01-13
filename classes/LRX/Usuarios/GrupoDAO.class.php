@@ -7,6 +7,9 @@
  */
 
 namespace LRX\Usuarios;
+use const LRX\DSN;
+use const LRX\USUARIO;
+use const LRX\SENHA;
 
 class GrupoDAO {
 

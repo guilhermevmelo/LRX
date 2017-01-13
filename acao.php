@@ -25,6 +25,7 @@ require_once "classes/LRX/autoload.php";
 session_save_path("/tmp");
 session_start();
 
+
 /** @var  $q string A operação a ser executada. Será o conteúdo de uma reqisição GET ou POST; NULL caso não haja
  * requisição */
 //$q = isset($_GET["q"])? $_GET["q"] : (isset($_POST["q"]) ? $_POST["q"] : NULL);

@@ -9,7 +9,9 @@
 namespace LRX\Equipamentos;
 
 use LRX\Erro;
-
+use const LRX\DSN;
+use const LRX\USUARIO;
+use const LRX\SENHA;
 
 
 /**

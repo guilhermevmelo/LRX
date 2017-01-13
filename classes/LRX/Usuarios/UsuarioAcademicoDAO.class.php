@@ -10,6 +10,9 @@ namespace LRX\Usuarios;
 
 use LRX\Erro;
 use function LRX\print_p;
+use const LRX\DSN;
+use const LRX\USUARIO;
+use const LRX\SENHA;
 
 class UsuarioAcademicoDAO {
 
