@@ -50,7 +50,7 @@ class Solicitacao {
     protected $seguranca_outro;
     protected $observacoes;
 
-    public function __construct(Equipamento $equipamento) {
+    public function __construct(Equipamento $equipamento = null) {
         $this->equipamento = $equipamento;
         $this->data_solicitacao = date('Y-m-d h:i:s');
     }

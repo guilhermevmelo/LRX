@@ -28,9 +28,11 @@ body {
     font-family: 'DINPro', sans-serif;
     /*letter-spacing: 1px;*/
     font-size: 15px;
-    background-color: #72cac4;
+    /*background-color: #72cac4;*/
+    background-color: rgba(114,202,196,0.44);
     background-image: url("../imagens/lrx_background.png");
     background-size: 800px 600px;
+    background-attachment: fixed;
 }
 
 @media all and (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
@@ -59,7 +61,8 @@ main {
 
 footer {
     clear: both;
-    /*background-color: rgba(0, 0, 0, 0.9);*/
+    background-color: rgba(255, 255, 255, 0.75);
+    border-top: 2px solid #46b4ac;
 
     /*
     background: -moz-linear-gradient(left,  rgba(0,0,0,0) 0%, rgba(0,0,0,0) 34%, rgba(0,0,0,0.84) 100%); //Firefox
@@ -179,6 +182,7 @@ article p {
     background-color: rgba(255, 255, 255, 1);
     /*box-shadow: 0 2px 4px #444;*/
     padding: 10px;
+    /*border: 1px solid #46b4ac;*/
 }
 
 footer #Fomentadores {
@@ -357,7 +361,7 @@ ul.lista li {
 }
 
 ul.lista li:hover {
-    background-color: #ecfffe;
+    background-color: #f5f5f5;
     cursor: pointer;
 }
 
@@ -451,7 +455,7 @@ input[type="number"],
 input[type="email"],
 input[type="date"],
 input[type="tel"],
-input[type="file"],
+/*input[type="file"],*/
 textarea {
     font-family: 'DINPro', sans-serif;
     font-weight: normal;
@@ -476,7 +480,7 @@ input[type="number"]:hover,
 input[type="email"]:hover,
 input[type="date"]:hover,
 input[type="tel"]:hover,
-input[type="file"]:hover,
+/*input[type="file"]:hover,*/
 textarea {
     border: 1px solid #2b3990;
 }
@@ -487,7 +491,7 @@ input[type="number"]:focus,
 input[type="email"]:focus,
 input[type="date"]:focus,
 input[type="tel"]:focus,
-input[type="file"]:focus,
+/*input[type="file"]:focus,*/
 textarea:focus{
     border: 1px solid #2b3990;
     box-shadow: 0 0 3px #2b3990 ;
@@ -512,6 +516,29 @@ input[type="reset"]:hover,
 input[type="submit"]:hover,
 .botao:hover {
     cursor: pointer;
+}
+
+.uploadResultado {}
+
+.uploadResultado [type=file] {
+    /*display: none;*/
+}
+
+.progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    display: block;
+    text-align: center;
+    width: 0;
+    height: 3px;
+    background: red;
+    transition: width .3s;
+}
+.progress.hide {
+    opacity: 0;
+    transition: opacity 1.3s;
 }
 
 #DivErro {
@@ -578,8 +605,13 @@ input[type="submit"]:hover,
     display: none;
 }
 
+#Detalhe .bloco {
+    margin-bottom: 5px;
+}
+
 #detalhe_Autorizar,
-#detalheUsuario_Confirmar {
+#detalheUsuario_Confirmar,
+#UploadResultado{
     display: none;
 }
 
@@ -600,8 +632,10 @@ input[type="submit"]:hover,
 .inline { display: inline; }
 
 .cinza { color: #666; }
-.amarelo { color: #feff5f; }
-.azul { color: #2b3990;}
+.amarelo { color: #c8c500; }
+.azul { color: #2b3990; }
+.azul-claro {color: #87bfff; }
+.laranja {color: #da971b;}
 .verde { color: #55962d; }
 input[type="button"].verde:hover,
 input[type="reset"].verde:hover,
@@ -682,6 +716,6 @@ input[type="submit"]:disabled:hover,
 
 #EmDesenvolvimento p {
     font-size:1em;
-    color: #ffffff;
+    color: #46b4ac;
     /*text-shadow: 1px 1px 3px #333;*/
 }

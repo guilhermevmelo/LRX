@@ -10,8 +10,7 @@ namespace LRX\Solicitacoes;
 
 use LRX\Equipamentos\Equipamento;
 use LRX\Usuarios\UsuarioAcademico;
-
-
+use function LRX\obterIniciais;
 
 
 class SolicitacaoAcademica extends Solicitacao {
@@ -46,7 +45,7 @@ class SolicitacaoAcademica extends Solicitacao {
         /**
          * Adiciona as iniciais do Solicitante à identificação da Amostra
          */
-        $identificacao = \LRX\obterIniciais($this->solicitante->getNome());
+        $identificacao = obterIniciais($this->solicitante->getNome());
         /**
          * Capea em 3 a quantidade de letras das iniciais
          */

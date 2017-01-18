@@ -377,9 +377,11 @@ if (isset($q) && $q == "alterarSolicitacaoAcademica") {
 }
 
 /**
- *
+ * Autorizar Solicitação: O professor autoriza a solicitação que está sob responsabilidade dele.
+ * Essa autorização verifica os limites tanto do aluno solicitante quanto do professor responsável.
+ * Só após essa autorização é que a amostra vai para a tela dos operadores para ser aprovada pelo laboratório.
  */
-if (isset($q) && $q == "aprovarSolicitacao") {
+if (isset($q) && $q == "autorizarSolicitacao") {
     $pDAO = new ProfessorDAO();
     $saDAO = new SolicitacaoAcademicaDAO();
 
@@ -387,14 +389,14 @@ if (isset($q) && $q == "aprovarSolicitacao") {
     $nivel_acesso_professor = UsuarioDAO::nivelDeAcessoPorId($id_professor);
 
     if ($nivel_acesso_professor != 2 && $nivel_acesso_professor != 6) {
-        Erro::lancarErro(array("codigo" => 300, "mensagem" => "Você não tem permissão para executar essa ação"));
+        Erro::lancarErro(array("codigo" => Erro::ERRO_PERMISSAO_NEGADA, "mensagem" => "Você não tem permissão para executar essa ação"));
         return;
     }
 
     $p = $pDAO->obter($id_professor);
 
     if ($p === null) {
-        Erro::lancarErro(array("codigo" => 3999, "mensagem" => "Usuário não encontrado"));
+        Erro::lancarErro(array("codigo" => Erro::ERRO_USUARIO_NAO_ENCONTRADO, "mensagem" => "Usuário não encontrado"));
     } else {
         $nSolicitacoesAndamento = $saDAO->obterNumeroSolicitacoesEmAndamento($id_professor)["aprovadas"];
         $limite = $p->getLimite();
@@ -415,14 +417,93 @@ if (isset($q) && $q == "aprovarSolicitacao") {
                 header('Content-Type: application/json');
                 echo json_encode(array("codigo" => 200));
             } else {
-                Erro::lancarErro(array("codigo" => 4001, "mensagem" => "Limite de solicitações do solicitante atingido"));
+                Erro::lancarErro(array("codigo" => Erro::ERRO_LIMITE_SOLICITANTE_ANTIGIDO, "mensagem" => "Limite de solicitações do solicitante atingido"));
             }
         } else {
-            Erro::lancarErro(array("codigo" => 4000, "mensagem" => "Limite de solicitações do professor atingido"));
+            Erro::lancarErro(array("codigo" => Erro::ERRO_LIMITE_PROFESSOR_ANTIGIDO, "mensagem" => "Limite de solicitações do professor atingido"));
         }
     }
 
 
+}
+
+/**
+ * Alterar Status da Solicitação: executa semanticamente uma das ações abaixo:
+ *
+ * Aprovar Solicitação: A solicitação já foi autorizada pelo professor e agora está na lista do Laboratório
+ * para ser aprovada. Após aprovação, a solicitação fica aguardando a entrega das amostras fisicamente no
+ * Laboratório.
+ * status = 3
+ *
+ * Confirmar Entrega: Uma vez aprovada a solicitação pelo laboratório, a amostra precisa ser entregue fisicamente
+ * para que a análise seja feita. Adiciona a data de entrega. Somente após entregue é que a análise vai para
+ * a fila do equipamento.
+ * status = 4
+ *
+ * Análise em Andamento: A solicitação saiu da fila e está com análise em andamento no momento.
+ * status = 5
+ */
+if (isset($q) && $q == "alterarStatusSolicitacao") {
+    $saDAO = new SolicitacaoAcademicaDAO();
+
+    $id_solicitacao = intval($_GET["id_solicitacao"]);
+    $id_operador = intval($_GET["id_operador"]);
+    $status = intval($_GET["status"]);
+
+    $nivel_acesso_operador = UsuarioDAO::nivelDeAcessoPorId($id_operador);
+
+    if ($nivel_acesso_operador < 5) {
+        Erro::lancarErro(array("codigo" => Erro::ERRO_PERMISSAO_NEGADA, "mensagem" => "Você não tem permissão para executar essa ação"));
+        return;
+    }
+
+    $s = $saDAO->obter($id_solicitacao, false);
+    if ($s === null) {
+        Erro::lancarErro(array("codigo" => Erro::ERRO_SOLICITACAO_INEXISTENTE, "mensagem" => "A solicitação que você está tentando alterar não existe"));
+        return;
+    }
+
+    if ($status != 3 && $status != 4 && $status != 5) {
+        Erro::lancarErro(array("codigo" => Erro::ERRO_STATUS_INEXISTENTE, "mensagem" => "Novo status para a solicitação não reconhecido"));
+        return;
+    }
+
+    if ($status === 4) {
+        $s->setDataRecebimento(new DateTime());
+    }
+    $s->setStatus($status);
+    $saDAO->atualizar($s);
+    header('Content-Type: application/json');
+    echo json_encode(array("codigo" => 200));
+}
+
+if (isset($q) && $q == "enviarResultado") {
+    if (!is_uploaded_file($_FILES['arquivoUploadResultado']['tmp_name'])) {
+        Erro::lancarErro(array("codigo" => Erro::ERRO_ARQUIVO_INVALIDO, "mensagem" => "O correu um erro com o arquivo. Por favor tente novamente."));
+        return;
+    }
+    $saDAO = new SolicitacaoAcademicaDAO();
+
+    $id_operador = intval($_POST["id_operador"]);
+    $id_solicitacao = intval($_POST["id_solicitacao"]);
+
+    $nivel_acesso_operador = UsuarioDAO::nivelDeAcessoPorId($id_operador);
+
+    if ($nivel_acesso_operador < 5) {
+        Erro::lancarErro(array("codigo" => Erro::ERRO_PERMISSAO_NEGADA, "mensagem" => "Você não tem permissão para executar essa ação"));
+        return;
+    }
+
+    $s = $saDAO->obter($id_solicitacao, false);
+    if ($s === null) {
+        Erro::lancarErro(array("codigo" => Erro::ERRO_SOLICITACAO_INEXISTENTE, "mensagem" => "A solicitação que você está tentando alterar não existe"));
+        return;
+    }
+
+
+
+    header("Content-Type: application/json");
+    echo json_encode($_FILES["arquivoUploadResultado"]);
 }
 
 /**
@@ -481,7 +562,7 @@ if (isset($q) && $q == "novaSenha") {
     $uid = addslashes($_GET["uid"]);
     $uid = strrev($uid);
 
-
+    // TODO: terminar
 }
 
 /**
@@ -531,7 +612,6 @@ if (isset($q) && $q == "novaSenhaEnviarEmail") {
     $correio->enviar();
 
 }
-
 
 /**
  *

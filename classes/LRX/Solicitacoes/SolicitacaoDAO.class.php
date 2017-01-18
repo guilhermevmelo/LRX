@@ -22,10 +22,6 @@ class SolicitacaoDAO {
     }
 
     public function criar(Solicitacao &$solicitacao) {
-//        if ($solicitacao->getIdentificacaoDaAmostra() != null && $this->existeIdentificacao
-//        ($solicitacao->getIdentificacaoDaAmostra()))
-//            return false;
-
         try {
             $this->conexao->beginTransaction();
             $sql = sprintf("insert into solicitacoes values (null, :id_equipamento, :id_fenda, null, :data_solicitacao, null, 1, :configuracao, 
@@ -51,15 +47,11 @@ class SolicitacaoDAO {
             $consulta->bindValue(':observacoes', $solicitacao->getObservacoes());
 
             $consulta->execute();
-            // TODO: remover print_p()
-            \LRX\print_p($consulta->errorInfo());
 
             $sql2 = sprintf("select max(id_solicitacao) from solicitacoes");
             $consulta2 = $this->conexao->query($sql2);
 
             $novoId = (int) $consulta2->fetchColumn(0);
-
-            //print_p($consulta->errorInfo());
             $solicitacao->setId($novoId);
 
             $this->conexao->commit();
@@ -107,7 +99,6 @@ class SolicitacaoDAO {
 
             $consulta = $this->conexao->prepare($sql);
 
-            //print_p($solicitacao);
 
             $consulta->bindValue(':id_solicitacao',$solicitacao->getId(), \PDO::PARAM_INT);
             $consulta->bindValue(':id_equipamento',$solicitacao->getEquipamento(), \PDO::PARAM_INT);
@@ -131,7 +122,6 @@ class SolicitacaoDAO {
             $consulta->bindValue(':observacoes', $solicitacao->getObservacoes());
 
             $consulta->execute();
-            //print_p($consulta->errorInfo());
 
             $this->conexao->commit();
             return true;

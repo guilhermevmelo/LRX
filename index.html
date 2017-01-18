@@ -1,9 +1,9 @@
 <!doctype html>
 <!--
-  - - arquivo:   index.php
+  - - arquivo:   index.html
   - - data:      25/02/2015
   - - autor:     Guilherme Vieira
-  - - descrição: Página inicial da aplicação.
+  - - descrição: Página única da aplicação.
   -->
 <html>
 <head>
@@ -153,7 +153,7 @@
                     <span class="solicitacaoMenuFlutuante floatRight"><a id="detalhe_Cancelar">cancelar</a></span>
                     <h3 class="solicitacaoIdentificacao" id="detalhe_Identificacao">GVM001D001</h3>
                     <h4 id="detalhe_Status">Aguardando autorização do professor</h4>
-                    <span id="detalhe_Autorizar"><a id="detalhe_linkAutorizar">autorizar</a></span>
+                    <span id="detalhe_Autorizar"><a id="detalhe_linkAtualizacao">autorizar</a></span>
                     <p>
                     Criada em <span id="detalhe_DataSolicitacao">14 de Abril</span><br>
                     <span id="detalhe_DataRecebimento">Entregue em 15 de Abril</span>
@@ -164,6 +164,17 @@
                     </p>
                     <!--<p class="alignCenter"><span class="bandeiraEquipamentoDetalhe panalytical"></span></p>-->
 
+
+                </div>
+
+                <div class="bloco relativo" id="UploadResultado">
+                    <div class="progress"></div>
+                    <h3>Enviar Resultado</h3>
+                    <form id="frmUploadResultado" name="frmUploadResultado" action="#/UploadResultado" method="post" enctype="multipart/form-data">
+                        <label class="uploadResultado" for="arquivoUploadResultado">Selecionar arquivo</label>
+                        <input type="file" id="arquivoUploadResultado" name="arquivoUploadResultado" required>
+                        <input type="submit" value="enviar">
+                    </form>
 
                 </div>
             </div>

@@ -16,6 +16,7 @@ use LRX\Usuarios\ProfessorDAO;
 use const LRX\DSN;
 use const LRX\USUARIO;
 use const LRX\SENHA;
+use LRX\Usuarios\UsuarioAcademico;
 
 
 class SolicitacaoAcademicaDAO {
@@ -93,6 +94,9 @@ class SolicitacaoAcademicaDAO {
                 "data_entrega"      => $tupla['data_recebimento'] != null ? date_create($tupla['data_recebimento'])
                     ->format(\DateTime::W3C) :
                     null,
+                "data_conclusao"      => $tupla['data_conclusao'] != null ? date_create($tupla['data_conclusao'])
+                    ->format(\DateTime::W3C) :
+                    null,
                 "identificacao"     => $tupla['identificacao_da_amostra'],
                 "configuracao"      => json_decode($tupla['configuracao']),
                 "composicao"        => $tupla['composicao'],
@@ -114,10 +118,10 @@ class SolicitacaoAcademicaDAO {
             $s->setFenda(intval($tupla['id_fenda']));
             //        TODO: Adicionar Resultado $s->setResultado() 'id_resultado' => null
             $s->setDataSolicitacao(date_create($tupla['data_solicitacao']));
-            $s->setDataConclusao(date_create($tupla['data_conclusao']));
+            $s->setDataConclusao($tupla['data_conclusao'] != null ? date_create($tupla['data_conclusao']) : null);
             $s->setDataRecebimento(date_create($tupla['data_recebimento']));
             $s->setStatus(intval($tupla['status']));
-            $s->setConfiguracao($tupla['configuracao']);
+            $s->setConfiguracao(json_decode($tupla['configuracao']));
             $s->setIdentificacaoDaAmostra($tupla['identificacao_da_amostra']);
             $s->setComposicao($tupla['composicao']);
             $s->setTipo($tupla['tipo']);
@@ -218,6 +222,9 @@ class SolicitacaoAcademicaDAO {
                     "tipo_equipamento"  => $e->getTipo(),
                     "status"            => intval($tupla['status']),
                     "data_solicitacao"  => date_create($tupla['data_solicitacao'])->format(\DateTime::W3C),
+                    "data_conclusao"    => $tupla['data_conclusao'] != null ? date_create($tupla['data_conclusao'])
+                        ->format(\DateTime::W3C) :
+                        null,
                     "data_entrega"      => $tupla['data_recebimento'] != null ? date_create($tupla['data_recebimento'])
                         ->format(\DateTime::W3C) :
                         null,
@@ -242,10 +249,10 @@ class SolicitacaoAcademicaDAO {
                 $s->setFenda(intval($tupla['id_fenda']));
                 //        TODO: Adicionar Resultado $s->setResultado() 'id_resultado' => null
                 $s->setDataSolicitacao(date_create($tupla['data_solicitacao']));
-                $s->setDataConclusao(date_create($tupla['data_conclusao']));
+                $s->setDataConclusao($tupla['data_conclusao'] != null ? date_create($tupla['data_conclusao']) : null);
                 $s->setDataRecebimento(date_create($tupla['data_recebimento']));
                 $s->setStatus(intval($tupla['status']));
-                $s->setConfiguracao($tupla['configuracao']);
+                $s->setConfiguracao(json_decode($tupla['configuracao']));
                 $s->setIdentificacaoDaAmostra($tupla['identificacao_da_amostra']);
                 $s->setComposicao($tupla['composicao']);
                 $s->setTipo($tupla['tipo']);
@@ -310,6 +317,9 @@ class SolicitacaoAcademicaDAO {
                     "tipo_equipamento"  => $e->getTipo(),
                     "status"            => intval($tupla['status']),
                     "data_solicitacao"  => date_create($tupla['data_solicitacao'])->format(\DateTime::W3C),
+                    "data_conclusao"     => $tupla['data_conclusao'] != null ? date_create($tupla['data_conclusao'])
+                        ->format(\DateTime::W3C) :
+                        null,
                     "data_entrega"      => $tupla['data_recebimento'] != null ? date_create($tupla['data_recebimento'])
                         ->format(\DateTime::W3C) :
                         null,
@@ -334,10 +344,10 @@ class SolicitacaoAcademicaDAO {
                 $s->setFenda(intval($tupla['id_fenda']));
                 //        TODO: Adicionar Resultado $s->setResultado() 'id_resultado' => null
                 $s->setDataSolicitacao(date_create($tupla['data_solicitacao']));
-                $s->setDataConclusao(date_create($tupla['data_conclusao']));
+                $s->setDataConclusao($tupla['data_conclusao'] != null ? date_create($tupla['data_conclusao']) : null);
                 $s->setDataRecebimento(date_create($tupla['data_recebimento']));
                 $s->setStatus(intval($tupla['status']));
-                $s->setConfiguracao($tupla['configuracao']);
+                $s->setConfiguracao(json_decode($tupla['configuracao']));
                 $s->setIdentificacaoDaAmostra($tupla['identificacao_da_amostra']);
                 $s->setComposicao($tupla['composicao']);
                 $s->setTipo($tupla['tipo']);
@@ -363,8 +373,9 @@ class SolicitacaoAcademicaDAO {
      * @return array
      */
     public function obterTodasIncompletas($somenteAutorizadas = false, $emArray = true) {
-        $sql = sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s.id_solicitacao and sa.id_usuario = u.id_usuario and s.status < 7 and s.status > %d order by status desc, data_solicitacao asc", $somenteAutorizadas ? 1 : 0);
+        $sql = sprintf("select sa.*, s.*, u.nivel_acesso from solicitacoes_academicas sa, solicitacoes s, usuarios u where sa.id_solicitacao = s.id_solicitacao and sa.id_usuario = u.id_usuario and s.status < 7 and s.status > :somenteAutorizadas order by status desc, data_solicitacao asc");
         $consulta = $this->conexao->prepare($sql);
+        $consulta->bindValue(":somenteAutorizadas", $somenteAutorizadas ? 1 : 0, \PDO::PARAM_INT);
         $consulta->execute();
 
         $solicitacoes = array();
@@ -402,6 +413,9 @@ class SolicitacaoAcademicaDAO {
                     "tipo_equipamento"  => $e->getTipo(),
                     "status"            => intval($tupla['status']),
                     "data_solicitacao"  => date_create($tupla['data_solicitacao'])->format(\DateTime::W3C),
+                    "data_conclusao"     => $tupla['data_conclusao'] != null ? date_create($tupla['data_conclusao'])
+                        ->format(\DateTime::W3C) :
+                        null,
                     "data_entrega"      => $tupla['data_recebimento'] != null ? date_create($tupla['data_recebimento'])
                         ->format(\DateTime::W3C) :
                         null,
@@ -426,10 +440,10 @@ class SolicitacaoAcademicaDAO {
                 $s->setFenda(intval($tupla['id_fenda']));
                 //        TODO: Adicionar Resultado $s->setResultado() 'id_resultado' => null
                 $s->setDataSolicitacao(date_create($tupla['data_solicitacao']));
-                $s->setDataConclusao(date_create($tupla['data_conclusao']));
+                $s->setDataConclusao($tupla['data_conclusao'] != null ? date_create($tupla['data_conclusao']) : null);
                 $s->setDataRecebimento(date_create($tupla['data_recebimento']));
                 $s->setStatus(intval($tupla['status']));
-                $s->setConfiguracao($tupla['configuracao']);
+                $s->setConfiguracao(json_decode($tupla['configuracao']));
                 $s->setIdentificacaoDaAmostra($tupla['identificacao_da_amostra']);
                 $s->setComposicao($tupla['composicao']);
                 $s->setTipo($tupla['tipo']);
@@ -489,6 +503,9 @@ class SolicitacaoAcademicaDAO {
                     "tipo_equipamento"  => $e->getTipo(),
                     "status"            => intval($tupla['status']),
                     "data_solicitacao"  => date_create($tupla['data_solicitacao'])->format(\DateTime::W3C),
+                    "data_conclusao"    => $tupla['data_conclusao'] != null ? date_create($tupla['data_conclusao'])
+                        ->format(\DateTime::W3C) :
+                        null,
                     "data_entrega"      => $tupla['data_recebimento'] != null ? date_create($tupla['data_recebimento'])
                         ->format(\DateTime::W3C) :
                         null,
@@ -513,10 +530,10 @@ class SolicitacaoAcademicaDAO {
                 $s->setFenda(intval($tupla['id_fenda']));
                 //        TODO: Adicionar Resultado $s->setResultado() 'id_resultado' => null
                 $s->setDataSolicitacao(date_create($tupla['data_solicitacao']));
-                $s->setDataConclusao(date_create($tupla['data_conclusao']));
+                $s->setDataConclusao($tupla['data_conclusao'] != null ? date_create($tupla['data_conclusao']) : null);
                 $s->setDataRecebimento(date_create($tupla['data_recebimento']));
                 $s->setStatus(intval($tupla['status']));
-                $s->setConfiguracao($tupla['configuracao']);
+                $s->setConfiguracao(json_decode($tupla['configuracao']));
                 $s->setIdentificacaoDaAmostra($tupla['identificacao_da_amostra']);
                 $s->setComposicao($tupla['composicao']);
                 $s->setTipo($tupla['tipo']);

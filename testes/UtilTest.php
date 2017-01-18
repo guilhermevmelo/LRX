@@ -8,25 +8,17 @@
 
 namespace LRX;
 
-require_once __DIR__ . "/../classes/autoload.php";
+use LRX\Solicitacoes\Solicitacao;
+use LRX\Usuarios\Usuario;
+use PHPUnit_Framework_TestCase;
+use function LRX\obterIniciais;
 
-class UtilTest extends \PHPUnit_Framework_TestCase {
+require_once __DIR__ . "/../classes/LRX/autoload.php";
 
-//    public function test
-
+class UtilTest extends PHPUnit_Framework_TestCase {
+    
     public function testObterIniciais() {
-        $s = new Solicitacao();
-        $u = new Usuario();
-        $u->nome = "Guilherme Vieira Melo";
-        $s->solicitante = $u;
-        $s->gerarIdentificacao(false);
-        $this->assertEquals("GVM", $s->gerarIdentificacao(true));
-
-        $u->nome = "Barbara Marques Alves";
-        $this->assertEquals("BMA", $s->gerarIdentificacao(true));
-
-        $u->nome = "";
-        $this->assertEquals("", $s->gerarIdentificacao(true));
+        $this->assertEquals("GVM", obterIniciais("Guilherme Vieira Melo"));
     }
 
 }

@@ -195,16 +195,24 @@ function obterDetalhesSolicitacao(id) {
                     $("#detalhe_DataRecebimento").html(dataPhpParaJs(r.solicitacao.data_entrega));
                 }
                 var detalhes_autorizar = $("#detalhe_Autorizar");
+                var upload_resultado = $("#UploadResultado");
+
+                upload_resultado.hide();
                 if (usuario.nivel_acesso === 2 && r.solicitacao.status === 1) {
+                    /**
+                     * Se o usuário for um Professor e a solicitação estiver aguardando a autorização dele,
+                     * a aplicação mostra o link para que o professor autorize.
+                     */
+                    $("#detalhe_linkAtualizacao").html("autorizar");
+                    detalhes_autorizar.off("click");
                     detalhes_autorizar.click(function (e) {
                         e.preventDefault();
                         e.stopPropagation();
-
                         $.ajax({
                             url: "acao.php",
                             type: "get",
                             data: {
-                                q: "aprovarSolicitacao",
+                                q: "autorizarSolicitacao",
                                 id_solicitacao: id,
                                 id_professor: usuario.id
                             }
@@ -220,14 +228,170 @@ function obterDetalhesSolicitacao(id) {
                         });
                     });
                     detalhes_autorizar.show();
+                }
+                else if (usuario.nivel_acesso >= 5 && r.solicitacao.status === 2) {
+                    /**
+                     * Se o usuário for um Operador ou um Administrador e a solicitação estiver aguardando a aprovação
+                     * do laboratório, a aplicação mostra o link para que o operador aprove.
+                     */
+                    $("#detalhe_linkAtualizacao").html("aprovar");
+                    detalhes_autorizar.off("click");
+                    detalhes_autorizar.click(function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        $.ajax({
+                            url: "acao.php",
+                            type: "get",
+                            data: {
+                                q: "alterarStatusSolicitacao",
+                                id_solicitacao: id,
+                                id_operador: usuario.id,
+                                status: 3
+                            }
+                        }).done(function (r) {
+                            window.console.log(r);
+                            if (r.codigo !== 200) {
+                                apresentarErro(r);
+                            } else {
+                                //TODO: apresentar notificação
+                                preencherSolicitacoes();
+                                obterDetalhesSolicitacao(id);
+                            }
+                        });
+                    });
+                    detalhes_autorizar.show();
+                }
+                else if (usuario.nivel_acesso >= 5 && r.solicitacao.status === 3) {
+                    /**
+                     * Se o usuário for um Operador ou um Administrador e a solicitação estiver aguardando a entrega
+                     * da amostra, a aplicação mostra o link para que o operador informe quando for entregue.
+                     */
+                    $("#detalhe_linkAtualizacao").html("confirmar entrega");
+                    detalhes_autorizar.off("click");
+                    detalhes_autorizar.click(function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        $.ajax({
+                            url: "acao.php",
+                            type: "get",
+                            data: {
+                                q: "alterarStatusSolicitacao",
+                                id_solicitacao: id,
+                                id_operador: usuario.id,
+                                status: 4
+                            }
+                        }).done(function (r) {
+                            window.console.log(r);
+                            if (r.codigo !== 200) {
+                                apresentarErro(r);
+                            } else {
+                                //TODO: apresentar notificação
+                                preencherSolicitacoes();
+                                obterDetalhesSolicitacao(id);
+                            }
+                        });
+                    });
+                    detalhes_autorizar.show();
+                }
+                else if (usuario.nivel_acesso >= 5 && r.solicitacao.status === 4) {
+                    /**
+                     * Se o usuário for um Operador ou um Administrador e a solicitação estiver na fila,
+                     * exibe o link para informar ao usuário que a análise está em andamento.
+                     */
+                    $("#detalhe_linkAtualizacao").html("Informar que a análise está em andamento");
+                    detalhes_autorizar.off("click");
+                    detalhes_autorizar.click(function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        $.ajax({
+                            url: "acao.php",
+                            type: "get",
+                            data: {
+                                q: "alterarStatusSolicitacao",
+                                id_solicitacao: id,
+                                id_operador: usuario.id,
+                                status: 5
+                            }
+                        }).done(function (r) {
+                            window.console.log(r);
+                            if (r.codigo !== 200) {
+                                apresentarErro(r);
+                            } else {
+                                //TODO: apresentar notificação
+                                preencherSolicitacoes();
+                                obterDetalhesSolicitacao(id);
+                            }
+                        });
+                    });
+                    detalhes_autorizar.show();
+
+                } else if (usuario.nivel_acesso >= 5 && r.solicitacao.status === 5) {
+                    /**
+                     * Se o usuário for um Operador ou um Administrador e a solicitação estiver em andamento,
+                     * exibe o formulário de envio do resultado. O resultado apenas estará disponível quando a
+                     * amostra tiver sido recolhida fisicamente no laboratório.
+                     */
+                    detalhes_autorizar.off("click");
+                    detalhes_autorizar.hide();
+                    upload_resultado.show();
+
+                    var frm_upload_resultado = $("#frmUploadResultado");
+                    frm_upload_resultado.off().trigger("reset").submit(function(event) {
+                        event.stopPropagation();
+                        event.preventDefault();
+
+                        var data = new FormData($("form")[1]);
+                        data.append("q", "enviarResultado");
+                        data.append("id_operador", usuario.id);
+                        data.append("id_solicitacao", id);
+                        window.console.log(data);
+                        $(".progress").css({
+                            width: 0
+                        }).removeClass("hide");
+                        $.ajax({
+                            xhr: function () {
+                                var xhr = new window.XMLHttpRequest();
+                                xhr.upload.addEventListener("progress", function (evt) {
+                                    if (evt.lengthComputable) {
+                                        var percentComplete = evt.loaded / evt.total;
+                                        $(".progress").css({
+                                            width: percentComplete * 100 + "%"
+                                        });
+                                        if (percentComplete === 1) {
+                                            $(".progress").addClass("hide");
+                                        }
+                                    }
+                                }, false);
+                                xhr.addEventListener("progress", function (evt) {
+                                    if (evt.lengthComputable) {
+                                        var percentComplete = evt.loaded / evt.total;
+                                        $(".progress").css({
+                                            width: percentComplete * 100 + "%"
+                                        });
+                                    }
+                                }, false);
+                                return xhr;
+                            },
+                            url: "acao.php",
+                            type: "POST",
+                            data: data,
+                            cache: true,
+                            //dataType: 'binary',
+                            processData: false, // Don't process the files
+                            contentType: false
+                        }).done(function (resposta, status, jqxhr) {
+                            // TODO resposta
+                            window.console.log("DONE", resposta);
+                        });
+                    });
                 } else {
                     detalhes_autorizar.hide();
                 }
 
-
                 $("#detalhe_Tipo").html(r.solicitacao.tipo_equipamento);
                 $("#detalhe_Equipamento").html(r.solicitacao.equipamento);
                 var statusH4 = $("#detalhe_Status");
+                statusH4.removeClass("cinza amarelo laranja verde azul-claro azul vermelho");
                 switch (r.solicitacao.status) {
                     case 1:
                         statusH4.addClass("cinza");
@@ -240,17 +404,17 @@ function obterDetalhesSolicitacao(id) {
                         break;
 
                     case 3:
-                        statusH4.addClass("amarela");
+                        statusH4.addClass("amarelo");
                         statusH4.html("Aguardando confirmação de entrega da amostra");
                         break;
 
                     case 4:
-                        statusH4.addClass("amarela");
+                        statusH4.addClass("laranja");
                         statusH4.html("Na fila do equipamento");
                         break;
 
                     case 5:
-                        statusH4.addClass("amarela");
+                        statusH4.addClass("azul-claro");
                         statusH4.html("Em processo de análise.");
                         break;
 
@@ -265,42 +429,46 @@ function obterDetalhesSolicitacao(id) {
                         break;
 
                     case -1:
-                        statusH4.addClass("vermelha");
+                        statusH4.addClass("vermelho");
                         statusH4.html("Cancelada pelo responsável.");
                         break;
 
                     case -2:
-                        statusH4.addClass("vermelha");
+                        statusH4.addClass("vermelho");
                         statusH4.html("Cancelada pelo operador.");
                         break;
 
                     case -3:
-                        statusH4.addClass("vermelha");
+                        statusH4.addClass("vermelho");
                         statusH4.html("Cancelada por falta de entrega da amostra.");
                         break;
                 }
 
-                $("#detalhe_Cancelar").click(function() {
-                    //TODO adicionar confirmacao
-                    $(this).off("click");
-                    $("#Detalhe").removeClass("ativo").fadeOut("slow");
-                    $("#_sol" + r.solicitacao.id_solicitacao).effect("blind");
+                if (r.solicitacao.status > 0) {
+                    $("#detalhe_Cancelar").off().click(function() {
+                        //TODO adicionar confirmacao
+                        $("#Detalhe").removeClass("ativo").fadeOut("slow");
+                        $("#_sol" + r.solicitacao.id_solicitacao).effect("blind");
 
-                    $.ajax({
-                        url: "acao.php",
-                        type: "get",
-                        data: {
-                            q: "cancelarSolicitacao",
-                            id: r.solicitacao.id_solicitacao,
-                            uid: usuario.uid,
-                            nivel_acesso: usuario.nivel_acesso
-                        }
-                    }).done(function (re) {
-                        if (re.codigo !== 200) {
-                            apresentarErro(re);
-                        }
-                    });
-                });
+                        $.ajax({
+                            url: "acao.php",
+                            type: "get",
+                            data: {
+                                q: "cancelarSolicitacao",
+                                id: r.solicitacao.id_solicitacao,
+                                uid: usuario.uid,
+                                nivel_acesso: usuario.nivel_acesso
+                            }
+                        }).done(function (re) {
+                            if (re.codigo !== 200) {
+                                apresentarErro(re);
+                            }
+                        });
+                    }).show();
+                } else {
+                    $("#detalhe_Cancelar").hide();
+                }
+
 
                 $("#detalhe_Configuracao").html(r.solicitacao.configuracao);
 
@@ -726,17 +894,17 @@ function preencherSolicitacoes() {
                         break;
 
                     case 3:
-                        statusH4.classList.add("amarela");
+                        statusH4.classList.add("amarelo");
                         statusH4.innerHTML = "Aguardando confirmação de entrega da amostra";
                         break;
 
                     case 4:
-                        statusH4.classList.add("amarela");
+                        statusH4.classList.add("laranja");
                         statusH4.innerHTML = "Na fila do equipamento";
                         break;
 
                     case 5:
-                        statusH4.classList.add("amarela");
+                        statusH4.classList.add("azul-claro");
                         statusH4.innerHTML = "Em processo de análise.";
                         break;
 
@@ -751,17 +919,17 @@ function preencherSolicitacoes() {
                         break;
 
                     case -1:
-                        statusH4.classList.add("vermelha");
+                        statusH4.classList.add("vermelho");
                         statusH4.innerHTML = "Cancelada pelo responsável.";
                         break;
 
                     case -2:
-                        statusH4.classList.add("vermelha");
+                        statusH4.classList.add("vermelho");
                         statusH4.innerHTML = "Cancelada pelo operador.";
                         break;
 
                     case -3:
-                        statusH4.classList.add("vermelha");
+                        statusH4.classList.add("vermelho");
                         statusH4.innerHTML = "Cancelada por falta de entrega da amostra.";
                         break;
                 }
@@ -865,17 +1033,17 @@ function preencherSolicitacoesConcluidas() {
                             break;
 
                         case 3:
-                            statusH4.classList.add("amarela");
+                            statusH4.classList.add("amarelo");
                             statusH4.innerHTML = "Aguardando confirmação de entrega da amostra";
                             break;
 
                         case 4:
-                            statusH4.classList.add("amarela");
+                            statusH4.classList.add("laranja");
                             statusH4.innerHTML = "Na fila do equipamento";
                             break;
 
                         case 5:
-                            statusH4.classList.add("amarela");
+                            statusH4.classList.add("azul-claro");
                             statusH4.innerHTML = "Em processo de análise.";
                             break;
 
@@ -890,17 +1058,17 @@ function preencherSolicitacoesConcluidas() {
                             break;
 
                         case -1:
-                            statusH4.classList.add("vermelha");
+                            statusH4.classList.add("vermelho");
                             statusH4.innerHTML = "Cancelada pelo responsável.";
                             break;
 
                         case -2:
-                            statusH4.classList.add("vermelha");
+                            statusH4.classList.add("vermelho");
                             statusH4.innerHTML = "Cancelada pelo operador.";
                             break;
 
                         case -3:
-                            statusH4.classList.add("vermelha");
+                            statusH4.classList.add("vermelho");
                             statusH4.innerHTML = "Cancelada por falta de entrega da amostra.";
                             break;
                     }
@@ -1431,11 +1599,11 @@ $(document).ready(function () {
      * Adiciona gatilhos de validação dos formulários
      */
     $.validate({
-        modules: "jsconf, security, html5, toggleDisabled, brazil",
+        modules: "jsconf, security, html5, toggleDisabled, brazil, file",
         onModulesLoaded: function () {
             $.setupValidation({
                 lang: "pt",
-                form: "#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3, #FormNovaSolicitacao, #FormLogin, #FormNovoAluno, #frmRecuperarConta",
+                form: "#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3, #FormNovaSolicitacao, #FormLogin, #FormNovoAluno, #frmRecuperarConta, #frmUploadResultado",
                 validate: {
                     "#frm_novo_usuario_documento": {
                         validation: "_cpf"
@@ -1463,6 +1631,10 @@ $(document).ready(function () {
                     },
                     "#frm_recuperar_conta_documento" : {
                         validation : "_cpf"
+                    },
+                    "#arquivoUploadResultado" : {
+                        validation: "size",
+                        "max-size": "1M"
                     }
                 }
             });
