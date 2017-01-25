@@ -11,6 +11,8 @@ use LRX\Correio\MalaDireta;
 use LRX\Equipamentos\EquipamentoDAO;
 use LRX\Equipamentos\FendaDAO;
 use LRX\Erro;
+use LRX\Solicitacoes\Resultados\Resultado;
+use LRX\Solicitacoes\Resultados\ResultadoDAO;
 use LRX\Solicitacoes\SolicitacaoAcademica;
 use LRX\Solicitacoes\SolicitacaoAcademicaDAO;
 use LRX\Usuarios\Aluno;
@@ -18,8 +20,10 @@ use LRX\Usuarios\AlunoDAO;
 use LRX\Usuarios\Professor;
 use LRX\Usuarios\ProfessorDAO;
 use LRX\Usuarios\Usuario;
+use LRX\Usuarios\UsuarioAcademicoDAO;
 use LRX\Usuarios\UsuarioDAO;
 use function LRX\desformatarCPF;
+use function \LRX\obterExtensaoArquivo;
 
 require_once "classes/LRX/autoload.php";
 session_save_path("/tmp");
@@ -201,7 +205,7 @@ if (isset($q) && $q == "obterListaSolicitacoes") {
                 break;
 
             case 6:
-                $resposta = $saDAO->obterTodasIncompletas();
+                $resposta = $saDAO->obterTodasIncompletas(true);
                 break;
 
             default:
@@ -326,12 +330,12 @@ if (isset($q) && $q == "novaSolicitacaoAcademica") {
             $u = $uDAO->obter(intval($_POST['id_usuario']));
     }
 
-    $s = new SolicitacaoAcademica($u, $equipamento);
+    $solicitacao = new SolicitacaoAcademica($u, $equipamento);
     $fDAO = new FendaDAO();
     // Adicionando uma fenda padrão. Deverá ser modificada pelo operador.
-    $s->setFenda($fDAO->obter(2));
-    $s->setTipo(intval($_POST['tipo_amostra']));
-    $s->setComposicao(addslashes($_POST['composicao']));
+    $solicitacao->setFenda($fDAO->obter(2));
+    $solicitacao->setTipo(intval($_POST['tipo_amostra']));
+    $solicitacao->setComposicao(addslashes($_POST['composicao']));
 
     $config = ($_POST['tipo_analise'] == 'drx') ?
         array(
@@ -346,33 +350,26 @@ if (isset($q) && $q == "novaSolicitacaoAcademica") {
             'medida' => $_POST['tipo_medida']
         );
 
-    $s->setConfiguracao($config);
+    $solicitacao->setConfiguracao($config);
 
-    $s->setInflamavel(boolval($_POST['inflamavel']));
-    $s->setRadioativo(boolval($_POST['radioativo']));
-    $s->setHigroscopico(boolval($_POST['higroscopico']));
-    $s->setToxico(boolval($_POST['toxico']));
-    $s->setCorrosivo(boolval($_POST['corrosivo']));
+    $solicitacao->setInflamavel(boolval($_POST['inflamavel']));
+    $solicitacao->setRadioativo(boolval($_POST['radioativo']));
+    $solicitacao->setHigroscopico(boolval($_POST['higroscopico']));
+    $solicitacao->setToxico(boolval($_POST['toxico']));
+    $solicitacao->setCorrosivo(boolval($_POST['corrosivo']));
 
     $saDAO = new SolicitacaoAcademicaDAO();
 
     //print_p($s);
 
-    $saDAO->criar($s);
+    $saDAO->criar($solicitacao);
 
     $r = array(
         "codigo" => 200,
-        "identificacao" => $s->getIdentificacaoDaAmostra()
+        "identificacao" => $solicitacao->getIdentificacaoDaAmostra()
     );
 
     echo json_encode($r);
-
-}
-
-/**
- *
- */
-if (isset($q) && $q == "alterarSolicitacaoAcademica") {
 
 }
 
@@ -403,17 +400,17 @@ if (isset($q) && $q == "autorizarSolicitacao") {
 
         // Verifica se o professor ainda tem limite para aprovar solicitações
         if ($nSolicitacoesAndamento < $limite) {
-            $s = $saDAO->obter(intval($_GET["id_solicitacao"]), false);
+            $solicitacao = $saDAO->obter(intval($_GET["id_solicitacao"]), false);
 
             // Verifica se o solicitante (que pode ser um aluno) tem limite para que sua solicitação seja aprovada
-            $solicitante = $s->getSolicitante();
+            $solicitante = $solicitacao->getSolicitante();
             $nSolicitacoesAndamentoSolicitante = $saDAO->obterNumeroSolicitacoesEmAndamento($solicitante);
 
             if ($nSolicitacoesAndamentoSolicitante["aprovadas"] == 0 ||
                 $nSolicitacoesAndamentoSolicitante["aprovadas"] < $nSolicitacoesAndamentoSolicitante["limite"]
             ) {
-                $s->setStatus(2);
-                $saDAO->atualizar($s);
+                $solicitacao->setStatus(2);
+                $saDAO->atualizar($solicitacao);
                 header('Content-Type: application/json');
                 echo json_encode(array("codigo" => 200));
             } else {
@@ -457,26 +454,29 @@ if (isset($q) && $q == "alterarStatusSolicitacao") {
         return;
     }
 
-    $s = $saDAO->obter($id_solicitacao, false);
-    if ($s === null) {
+    $solicitacao = $saDAO->obter($id_solicitacao, false);
+    if ($solicitacao === null) {
         Erro::lancarErro(array("codigo" => Erro::ERRO_SOLICITACAO_INEXISTENTE, "mensagem" => "A solicitação que você está tentando alterar não existe"));
         return;
     }
 
-    if ($status != 3 && $status != 4 && $status != 5) {
+    if ($status != 3 && $status != 4 && $status != 5 && $status != 7) {
         Erro::lancarErro(array("codigo" => Erro::ERRO_STATUS_INEXISTENTE, "mensagem" => "Novo status para a solicitação não reconhecido"));
         return;
     }
 
     if ($status === 4) {
-        $s->setDataRecebimento(new DateTime());
+        $solicitacao->setDataRecebimento(new DateTime());
     }
-    $s->setStatus($status);
-    $saDAO->atualizar($s);
+    $solicitacao->setStatus($status);
+    $saDAO->atualizar($solicitacao);
     header('Content-Type: application/json');
     echo json_encode(array("codigo" => 200));
 }
 
+/**
+ *
+ */
 if (isset($q) && $q == "enviarResultado") {
     if (!is_uploaded_file($_FILES['arquivoUploadResultado']['tmp_name'])) {
         Erro::lancarErro(array("codigo" => Erro::ERRO_ARQUIVO_INVALIDO, "mensagem" => "O correu um erro com o arquivo. Por favor tente novamente."));
@@ -494,16 +494,53 @@ if (isset($q) && $q == "enviarResultado") {
         return;
     }
 
-    $s = $saDAO->obter($id_solicitacao, false);
-    if ($s === null) {
+    switch ($nivel_acesso_operador) {
+        case 5:
+            $uDAO = new AlunoDAO();
+            break;
+
+        case 6:
+            $uDAO = new ProfessorDAO();
+            break;
+    }
+
+    $operador = $uDAO->obter($id_operador);
+
+    $solicitacao = $saDAO->obter($id_solicitacao, false);
+    if ($solicitacao === null) {
         Erro::lancarErro(array("codigo" => Erro::ERRO_SOLICITACAO_INEXISTENTE, "mensagem" => "A solicitação que você está tentando alterar não existe"));
         return;
     }
 
-
+    $diretorio = "resultados/";
+    $arquivo_temporario = $_FILES["arquivoUploadResultado"]["tmp_name"];
+    $extensao = obterExtensaoArquivo($_FILES["arquivoUploadResultado"]["name"]);
+    $novo_arquivo = $diretorio . $solicitacao->getIdentificacaoDaAmostra() . "_" . uniqid() . "." . $extensao;
 
     header("Content-Type: application/json");
-    echo json_encode($_FILES["arquivoUploadResultado"]);
+    if (move_uploaded_file($arquivo_temporario, $novo_arquivo)) {
+        /*
+         * Se o arquivo foi upado com sucesso e movido à página correta, insira-o no banco e associe-o à solicitação
+         */
+        $resultado = new Resultado($novo_arquivo, $solicitacao->getId());
+        $resultado->setOperador($operador);
+        $resultado->setDataEnvio(date('Y-m-d H:i:s'));
+
+        $rDAO = new ResultadoDAO();
+        $rDAO->criar($resultado);
+
+        $solicitacao->setStatus(6);
+        $saDAO->atualizar($solicitacao);
+
+        echo json_encode(array(
+            "codigo" => 200
+        ));
+    } else {
+        Erro::lancarErro(array("codigo" => Erro::ERRO_DE_UPLOAD, "mensagem" => "Ocorreu um erro com o upload"));
+    }
+
+
+
 }
 
 /**
@@ -624,17 +661,17 @@ if (isset($q) && $q == "cancelarSolicitacao") {
     $saDAO = new SolicitacaoAcademicaDAO();
     //$sDAO = new SolicitacaoDAO();
 
-    $s = $saDAO->obter(intval($_GET['id']), false);
+    $solicitacao = $saDAO->obter(intval($_GET['id']), false);
 
 
-    $s->setDataConclusao(new \DateTime());
-    $s->setDataRecebimento(null);
+    $solicitacao->setDataConclusao(new \DateTime());
+    $solicitacao->setDataRecebimento(null);
 
     if (intval($_GET['nivel_acesso']) == 5 || intval($_GET['nivel_acesso']) == 6)
-        $s->setStatus(-2);
+        $solicitacao->setStatus(-2);
     else
-        $s->setStatus(-1);
-    $saDAO->atualizar($s);
+        $solicitacao->setStatus(-1);
+    $saDAO->atualizar($solicitacao);
 
     $r = array(
         "codigo" => 200

@@ -325,7 +325,8 @@ function obterDetalhesSolicitacao(id) {
                     });
                     detalhes_autorizar.show();
 
-                } else if (usuario.nivel_acesso >= 5 && r.solicitacao.status === 5) {
+                }
+                else if (usuario.nivel_acesso >= 5 && r.solicitacao.status === 5) {
                     /**
                      * Se o usuário for um Operador ou um Administrador e a solicitação estiver em andamento,
                      * exibe o formulário de envio do resultado. O resultado apenas estará disponível quando a
@@ -344,10 +345,7 @@ function obterDetalhesSolicitacao(id) {
                         data.append("q", "enviarResultado");
                         data.append("id_operador", usuario.id);
                         data.append("id_solicitacao", id);
-                        window.console.log(data);
-                        $(".progress").css({
-                            width: 0
-                        }).removeClass("hide");
+                        $(".progress").css({ width: 0 }).removeClass("hide");
                         $.ajax({
                             xhr: function () {
                                 var xhr = new window.XMLHttpRequest();
@@ -380,11 +378,51 @@ function obterDetalhesSolicitacao(id) {
                             processData: false, // Don't process the files
                             contentType: false
                         }).done(function (resposta, status, jqxhr) {
-                            // TODO resposta
-                            window.console.log("DONE", resposta);
+                            if (resposta.codigo !== 200) {
+                                apresentarErro(r);
+                            } else {
+                                upload_resultado.fadeOut("slow", function() {
+                                    preencherSolicitacoes();
+                                    obterDetalhesSolicitacao(id);
+                                });
+                            }
                         });
                     });
-                } else {
+                }
+                else if (usuario.nivel_acesso >= 5 && r.solicitacao.status === 6) {
+                    /**
+                     * Se o usuário for um Operador ou um Administrador e a solicitação concluída apenas aguardando
+                     * que a amostra seja fisicamente recuperada no laboratório, exibe na tela a opção de informar que
+                     * a amostra foi recuperada, concluindo a solicitação.
+                     */
+                    $("#detalhe_linkAtualizacao").html("Informar que a amostra foi recuperada.");
+                    detalhes_autorizar.off("click");
+                    detalhes_autorizar.click(function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        $.ajax({
+                            url: "acao.php",
+                            type: "get",
+                            data: {
+                                q: "alterarStatusSolicitacao",
+                                id_solicitacao: id,
+                                id_operador: usuario.id,
+                                status: 7
+                            }
+                        }).done(function (r) {
+                            window.console.log(r);
+                            if (r.codigo !== 200) {
+                                apresentarErro(r);
+                            } else {
+                                //TODO: apresentar notificação
+                                preencherSolicitacoes();
+                                obterDetalhesSolicitacao(id);
+                            }
+                        });
+                    });
+                    detalhes_autorizar.show();
+                }
+                else {
                     detalhes_autorizar.hide();
                 }
 
@@ -469,8 +507,16 @@ function obterDetalhesSolicitacao(id) {
                     $("#detalhe_Cancelar").hide();
                 }
 
-
                 $("#detalhe_Configuracao").html(r.solicitacao.configuracao);
+
+                if (((r.solicitacao.status === 6 && usuario.nivel_acesso >= 5) || r.solicitacao.status === 7) && r.solicitacao.resultados.length > 0) {
+                    $("#detalhe_linkDownload").attr("href", "download.php?arquivo="+encodeURIComponent(r.solicitacao.resultados[0].url_arquivo));
+                    $("#detalhe_Download").show();
+                } else {
+                    $("#detalhe_linkDownload").attr("href", "");
+                    $("#detalhe_Download").hide();
+                }
+
 
                 $("#Detalhe").fadeIn("slow").addClass("ativo");
 

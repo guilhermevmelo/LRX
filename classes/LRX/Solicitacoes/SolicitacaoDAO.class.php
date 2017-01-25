@@ -24,7 +24,7 @@ class SolicitacaoDAO {
     public function criar(Solicitacao &$solicitacao) {
         try {
             $this->conexao->beginTransaction();
-            $sql = sprintf("insert into solicitacoes values (null, :id_equipamento, :id_fenda, null, :data_solicitacao, null, 1, :configuracao, 
+            $sql = sprintf("insert into solicitacoes values (null, :id_equipamento, :id_fenda, :data_solicitacao, null, 1, :configuracao, 
 :identificacao, :composicao, :tipo, :tipo_outro, null, :inflamavel, :radioativo, :toxico, :corrosivo, :higroscopico, 
 :seguranca_outro, :observacoes)");
 

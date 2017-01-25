@@ -8,14 +8,15 @@
 
 namespace LRX\Solicitacoes;
 
-use LRX\Equipamentos\Equipamento;
-use LRX\Equipamentos\EquipamentoDAO;
-use LRX\Erro;
-use LRX\Usuarios\AlunoDAO;
-use LRX\Usuarios\ProfessorDAO;
 use const LRX\DSN;
 use const LRX\USUARIO;
 use const LRX\SENHA;
+use LRX\Equipamentos\Equipamento;
+use LRX\Equipamentos\EquipamentoDAO;
+use LRX\Erro;
+use LRX\Solicitacoes\Resultados\ResultadoDAO;
+use LRX\Usuarios\AlunoDAO;
+use LRX\Usuarios\ProfessorDAO;
 use LRX\Usuarios\UsuarioAcademico;
 
 
@@ -56,7 +57,7 @@ class SolicitacaoAcademicaDAO {
         $consulta->execute();
 
         $tupla = $consulta->fetch(\PDO::FETCH_ASSOC);
-        //print_p($tupla);
+        $rDAO = new ResultadoDAO();
         if ($tupla === false)
             return false;
         if ($emArray) {
@@ -108,7 +109,8 @@ class SolicitacaoAcademicaDAO {
                 "corrosivo"         => boolval($tupla['corrosivo']),
                 "higroscopico"      => boolval($tupla['higroscopico']),
                 "seguranca_outro"   => boolval($tupla['seguranca_outro']),
-                "observacoes"       => boolval($tupla['observacoes'])
+                "observacoes"       => boolval($tupla['observacoes']),
+                "resultados"        => $rDAO->obterTodosPorSolicitacao(intval($tupla['id_solicitacao']), true)
             );
         } else {
             $s = new SolicitacaoAcademica();
@@ -185,7 +187,7 @@ class SolicitacaoAcademicaDAO {
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(':id', $id, \PDO::PARAM_INT);
         $consulta->execute();
-
+        $rDAO = new ResultadoDAO();
         $solicitacoes = array();
         foreach ($consulta->fetchAll(\PDO::FETCH_ASSOC) as $tupla) {
             if ($emArray) {
@@ -212,7 +214,6 @@ class SolicitacaoAcademicaDAO {
 
 
                 $u = $uDAO->obter(intval($tupla['id_usuario']), false);
-
                 $s = array(
                     "id_solicitacao"    => intval($tupla['id_solicitacao']),
                     "id_solicitante"    => intval($tupla['id_usuario']),
@@ -239,7 +240,8 @@ class SolicitacaoAcademicaDAO {
                     "corrosivo"         => boolval($tupla['corrosivo']),
                     "higroscopico"      => boolval($tupla['higroscopico']),
                     "seguranca_outro"   => boolval($tupla['seguranca_outro']),
-                    "observacoes"       => boolval($tupla['observacoes'])
+                    "observacoes"       => boolval($tupla['observacoes']),
+                    "resultados"        => $rDAO->obterTodosPorSolicitacao(intval($tupla['id_solicitacao']), true)
                 );
             } else {
                 $s = new SolicitacaoAcademica();
@@ -280,9 +282,9 @@ class SolicitacaoAcademicaDAO {
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(':id', $id, \PDO::PARAM_INT);
         $consulta->execute();
-
+        $rDAO = new ResultadoDAO();
         $solicitacoes = array();
-
+        $rDAO = new ResultadoDAO();
         foreach ($consulta->fetchAll(\PDO::FETCH_ASSOC) as $tupla) {
             if ($emArray) {
                 $eDAO = new EquipamentoDAO();
@@ -334,7 +336,8 @@ class SolicitacaoAcademicaDAO {
                     "corrosivo"         => boolval($tupla['corrosivo']),
                     "higroscopico"      => boolval($tupla['higroscopico']),
                     "seguranca_outro"   => boolval($tupla['seguranca_outro']),
-                    "observacoes"       => boolval($tupla['observacoes'])
+                    "observacoes"       => boolval($tupla['observacoes']),
+                    "resultados"        => $rDAO->obterTodosPorSolicitacao(intval($tupla['id_solicitacao']), true)
                 );
             } else {
                 $s = new SolicitacaoAcademica();
@@ -379,7 +382,6 @@ class SolicitacaoAcademicaDAO {
         $consulta->execute();
 
         $solicitacoes = array();
-
         foreach ($consulta->fetchAll(\PDO::FETCH_ASSOC) as $tupla) {
             if ($emArray) {
                 $eDAO = new EquipamentoDAO();
@@ -469,7 +471,7 @@ class SolicitacaoAcademicaDAO {
         $consulta->execute();
 
         $solicitacoes = array();
-
+        $rDAO = new ResultadoDAO();
         foreach ($consulta->fetchAll(\PDO::FETCH_ASSOC) as $tupla) {
             if ($emArray) {
                 $eDAO = new EquipamentoDAO();
@@ -520,7 +522,8 @@ class SolicitacaoAcademicaDAO {
                     "corrosivo"         => boolval($tupla['corrosivo']),
                     "higroscopico"      => boolval($tupla['higroscopico']),
                     "seguranca_outro"   => boolval($tupla['seguranca_outro']),
-                    "observacoes"       => boolval($tupla['observacoes'])
+                    "observacoes"       => boolval($tupla['observacoes']),
+                    "resultados"        => $rDAO->obterTodosPorSolicitacao(intval($tupla['id_solicitacao']), true)
                 );
             } else {
                 $s = new SolicitacaoAcademica();

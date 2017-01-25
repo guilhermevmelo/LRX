@@ -42,7 +42,7 @@ function tratarErro($ex) {
 }
 
 /**
- * Recebe um número de CPF no formato 000.000.000-00 e o converte para uma string de 11 dígitos
+ * Recebe um número de CPF no formato 000.000.000-00 e o converte para uma string de 11 dígitos.
  *
  * @param $cpf string   Um número de CPF no formato 000.000.000-00
  * @return string       O mesmo cpf sem os pontos e o traço 00000000000
@@ -63,12 +63,22 @@ function desformatarCPF($cpf)  {
 }
 
 /**
+ * Recebe um nome de arquivo e extrai apenas a extensão.
+ *
+ * @param string $arquivo   O nome do arquivo a ter sua extensão extraida.
+ * @return string           A extensão de arquivo extraída do argumento.
+ */
+function obterExtensaoArquivo($arquivo) {
+    return array_reverse(explode(".", $arquivo))[0];
+}
+
+/**
  * @param $expression
  */
 function print_p($expression) {
-//    echo "<pre>";
-//    var_dump($expression);
-//    echo "</pre>";
+    echo "<pre>";
+    var_dump($expression);
+    echo "</pre>";
 }
 
 /**
