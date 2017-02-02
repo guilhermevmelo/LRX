@@ -33,6 +33,7 @@ body {
     background-image: url("../imagens/lrx_background.png");
     background-size: 800px 600px;
     background-attachment: fixed;
+    background-position: center;
 }
 
 @media all and (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
