@@ -281,6 +281,8 @@ if (isset($q) && $q == "obterDetalhesSolicitacao") {
         $saDAO = new SolicitacaoAcademicaDAO();
         $resposta = $saDAO->obter($id, true);
 
+        // todo saDAO->obter retornar falso mandar codigo de erro
+
         echo json_encode(array("codigo" => 200, "solicitacao" => $resposta));
 
     } else if ($tipoSistema == 2) {
