@@ -52,7 +52,7 @@ class ProfessorDAO /*extends DAO*/ {
 
             $this->conexao->beginTransaction();
 
-            $sql = sprintf("insert into professores values (:id_professor, :id_grupo)");
+            $sql = sprintf("insert into professores values (:id_professor, :id_grupo, 0)");
             $consulta = $this->conexao->prepare($sql);
             
             $consulta->bindValue(':id_professor', $professor->getId());
@@ -61,7 +61,7 @@ class ProfessorDAO /*extends DAO*/ {
 
             $consulta->execute();
 
-            print_p($consulta->errorInfo());
+            //print_p($consulta->errorInfo());
 
             $this->conexao->commit();
             return true;
@@ -129,6 +129,7 @@ class ProfessorDAO /*extends DAO*/ {
             $p->setTitulo((int) $tupla['titulo']);
             $p->setIes($tupla['ies']);
             $p->setSaudacao((int) $tupla['saudacao']);
+            $p->setHabilitado(intval($tupla['habilitado']) == 1 ? true : false);
         }
 
         return $p;
@@ -173,6 +174,7 @@ class ProfessorDAO /*extends DAO*/ {
             $p->setTitulo((int) $tupla['titulo']);
             $p->setIes($tupla['ies']);
             $p->setSaudacao((int) $tupla['saudacao']);
+	        $p->setHabilitado(intval($tupla['habilitado']) == 1 ? true : false);
         }
 
         return $p;
@@ -192,12 +194,13 @@ class ProfessorDAO /*extends DAO*/ {
 
             $this->conexao->beginTransaction();
 
-            $sql = sprintf("update professores set id_grupo = :id_grupo where id_professor = :id_professor");
+            $sql = sprintf("update professores set id_grupo = :id_grupo, habilitado = :habilitado where id_professor = :id_professor");
             $consulta = $this->conexao->prepare($sql);
 
-            $consulta->bindValue(':id_professor', $professor->getId());
+            $consulta->bindValue(':id_professor', $professor->getId(), \PDO::PARAM_INT);
             $valor_id_grupo = $professor->getGrupo() != null ? $professor->getGrupo()->getId() : null;
-            $consulta->bindValue(':id_grupo', $valor_id_grupo);
+            $consulta->bindValue(':id_grupo', $valor_id_grupo, \PDO::PARAM_INT);
+            $consulta->bindValue(':habilitado', $professor->estaHabilitado(), \PDO::PARAM_BOOL);
 
             $consulta->execute();
 
@@ -270,6 +273,7 @@ class ProfessorDAO /*extends DAO*/ {
                 $p["telefone"] = $tupla["telefone"];
                 $p["nivel_acesso"] = intval($tupla["nivel_acesso"]);
                 $p["em_andamento"] = $saDAO->obterNumeroSolicitacoesEmAndamento(intval($tupla["id_usuario"]))["aprovadas"];
+	            $p["habilitado"] = intval($tupla['habilitado']) == 1 ? true : false;
             } else {
                 $p = new Professor($tupla['nome'], $tupla['email'], $tupla['cpf'], (int) $tupla['id_usuario'], $tupla['uid'],
                     (int)$tupla['limite']);
@@ -287,6 +291,7 @@ class ProfessorDAO /*extends DAO*/ {
                 $p->setTitulo((int) $tupla['titulo']);
                 $p->setIes($tupla['ies']);
                 $p->setSaudacao((int) $tupla['saudacao']);
+	            $p->setHabilitado(intval($tupla['habilitado']) == 1 ? true : false);
             }
 
             array_push($professores, $p);

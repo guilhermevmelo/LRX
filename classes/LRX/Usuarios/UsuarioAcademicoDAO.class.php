@@ -66,7 +66,7 @@ class UsuarioAcademicoDAO {
 
             $consulta->execute();
 
-            print_p($consulta->errorInfo());
+            //print_p($consulta->errorInfo());
 
             $sql2 = sprintf("select max(id_usuario) from usuarios");
             $consulta2 = $this->conexao->query($sql2);

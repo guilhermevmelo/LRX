@@ -8,7 +8,7 @@
 
 namespace LRX;
 
-$configuracoes = parse_ini_file(__DIR__ . "/../../configuracao.ini", true);
+$configuracoes = parse_ini_file(__DIR__ . "/../../../../configuracao.ini", true);
 
 /**
  * SGBD string  O SGBD utilizado na instalação da aplicação.

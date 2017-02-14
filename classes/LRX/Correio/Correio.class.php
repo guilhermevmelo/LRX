@@ -59,22 +59,22 @@ class Correio {
                     <style type="text/css">
                     @font-face {
                         font-family: "DINPro";
-                        src:    url("http://guilhermevieira.com.br/raiosx/estilos/fontes/DINPro/DINPro-Regular.eot?#iefix") format("embedded-opentype"),
-                                url("http://guilhermevieira.com.br/raiosx/estilos/fontes/DINPro/DINPro-Regular.otf")  format("opentype"),
-                                url("http://guilhermevieira.com.br/raiosx/estilos/fontes/DINPro/DINPro-Regular.woff") format("woff"),
-                                url("http://guilhermevieira.com.br/raiosx/estilos/fontes/DINPro/DINPro-Regular.ttf")  format("truetype"),
-                                url("http://guilhermevieira.com.br/raiosx/estilos/fontes/DINPro/DINPro-Regular.svg#DINPro-Regular") format("svg");
+                        src:    url("http://csd.fisica.ufc.br/solicitacoes/estilos/fontes/DINPro/DINPro-Regular.eot?#iefix") format("embedded-opentype"),
+                                url("http://csd.fisica.ufc.br/solicitacoes/estilos/fontes/DINPro/DINPro-Regular.otf")  format("opentype"),
+                                url("http://csd.fisica.ufc.br/solicitacoes/estilos/fontes/DINPro/DINPro-Regular.woff") format("woff"),
+                                url("http://csd.fisica.ufc.br/solicitacoes/estilos/fontes/DINPro/DINPro-Regular.ttf")  format("truetype"),
+                                url("http://csd.fisica.ufc.br/solicitacoes/estilos/fontes/DINPro/DINPro-Regular.svg#DINPro-Regular") format("svg");
                         font-weight: normal;
                         font-style: normal;
                     }
                     
                     @font-face {
                         font-family: "DINPro";
-                        src:    url("http://guilhermevieira.com.br/raiosx/estilos/fontes/DINPro/DINPro-Light.eot?#iefix") format("embedded-opentype"),
-                                url("http://guilhermevieira.com.br/raiosx/estilos/fontes/DINPro/DINPro-Light.otf")  format("opentype"),
-                                url("http://guilhermevieira.com.br/raiosx/estilos/fontes/DINPro/DINPro-Light.woff") format("woff"),
-                                url("http://guilhermevieira.com.br/raiosx/estilos/fontes/DINPro/DINPro-Light.ttf")  format("truetype"),
-                                url("http://guilhermevieira.com.br/raiosx/estilos/fontes/DINPro/DINPro-Light.svg#DINPro-Light") format("svg");
+                        src:    url("http://csd.fisica.ufc.br/solicitacoes/estilos/fontes/DINPro/DINPro-Light.eot?#iefix") format("embedded-opentype"),
+                                url("http://csd.fisica.ufc.br/solicitacoes/estilos/fontes/DINPro/DINPro-Light.otf")  format("opentype"),
+                                url("http://csd.fisica.ufc.br/solicitacoes/estilos/fontes/DINPro/DINPro-Light.woff") format("woff"),
+                                url("http://csd.fisica.ufc.br/solicitacoes/estilos/fontes/DINPro/DINPro-Light.ttf")  format("truetype"),
+                                url("http://csd.fisica.ufc.br/solicitacoes/estilos/fontes/DINPro/DINPro-Light.svg#DINPro-Light") format("svg");
                         font-weight: 100;
                         font-style: normal;
                     }
@@ -82,11 +82,11 @@ class Correio {
                     
                     @font-face {
                         font-family: "DINPro";
-                        src:    url("http://guilhermevieira.com.br/raiosx/estilos/fontes/DINPro/DINPro-Bold.eot?#iefix") format("embedded-opentype"),
-                                url("http://guilhermevieira.com.br/raiosx/estilos/fontes/DINPro/DINPro-Bold.otf")  format("opentype"),
-                                url("http://guilhermevieira.com.br/raiosx/estilos/fontes/DINPro/DINPro-Bold.woff") format("woff"),
-                                url("http://guilhermevieira.com.br/raiosx/estilos/fontes/DINPro/DINPro-Bold.ttf")  format("truetype"),
-                                url("http://guilhermevieira.com.br/raiosx/estilos/fontes/DINPro/DINPro-Bold.svg#DINPro-Bold") format("svg");
+                        src:    url("http://csd.fisica.ufc.br/solicitacoes/estilos/fontes/DINPro/DINPro-Bold.eot?#iefix") format("embedded-opentype"),
+                                url("http://csd.fisica.ufc.br/solicitacoes/estilos/fontes/DINPro/DINPro-Bold.otf")  format("opentype"),
+                                url("http://csd.fisica.ufc.br/solicitacoes/estilos/fontes/DINPro/DINPro-Bold.woff") format("woff"),
+                                url("http://csd.fisica.ufc.br/solicitacoes/estilos/fontes/DINPro/DINPro-Bold.ttf")  format("truetype"),
+                                url("http://csd.fisica.ufc.br/solicitacoes/estilos/fontes/DINPro/DINPro-Bold.svg#DINPro-Bold") format("svg");
                         font-weight: bold;
                         font-style: normal;
                     }
@@ -98,11 +98,11 @@ class Correio {
                     </style>
                 </head>
                 <body>
-                <div><img src="http://guilhermevieira.com.br/raiosx/imagens/cabecalho_email_lrx_ufc.gif" alt="Laboratório de Raios X"></div>
+                <div><img src="http://csd.fisica.ufc.br/solicitacoes/imagens/cabecalho_email_lrx_ufc.gif" alt="Laboratório de Raios X"></div>
                 '.
             $this->corpo_da_mensagem
             .'
-                <div><img src="http://guilhermevieira.com.br/raiosx/imagens/rodape_email.gif" alt="Bloco 928, sala 34 - Campus do Pici"></div></body>
+                <div><img src="http://csd.fisica.ufc.br/solicitacoes/imagens/rodape_email.gif" alt="Bloco 928, sala 34 - Campus do Pici"></div></body>
             </html>
         ';
     }

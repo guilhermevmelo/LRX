@@ -35,7 +35,7 @@ session_start();
 //$q = isset($_GET["q"])? $_GET["q"] : (isset($_POST["q"]) ? $_POST["q"] : NULL);
 $q = $_GET["q"] ?? $_POST["q"] ?? null;
 
-$host = "http://guilhermevieira.com.br/raiosx/";
+$host = "http://csd.fisica.ufc.br/solicitacoes/";
 
 /**
  *
@@ -399,6 +399,11 @@ if (isset($q) && $q == "autorizarSolicitacao") {
     } else {
         $nSolicitacoesAndamento = $saDAO->obterNumeroSolicitacoesEmAndamento($id_professor)["aprovadas"];
         $limite = $p->getLimite();
+
+        // Verifica se o professor está habilitado para fazer solicitações
+        if (!$p->estaHabilitado()) {
+	        Erro::lancarErro(array("codigo" => Erro::ERRO_SOLICITANTE_NAO_HABILITADO, "mensagem" => "Suas solicitações estão bloqueadas. No momento, apenas professores específicos estão habilitados a fazer solicitações."));
+        }
 
         // Verifica se o professor ainda tem limite para aprovar solicitações
         if ($nSolicitacoesAndamento < $limite) {
@@ -853,7 +858,18 @@ if (isset($q) && $q == "cadastrarUsuario") {
 
         $link = $host . "#/NovoUsuario/Confirmar/" . $p->getUid();
         $assunto = '[Confirmação de Cadastro LRX] ' . $p->getNome();
-        $corpo_da_mensagem = '<p>Confirmar: <a href="' . $link . '">' . $link . '</a></p>';
+        $corpo_da_mensagem = '<p>Olá prof(a). '.$p->getNome().',<br> foi solicitado um cadastro em seu nome no Sistema de 
+            Solicitações do Laboratório de Raios-X do departamento de Física da UFC. Para que possamos confirmar que este 
+            endereço de email de fato pertence a você, precisamos que utilize o link de confirmação abaixo.</p>
+            <p>Basta clicar no link abaixo que esta página será redirecionada para o sistema e a confirmação do email será 
+            executada. Link: <a href="' . $link . '">' . $link . '</a></p>
+            <p>Caso o(a) sr(a) não tenha requisitado uma conta no nosso sistema, fique tranquilo(a). Não utilizar o link acima 
+            implicará na não liberação do cadastro e quem quer que tenha utilizado seu endereço de email para cadastrar-se 
+            não terá acesso ao sistema.</p>
+            <p>Caso possua alguma dúvida quanto ao cadastro ou ao sistema em si, por favor entre em contato com o Laboratório 
+            por meio do endereço de email lrxufc@gmail.com, ou pelo telefone 85 33669013.</p>
+            <p style="text-align:right;">Atenciosamente,<br>Laboratório de Raios-X</p>';
+
 
         $correio = new Correio($email, $assunto, $corpo_da_mensagem);
         $correio->enviar();
@@ -862,14 +878,11 @@ if (isset($q) && $q == "cadastrarUsuario") {
             "codigo" => 200
         );
     } catch (\Exception $ex) {
-        Erro::lancarErro($ex->getMessage());
         $r = array(
             "codigo" => 3,
             "mensagem" => $ex->getMessage()
         );
     }
-
-
     echo json_encode($r);
 }
 
