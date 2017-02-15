@@ -129,11 +129,13 @@ function atualizarCampos() {
         $("#menuUsuarios").show();
     }
 
+    /* As linhas abaixo escondem a opção de Nova Solicitação para operadores e administradores.
     if (usuario.nivel_acesso === 5 || usuario.nivel_acesso === 6) {
         $("#linkNovaSolicitacao").hide();
     } else {
         $("#linkNovaSolicitacao").show();
     }
+    */
 
     var token;
     for (token in tokens) {

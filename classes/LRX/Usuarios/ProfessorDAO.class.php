@@ -96,7 +96,7 @@ class ProfessorDAO /*extends DAO*/ {
      * @return Professor|bool
      */
     public function obter(int $id, $em_array = false) : Professor {
-        $sql = sprintf("select u.*, p.id_grupo from usuarios u, professores p where u.id_usuario = :id_usuario and p.id_professor = u.id_usuario limit 1");
+        $sql = sprintf("select u.*, p.id_grupo, p.habilitado from usuarios u, professores p where u.id_usuario = :id_usuario and p.id_professor = u.id_usuario limit 1");
 
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(':id_usuario', $id);
@@ -141,7 +141,7 @@ class ProfessorDAO /*extends DAO*/ {
      * @return Professor|bool
      */
     public function obterPorDocumento(string $cpf, $em_array = false) : Professor {
-        $sql = sprintf("select u.*, p.id_grupo from usuarios u, professores p where u.cpf = :cpf and p.id_professor = u.id_usuario limit 1");
+        $sql = sprintf("select u.*, p.id_grupo, p.habilitado from usuarios u, professores p where u.cpf = :cpf and p.id_professor = u.id_usuario limit 1");
 
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(':cpf', $cpf);
@@ -249,8 +249,8 @@ class ProfessorDAO /*extends DAO*/ {
      */
     public function obterTodos($em_array = false, $apenas_nao_confirmados = false) : array {
         $sql = $apenas_nao_confirmados ?
-            sprintf("select u.*, p.id_grupo from usuarios u, professores p where p.id_professor = u.id_usuario and confirmado = 0 order by id_usuario desc") :
-            sprintf("select u.*, p.id_grupo from usuarios u, professores p where p.id_professor = u.id_usuario order by id_usuario desc");
+            sprintf("select u.*, p.id_grupo, p.habilitado from usuarios u, professores p where p.id_professor = u.id_usuario and confirmado = 0 order by id_usuario desc") :
+            sprintf("select u.*, p.id_grupo, p.habilitado from usuarios u, professores p where p.id_professor = u.id_usuario order by id_usuario desc");
         $professores = array();
         $saDAO = new SolicitacaoAcademicaDAO();
         foreach ($this->conexao->query($sql) as $tupla) {

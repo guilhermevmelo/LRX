@@ -76,9 +76,9 @@ function obterExtensaoArquivo($arquivo) {
  * @param $expression
  */
 function print_p($expression) {
-    echo "<pre>";
-    var_dump($expression);
-    echo "</pre>";
+//    echo "<pre>";
+//    var_dump($expression);
+//    echo "</pre>";
 }
 
 /**
