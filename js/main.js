@@ -116,20 +116,28 @@ function atualizarTokens() {
 
 }
 
+/**
+ * atualizarCampos() é chamada toda vez que um usuário faz login. Esta função atualiza as seções que podem ser
+ * mostradas na UI de acordo com as permissões do usuário logado.
+ */
 function atualizarCampos() {
+    /* Menu de Alunos apenas está disponível para professores */
     if (usuario.nivel_acesso !== 2) {
         $("#menuAlunos").hide();
     } else {
         $("#menuAlunos").show();
     }
 
+    /* Exibir os menus de controle de usuários e de equipamentos apenas para administradores e operadores */
     if (usuario.nivel_acesso !== 5 && usuario.nivel_acesso !== 6) {
         $("#menuUsuarios").hide();
+        $("#menuEquipamentos").hide();
     } else {
         $("#menuUsuarios").show();
+        $("#menuEquipamentos").show();
     }
 
-    /* As linhas abaixo escondem a opção de Nova Solicitação para operadores e administradores.
+    /* Esconder a opção de Nova Solicitação para operadores e administradores.
     if (usuario.nivel_acesso === 5 || usuario.nivel_acesso === 6) {
         $("#linkNovaSolicitacao").hide();
     } else {
@@ -1173,6 +1181,132 @@ function obterEquipamentos() {
     });
 }
 
+
+function preencherEquipamentos() {
+    $("#ListaEquipamentos").empty();
+    $("#DetalheEquipamento").fadeOut("slow");
+    $("#NenhumEquipamento").fadeOut("slow");
+    $.ajax({
+        url: "acao.php",
+        type: "get",
+        async: false,
+        data: {
+            q: "obterListaEquipamentos",
+            apenasDisponiveis: 0
+        }
+    }).done(function (r) {
+        window.console.log(r);
+        var  n = 0;
+
+        if (r.equipamentos.length === 0) {
+            $("#NenhumEquipamento").fadeIn("slow");
+        }
+
+        r.equipamentos.forEach(function(_s) {
+            var elementoLi = document.createElement("li");
+            elementoLi.classList.add("bloco");
+            elementoLi.classList.add("relativo");
+            elementoLi.classList.add("escondido");
+
+            elementoLi.id = "_equip" + _s.id_equipamento;
+
+            var identificacaoH3 = document.createElement("h3");
+            identificacaoH3.classList.add("equipamentoNome");
+            identificacaoH3.innerHTML = _s.nome;
+            elementoLi.appendChild(identificacaoH3);
+
+            var statusH4 = document.createElement("h4");
+
+            statusH4.innerHTML = '<span style="color:#222;">' + _s.tipo +' &mdash; </span>';
+
+            if(_s.disponivel) {
+                statusH4.classList.add("verde");
+                statusH4.innerHTML += "Disponível";
+            } else {
+                statusH4.classList.add("vermelho");
+                statusH4.innerHTML += "Indisponível";
+            }
+
+            elementoLi.appendChild(statusH4);
+            var jElementoLi = $(elementoLi);
+            jElementoLi.click(function() {
+                window.console.log("Click no equipamento", _s.id_equipamento);
+                $("#detalheEquipamento_Nome").html(_s.nome);
+
+                    var det_equip_status =$("#detalheEquipamento_Status");
+                    var det_equip_link_modificar = $("#detalheEquipamento_linkStatusModificar");
+
+
+                    if(_s.disponivel) {
+                        det_equip_status.addClass("verde");
+                        det_equip_status.html("Disponível");
+                        det_equip_link_modificar.html("desabilitar");
+
+                    } else {
+                        det_equip_status.addClass("vermelho");
+                        det_equip_status.html("Indisponível");
+                        det_equip_link_modificar.html("habilitar");
+                    }
+                    det_equip_link_modificar.off();
+                    det_equip_link_modificar.click(function () {
+                        $.ajax({
+                            url: "acao.php",
+                            type: "POST",
+                            data: {
+                                "q": "alterarStatusEquipamento",
+                                "id_equipamento": _s.id_equipamento
+                            }
+                        }).done(function (resp) {
+                            if (resp.codigo !== 200) {
+                                apresentarErro(resp.mensagem);
+                            } else {
+                                preencherEquipamentos();
+                            }
+                        });
+                    });
+
+                    // $("#detalheEquipamento_Status").hide();
+                    // $("#detalheEquipamento_Detalhes").show();
+
+                    $("#detalheEquipamento_Tipo").html(_s.tipo);
+                    $("#detalheEquipamento_Tubo").html(_s.tubo);
+                    $("#detalheEquipamento_Obs").html(_s.observacoes);
+
+                // $("#detalheAluno_Cancelar").click(function() {
+                //     //TODO adicionar confirmacao
+                //     $(this).off("click");
+                //     $("#Detalhe").removeClass("ativo").fadeOut("slow");
+                //     $("#_sol" + r.aluno.id_solicitacao).effect("blind");
+                //
+                //     $.ajax({
+                //         url: "acao.php",
+                //         type: "get",
+                //         data: {
+                //             q: "cancelarSolicitacao",
+                //             id: r.aluno.id_solicitacao,
+                //             uid: usuario.uid,
+                //             nivel_acesso: usuario.nivel_acesso
+                //         }
+                //     }).done(function (re) {
+                //         if (re.codigo !== 200) {
+                //             apresentarErro(re);
+                //         }
+                //     });
+                // });
+
+                $("#DetalheEquipamento").fadeIn("slow").addClass("ativo");
+            });
+
+            $("#ListaEquipamentos").append(elementoLi);
+
+            setTimeout(function(){
+                $(elementoLi).fadeIn("slow").removeClass("escondido");
+            }, 100*n++);
+
+        });
+    });
+}
+
 function atualizarOpcoesDeEquipamentos(tipo, elementoOption) {
     /* Limpa os equipamentos listados */
     $(elementoOption).empty();
@@ -1264,6 +1398,22 @@ function exibirSecao() {
                         $(this).addClass("estadoAtual");
                         $("#ListaUsuarios").addClass("ativo");
                         preencherUsuarios(true, false, false, true);
+                    });
+                });
+            }
+            break;
+        }
+
+        case "Equipamentos": {
+            if (usuario === null || (usuario.nivel_acesso !== 5 && usuario.nivel_acesso !== 6)) {
+                location.hash = "#/Inicio";
+            } else {
+                estadoAtual.fadeOut("slow", function () {
+                    $(this).removeClass("estadoAtual");
+                    $("#Equipamentos").fadeIn("slow", function () {
+                        $(this).addClass("estadoAtual");
+                        $("#ListaEquipamentos").addClass("ativo");
+                        preencherEquipamentos();
                     });
                 });
             }

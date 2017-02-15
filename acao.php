@@ -306,6 +306,24 @@ if (isset($q) && $q == "obterListaEquipamentos") {
     echo json_encode(array("codigo" => 200, "equipamentos" => $resposta));
 }
 
+if (isset($q) && $q == "alterarStatusEquipamento") {
+	header('Content-Type: application/json');
+	$eDAO = new EquipamentoDAO();
+
+	$id_equipamento = intval($_POST["id_equipamento"]);
+	$e = $eDAO->obter($id_equipamento);
+	if ($e === false) {
+		Erro::lancarErro( array("codigo" => Erro::ERRO_EQUIPAMENTO_INEXISTENTE, "mensagem" => "Equipamento Inexistente"));
+		return;
+	}
+
+	$e->setDisponivel(! $e->getDisponivel());
+	$eDAO->atualizar($e);
+
+	echo json_encode(array("codigo" => Erro::OK, "mensagem" => "Status do Equipamento alterado com sucesso."));
+}
+
+
 /**
  *
  */

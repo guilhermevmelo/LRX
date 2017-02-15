@@ -22,6 +22,7 @@ class Erro {
 	const ERRO_CONFIRMAR_USUARIO_NAO_PROFESSOR = 5000;
 	const ERRO_SOLICITACAO_INEXISTENTE = 6000;
 	const ERRO_STATUS_INEXISTENTE = 6001;
+	const ERRO_EQUIPAMENTO_INEXISTENTE = 6002;
 
     private function __construct() {
 

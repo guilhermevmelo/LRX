@@ -42,12 +42,13 @@ class EquipamentoDAO /*extends DAO*/ {
         try {
             $this->conexao->beginTransaction();
             
-            $sql = sprintf("insert into equipamentos values(null, :nome, :tipo, :tubo, :disponivel)");
+            $sql = sprintf("insert into equipamentos values(null, :nome, :tipo, :tubo, :disponivel, :obs)");
             $consulta = $this->conexao->prepare($sql);
             $consulta->bindValue(':nome', $equipamento->getNome());
             $consulta->bindValue(':tipo', $equipamento->getTipo());
             $consulta->bindValue(':tubo', $equipamento->getTubo());
-            $consulta->bindValue(':disponivel', $equipamento->disponivel(), \PDO::PARAM_BOOL);
+            $consulta->bindValue(':disponivel', $equipamento->getDisponivel(), \PDO::PARAM_BOOL);
+            $consulta->bindValue( ':obs', $equipamento->getObs());
             $consulta->execute();
             \LRX\print_p($consulta->errorInfo());
 
@@ -80,9 +81,9 @@ class EquipamentoDAO /*extends DAO*/ {
 
         // TODO: Adicionar os serviços direto no construtor
 
-        $e = new Equipamento($tupla['id_equipamento'], $tupla['nome'], $tupla['tipo'], $tupla['tubo']);
+        $e = new Equipamento($tupla['id_equipamento'], $tupla['nome'], $tupla['tipo'], $tupla['tubo'], null, null, $tupla['observacoes']);
         if ($tupla['disponivel'] == 1)
-            $e->disponibilizar();
+            $e->setDisponivel(true);
 
         return $e;
     }
@@ -99,12 +100,14 @@ class EquipamentoDAO /*extends DAO*/ {
         try {
             $this->conexao->beginTransaction();
 
-            $sql = sprintf("update equipamentos set nome = :nome, tipo = :tipo, tubo = :tubo, disponivel = :disponivel where id_equipamento = :id");
+            $sql = sprintf("update equipamentos set nome = :nome, tipo = :tipo, tubo = :tubo, disponivel = :disponivel, observacoes = :obs where id_equipamento = :id");
             $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(':id', $equipamento->getId(), \PDO::PARAM_INT);
             $consulta->bindValue(':nome', $equipamento->getNome());
             $consulta->bindValue(':tipo', $equipamento->getTipo());
             $consulta->bindValue(':tubo', $equipamento->getTubo());
-            $consulta->bindValue(':disponivel', $equipamento->disponivel(), \PDO::PARAM_BOOL);
+            $consulta->bindValue(':disponivel', $equipamento->getDisponivel(), \PDO::PARAM_BOOL);
+            $consulta->bindValue(':obs', $equipamento->getObs());
 
             $consulta->execute();
             \LRX\print_p($consulta->errorInfo());
@@ -152,7 +155,8 @@ class EquipamentoDAO /*extends DAO*/ {
         foreach ($this->conexao->query($sql) as $tupla) {
             if (!$em_array) {
                 $e = new Equipamento((int)$tupla['id_equipamento'], $tupla['nome'], $tupla['tipo'],
-                    $tupla['tubo'], $tupla['disponivel'] == 1 ? true : false);
+                    $tupla['tubo'], $tupla['disponivel'] == 1 ? true : false, $tupla['observacoes']);
+
 
                 // TODO: Adicionar os serviços
             } else {
@@ -161,7 +165,8 @@ class EquipamentoDAO /*extends DAO*/ {
                     'nome'              => $tupla['nome'],
                     'tubo'              => $tupla['tubo'],
                     'tipo'              => $tupla['tipo'],
-                    'disponivel'        =>$tupla['disponivel'] == 1 ? true : false
+                    'disponivel'        => $tupla['disponivel'] == 1 ? true : false,
+                    'observacoes'       => $tupla['observacoes']
                 );
             }
             array_push($equipamentos, $e);

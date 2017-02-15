@@ -63,6 +63,7 @@
                 <!--<li><a href="#">Resultados</a></li>-->
                 <li id="menuAlunos"><a href="#/Alunos">Alunos</a></li>
                 <li id="menuUsuarios"><a href="#/Usuarios">Usuários</a></li>
+                <li id="menuEquipamentos"><a href="#/Equipamentos">Equipamentos</a></li>
                 <!--<li><a href="#">Configurações</a></li>-->
                 <!--<li><a href="#">Ajuda</a></li>-->
             </ul>
@@ -840,6 +841,43 @@
                     </li>
                 </ul>
                 <ul class="lista" id="ListaUsuarios"></ul>
+            </div>
+        </section>
+
+        <section id="Equipamentos" class="secao">
+            <div class="bloco DivMenuLateral dinamicamenteFixo">
+                <h3 class="cabecalho">Equipamentos</h3>
+                <nav class="NavMenuLateral">
+                    <ul class="MenuLateral">
+                        <li id="linkListarEquipamentos">Todos os Equipamentos</li>
+                        <li id="linkNovoEquipamento">Adicionar Equipamento</li>
+                        <li id="linkListarFendas">Listar Fendas</li>
+                        <li id="linkNovaFenda">Adicionar Fenda</li>
+                    </ul>
+                </nav>
+            </div>
+            <div id="DetalheEquipamento" class="dinamicamenteFixo">
+                <div class="bloco relativo">
+                    <!--<span class="solicitacaoMenuFlutuante floatRight"><a id="detalhe_Cancelar">desvincular</a></span>-->
+                    <h3 class="identificacao" id="detalheEquipamento_Nome"></h3>
+                    <h4 id="detalheEquipamento_Status">Aluno ainda não completou o cadastro</h4>
+                    <span id="detalheEquipamento_StatusModificar"><a id="detalheEquipamento_linkStatusModificar"></a></span>
+                    <p>
+                        <strong>Tipo:</strong> <span id="detalheEquipamento_Tipo"></span><br>
+                        <strong>Tubo:</strong> <span id="detalheEquipamento_Tubo"></span><br>
+                    </p>
+                    <strong>Observações:</strong>
+                    <p id="detalheEquipamento_Obs"></p>
+                </div>
+            </div>
+
+            <div class="Principal">
+                <ul class="lista" id="NenhumEquipamento">
+                    <li class="bloco">
+                        <p>Ainda não há equipamentos cadastrados.</p>
+                    </li>
+                </ul>
+                <ul class="lista" id="ListaEquipamentos"></ul>
             </div>
         </section>
 

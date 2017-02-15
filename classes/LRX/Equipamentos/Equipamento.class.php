@@ -27,15 +27,17 @@ class Equipamento {
     private $tubo;      // [Cu, Co, Pd, Rh]
     private $disponivel = false;    // [false => indisponível, true => disponível]
     private $servicos;
+    private $obs;
 
-    public function __construct($id = null, $nome = null, $tipo = null, $tubo = null, $disponivel = null, $servicos =
-    null) {
+    public function __construct($id = null, $nome = null, $tipo = null, $tubo = null, $disponivel = false, $servicos =
+    null, $obs = null) {
         $this->id = $id;
         $this->nome = $nome;
         $this->tipo = $tipo;
         $this->tubo = $tubo;
         $this->disponivel = $disponivel;
         $this->servicos = $servicos;
+        $this->obs = $obs;
     }
 
     /**
@@ -94,18 +96,18 @@ class Equipamento {
         $this->tubo = $tubo;
     }
 
-    /**
-     * @return null
-     */
-    public function disponivel() {
+	/**
+	 * @return bool
+	 */
+    public function getDisponivel() {
         return $this->disponivel;
     }
 
-    /**
-     *
-     */
-    public function disponibilizar() {
-        $this->disponivel = true;
+	/**
+	 * @param bool $disponivel
+	 */
+    public function setDisponivel(bool $disponivel = true) {
+        $this->disponivel = $disponivel;
     }
 
     /**
@@ -122,4 +124,17 @@ class Equipamento {
         $this->servicos = $servicos;
     }
 
+	/**
+	 * @return null
+	 */
+	public function getObs() {
+		return $this->obs;
+	}
+
+	/**
+	 * @param null $obs
+	 */
+	public function setObs( $obs ) {
+		$this->obs = $obs;
+	}
 }
