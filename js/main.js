@@ -1916,6 +1916,7 @@ $(document).ready(function () {
         var _email = $("#frm_novo_aluno_convite_email").val();
         var _cpf = $("#frm_novo_aluno_convite_cpf").val();
         var _nome = $("#frm_novo_aluno_convite_nome").val();
+        var _vinculo = $("#frm_novo_aluno_convite_vinculo").val();
 
         $.ajax({
             url: "acao.php",
@@ -1925,6 +1926,7 @@ $(document).ready(function () {
                 email: _email,
                 documento: _cpf,
                 nome: _nome,
+                vinculo: _vinculo,
                 id_professor: usuario.id
             }
         }).done(function(r) {

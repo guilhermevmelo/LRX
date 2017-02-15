@@ -719,6 +719,7 @@ if (isset($q) && $q == "vincularAluno") {
     $cpf = addslashes($_POST['documento']);
     $cpf = desformatarCPF($cpf);
     $nome = addslashes($_POST['nome']);
+    $vinculo = addslashes($_POST['vinculo']);
     $id_professor = intval($_POST['id_professor']);
 
     $podeSerVinculado = false;
@@ -763,6 +764,7 @@ if (isset($q) && $q == "vincularAluno") {
 
             $aluno = new Aluno($nome, $email, $cpf, $professor);
             $aluno->setSenhaAberta("12345678");
+            $aluno->setVinculo($vinculo);
 
             $aDAO->criar($aluno);
 
