@@ -851,8 +851,8 @@
                     <ul class="MenuLateral">
                         <li id="linkListarEquipamentos">Todos os Equipamentos</li>
                         <li id="linkNovoEquipamento">Adicionar Equipamento</li>
-                        <li id="linkListarFendas">Listar Fendas</li>
-                        <li id="linkNovaFenda">Adicionar Fenda</li>
+                        <!--<li id="linkListarFendas">Listar Fendas</li>-->
+                        <!--<li id="linkNovaFenda">Adicionar Fenda</li>-->
                     </ul>
                 </nav>
             </div>
@@ -878,6 +878,54 @@
                     </li>
                 </ul>
                 <ul class="lista" id="ListaEquipamentos"></ul>
+
+                <div id="NovoEquipamento">
+                    <h3 class="cabecalho">Adicionar um Equipamento</h3>
+                    <form name="FormNovoEquipaento" id="FormNovoEquipamento" action="#/Equipamentos" method="post">
+                        <fieldset>
+                            <label for="frm_novo_aluno_convite_nome">Nome</label>
+                            <input type="text" id="frm_novo_equipamento_nome"
+                                   name="frm_novo_equipamento_nome" required>
+                        </fieldset>
+                        <fieldset>
+                            <label for="frm_novo_equipamento_tipo">Tipo</label>
+                            <select id="frm_novo_equipamento_tipo"
+                                    name="frm_novo_equipamento_tipo"  required>
+                                <option value="drx">DRX - Difratômetro de Raios-X</option>
+                                <option value="frx">FRX - Espectômetro de Fluorescência de Raios-X</option>
+                            </select>
+                        </fieldset>
+                        <fieldset>
+                            <label for="frm_novo_equipamento_tubo">Tubo</label>
+                            <select id="frm_novo_equipamento_tubo"
+                                    name="frm_novo_equipamento_tubo" required>
+                                <option value="Co">Co - Cobalto</option>
+                                <option value="Cu">Cu - Cobre</option>
+                                <option value="Pd">Pd - Paládio</option>
+                                <option value="Rh">Rh - Rhódio</option>
+                            </select>
+                        </fieldset>
+                        <fieldset>
+                            <label>Habilitado</label>
+                            <label><input type="radio" name="frm_novo_equipamento_habilitado" class="frm_novo_equipamento_hab" value="true" checked data-validation-optional="true"> sim</label>
+                            <label><input type="radio" name="frm_novo_equipamento_habilitado" class="frm_novo_equipamento_hab" value="false" data-validation-optional="true"> não</label>
+                        </fieldset>
+                        <fieldset>
+                            <label for="frm_novo_equipamento_obs">Observações</label>
+                            <textarea id="frm_novo_equipamento_obs" name="frm_novo_equipamento_obs" data-validation-optional="true"></textarea>
+                        </fieldset>
+                        <fieldset>
+                            <input type="submit" name="frm_novo_equipamento_sbmt" id="frm_novo_equipamento_sbmt"
+                                   value="Adicionar">
+                        </fieldset>
+
+                    </form>
+
+                </div>
+
+                <div id="NovoEquipamentoEnviado" class="bloco">
+                    <p></p>
+                </div>
             </div>
         </section>
 

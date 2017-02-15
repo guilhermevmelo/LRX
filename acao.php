@@ -8,6 +8,7 @@
 
 use LRX\Correio\Correio;
 use LRX\Correio\MalaDireta;
+use LRX\Equipamentos\Equipamento;
 use LRX\Equipamentos\EquipamentoDAO;
 use LRX\Equipamentos\FendaDAO;
 use LRX\Erro;
@@ -323,6 +324,27 @@ if (isset($q) && $q == "alterarStatusEquipamento") {
 	echo json_encode(array("codigo" => Erro::OK, "mensagem" => "Status do Equipamento alterado com sucesso."));
 }
 
+if (isset($q) && $q == "novoEquipamento") {
+	header('Content-Type: application/json');
+
+	//TODO: Verificar permissão de quem está adicionando
+
+	$eDAO = new EquipamentoDAO();
+
+	$nome = addslashes( $_POST["nome"]);
+	$tipo = strtoupper(addslashes( $_POST["tipo"]));
+	$tubo = strtoupper(addslashes( $_POST["tubo"]));
+	$disponivel = $_POST["disponivel"] == "false" ? false : true;
+	$obs = addslashes( $_POST["obs"]);
+
+	$e = new Equipamento(null, $nome, $tipo, $tubo, $disponivel, null, $obs);
+
+	if ($eDAO->criar($e)) {
+		echo json_encode( array("codigo" => Erro::OK, "mensagem" => "Novo Equipamento adicionado com sucesso."));
+	} else {
+		Erro::lancarErro( array("codigo" => 300, "mensagem" => "Ocorreu um erro. Por favor informe um administrador."));
+	}
+}
 
 /**
  *

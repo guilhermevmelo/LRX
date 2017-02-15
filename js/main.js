@@ -2051,6 +2051,22 @@ $(document).ready(function () {
         });
     });
 
+    $("#linkListarEquipamentos").click(function () {
+        $(".ativo").removeClass("ativo").fadeOut("slow", function () {
+            $("#ListaEquipamentos").addClass("ativo").fadeIn("slow");
+            preencherEquipamentos();
+        });
+    });
+
+    $("#linkNovoEquipamento").click(function () {
+        $("#NenhumEquipamento").fadeOut("slow", function() {
+            $(".ativo").removeClass("ativo").fadeOut("slow", function () {
+                $("#FormNovoEquipamento").trigger("reset");
+                $("#NovoEquipamento").fadeIn("slow").addClass("ativo");
+            });
+        });
+    });
+
     /**
      * Adiciona gatilho para gerenciar vinculo de novo aluno
      */
@@ -2092,6 +2108,48 @@ $(document).ready(function () {
             }
         });
 
+    });
+
+    $("#FormNovoEquipamento").submit(function (evento) {
+        evento.stopPropagation();
+        evento.preventDefault();
+
+        clearTimeout(timeoutErro);
+        $("#DivErro").fadeOut("slow");
+
+        $("#frm_novo_equipamento_sbmt").prop("disabled", true);
+
+        var _nome = $("#frm_novo_equipamento_nome").val();
+        var _tipo = $("#frm_novo_equipamento_tipo").val();
+        var _tubo = $("#frm_novo_equipamento_tubo").val();
+        var _habilitado = $(".frm_novo_equipamento_hab:checked").val();
+        var _obs = $("#frm_novo_equipamento_obs").val();
+
+        $.ajax({
+            url: "acao.php",
+            type: "post",
+            data: {
+                q: "novoEquipamento",
+                nome: _nome,
+                tipo: _tipo,
+                tubo: _tubo,
+                disponivel: _habilitado,
+                obs: _obs
+            }
+        }).done(function(r) {
+            if (r.codigo === 200) {
+                window.console.log(r);
+                if (r.naoPodeSerVinculado) {
+                    apresentarErro({mensagem: r.mensagem});
+
+                } else {
+                    $("#NovoEquipamento").removeClass("ativo").fadeOut("slow", function () {
+                        $("#NovoEquipamentoEnviado p").html(r.mensagem);
+                        $("#NovoEquipamentoEnviado").fadeIn("slow").addClass("ativo");
+                    });
+                }
+            }
+        });
     });
 
     $("#FormNovaSolicitacao").submit(function (evento) {

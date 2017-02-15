@@ -186,7 +186,8 @@ article p {
 /** Elementos estruturais **/
 .bloco,
 .Principal #NovaSolicitacao,
-.Principal #NovoAluno {
+.Principal #NovoAluno,
+.Principal #NovoEquipamento {
     background-color: rgba(255, 255, 255, 1);
     /*box-shadow: 0 2px 4px #444;*/
     padding: 10px;
@@ -258,7 +259,8 @@ footer nav#MenuRodape {
 }
 
 .Principal #NovaSolicitacao,
-.Principal #NovoAluno {
+.Principal #NovoAluno,
+.Principal #NovoEquipamento {
     display: none;
 }
 
@@ -608,7 +610,8 @@ input[type="submit"]:hover,
 
 .secao,
 #NovaSolicitacaoIdentificador,
-#NovoAlunoEnviado {
+#NovoAlunoEnviado,
+#NovoEquipamentoEnviado {
     display: none;
     margin: 0 5px;
 }
