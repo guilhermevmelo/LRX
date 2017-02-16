@@ -81,7 +81,7 @@ class EquipamentoDAO /*extends DAO*/ {
 
         // TODO: Adicionar os serviços direto no construtor
 
-        $e = new Equipamento($tupla['id_equipamento'], $tupla['nome'], $tupla['tipo'], $tupla['tubo'], null, null, $tupla['observacoes']);
+        $e = new Equipamento($tupla['id_equipamento'], stripslashes($tupla['nome']), $tupla['tipo'], $tupla['tubo'], null, null, $tupla['observacoes']);
         if ($tupla['disponivel'] == 1)
             $e->setDisponivel(true);
 
@@ -154,7 +154,7 @@ class EquipamentoDAO /*extends DAO*/ {
 
         foreach ($this->conexao->query($sql) as $tupla) {
             if (!$em_array) {
-                $e = new Equipamento((int)$tupla['id_equipamento'], $tupla['nome'], $tupla['tipo'],
+                $e = new Equipamento((int)$tupla['id_equipamento'], stripslashes($tupla['nome']), $tupla['tipo'],
                     $tupla['tubo'], $tupla['disponivel'] == 1 ? true : false, $tupla['observacoes']);
 
 
@@ -162,7 +162,7 @@ class EquipamentoDAO /*extends DAO*/ {
             } else {
                 $e = array(
                     'id_equipamento'    => intval($tupla['id_equipamento']),
-                    'nome'              => $tupla['nome'],
+                    'nome'              => stripslashes($tupla['nome']),
                     'tubo'              => $tupla['tubo'],
                     'tipo'              => $tupla['tipo'],
                     'disponivel'        => $tupla['disponivel'] == 1 ? true : false,

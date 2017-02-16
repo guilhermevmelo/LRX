@@ -871,7 +871,6 @@ function preencherAlunos() {
                 elementoLi.appendChild(statusH4);
                 var jElementoLi = $(elementoLi);
                 jElementoLi.click(function() {
-                    window.console.log("Click no aluno", _s.id_aluno);
                     obterDetalhesAluno(_s.id_aluno);
                 });
 
@@ -1184,7 +1183,8 @@ function obterEquipamentos() {
 
 function preencherEquipamentos() {
     $("#ListaEquipamentos").empty();
-    $("#DetalheEquipamento").fadeOut("slow");
+    var det_equip = $("#DetalheEquipamento");
+    det_equip.fadeOut("slow");
     $("#NenhumEquipamento").fadeOut("slow");
     $.ajax({
         url: "acao.php",
@@ -1230,13 +1230,13 @@ function preencherEquipamentos() {
             elementoLi.appendChild(statusH4);
             var jElementoLi = $(elementoLi);
             jElementoLi.click(function() {
-                window.console.log("Click no equipamento", _s.id_equipamento);
-                $("#detalheEquipamento_Nome").html(_s.nome);
+                det_equip.fadeOut("slow", function () {
+                    $("#detalheEquipamento_Nome").html(_s.nome);
 
-                    var det_equip_status =$("#detalheEquipamento_Status");
+                    var det_equip_status = $("#detalheEquipamento_Status");
                     var det_equip_link_modificar = $("#detalheEquipamento_linkStatusModificar");
 
-
+                    det_equip_status.removeClass("verde vermelho");
                     if(_s.disponivel) {
                         det_equip_status.addClass("verde");
                         det_equip_status.html("Disponível");
@@ -1272,29 +1272,31 @@ function preencherEquipamentos() {
                     $("#detalheEquipamento_Tubo").html(_s.tubo);
                     $("#detalheEquipamento_Obs").html(_s.observacoes);
 
-                // $("#detalheAluno_Cancelar").click(function() {
-                //     //TODO adicionar confirmacao
-                //     $(this).off("click");
-                //     $("#Detalhe").removeClass("ativo").fadeOut("slow");
-                //     $("#_sol" + r.aluno.id_solicitacao).effect("blind");
-                //
-                //     $.ajax({
-                //         url: "acao.php",
-                //         type: "get",
-                //         data: {
-                //             q: "cancelarSolicitacao",
-                //             id: r.aluno.id_solicitacao,
-                //             uid: usuario.uid,
-                //             nivel_acesso: usuario.nivel_acesso
-                //         }
-                //     }).done(function (re) {
-                //         if (re.codigo !== 200) {
-                //             apresentarErro(re);
-                //         }
-                //     });
-                // });
+                    // $("#detalheAluno_Cancelar").click(function() {
+                    //     //TODO adicionar confirmacao
+                    //     $(this).off("click");
+                    //     $("#Detalhe").removeClass("ativo").fadeOut("slow");
+                    //     $("#_sol" + r.aluno.id_solicitacao).effect("blind");
+                    //
+                    //     $.ajax({
+                    //         url: "acao.php",
+                    //         type: "get",
+                    //         data: {
+                    //             q: "cancelarSolicitacao",
+                    //             id: r.aluno.id_solicitacao,
+                    //             uid: usuario.uid,
+                    //             nivel_acesso: usuario.nivel_acesso
+                    //         }
+                    //     }).done(function (re) {
+                    //         if (re.codigo !== 200) {
+                    //             apresentarErro(re);
+                    //         }
+                    //     });
+                    // });
 
-                $("#DetalheEquipamento").fadeIn("slow").addClass("ativo");
+                    det_equip.fadeIn("slow").addClass("ativo");
+                });
+
             });
 
             $("#ListaEquipamentos").append(elementoLi);
