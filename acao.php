@@ -917,7 +917,9 @@ if (isset($q) && $q == "cadastrarUsuario") {
         $correio->enviar();
 
         $r = array(
-            "codigo" => 200
+            "codigo" => 200,
+            "genero" => $genero,
+            "generoPro" => $p->getGenero()
         );
     } catch (\Exception $ex) {
         $r = array(

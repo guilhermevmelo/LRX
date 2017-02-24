@@ -59,7 +59,7 @@ class UsuarioAcademicoDAO {
             $consulta->bindValue(':uid', $usuario->getUid());
             $consulta->bindValue(':confirmado', $usuario->confirmado(), \PDO::PARAM_BOOL);
             $consulta->bindValue(':titulo', $usuario->getTitulo(), \PDO::PARAM_INT);
-            $consulta->bindValue(':genero', $usuario->getGenero() == "M" ? 1 : 2, \PDO::PARAM_INT);
+            $consulta->bindValue(':genero', $usuario->getGenero(), \PDO::PARAM_INT);
             $consulta->bindValue(':limite', $usuario->getLimite(), \PDO::PARAM_INT);
             $consulta->bindValue(':ies', $usuario->getIes());
             $consulta->bindValue(':saudacao', $usuario->getSaudacao(), \PDO::PARAM_INT);
