@@ -66,7 +66,7 @@ class UsuarioAcademicoDAO {
 
             $consulta->execute();
 
-            //print_p($consulta->errorInfo());
+            print_p($consulta->errorInfo());
 
             $sql2 = sprintf("select max(id_usuario) from usuarios");
             $consulta2 = $this->conexao->query($sql2);
@@ -191,7 +191,7 @@ class UsuarioAcademicoDAO {
             $consulta->bindValue(':confirmado', $usuario->confirmado(), \PDO::PARAM_BOOL);
             $consulta->bindValue(':email_confirmado', $usuario->emailConfirmado(), \PDO::PARAM_BOOL);
             $consulta->bindValue(':titulo', $usuario->getTitulo(), \PDO::PARAM_INT);
-            $consulta->bindValue(':genero', $usuario->getGenero() == "M" ? 1 : 2, \PDO::PARAM_INT);
+            $consulta->bindValue(':genero', $usuario->getGenero(), \PDO::PARAM_INT);
             $consulta->bindValue(':limite', $usuario->getLimite(), \PDO::PARAM_INT);
             $consulta->bindValue(':ies', $usuario->getIes());
             $consulta->bindValue(':saudacao', $usuario->getSaudacao(), \PDO::PARAM_INT);

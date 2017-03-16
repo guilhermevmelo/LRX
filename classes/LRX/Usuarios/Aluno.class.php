@@ -15,7 +15,7 @@ class Aluno extends UsuarioAcademico {
     private $professor = null;  // LRX\Professor
     private $vinculo = 1;       // 1 - IC | 2 - Mestrado | 3 - Doutorado | 4 - Técnico | 5 - Pesquisador
 
-    public function __construct($nome = null, $email = null, $documento = null, Professor $professor = null, $vinculo = 1, $limite = 4, $uid =
+    public function __construct($nome = null, $email = null, $documento = null, Professor $professor = null, $vinculo = null, $limite = 4, $uid =
     null, $id = null) {
         $this->id           = $id;
         $this->nome         = $nome;
@@ -29,6 +29,7 @@ class Aluno extends UsuarioAcademico {
 
         $this->telefone = "(00) 00000-0000";
         $this->titulo = 0;
+        $this->genero = 1;
         $this->ies = "UFC";
 
     }

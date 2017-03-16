@@ -179,7 +179,8 @@ function apresentarErro(erro) {
 
 function dataPhpParaJs(data) {
     var d = new Date(data);
-    return d.toDateString();
+    var dataString = d.getDate() + "/" + (d.getMonth()+1) + "/" + d.getFullYear();
+    return dataString;
 }
 
 function obterDetalhesSolicitacao(id) {
@@ -196,14 +197,97 @@ function obterDetalhesSolicitacao(id) {
             if (r.codigo !== 200) {
                 apresentarErro(r);
             } else {
+                console.log(r.solicitacao);
+
+            //
+            // <p>
+            //     <strong>Solicitante: </strong><span id="detalhe_Solicitante"></span><br>
+            //         </p>
+            //         <p>
+            //         <strong>Data da Solicitação: </strong><span id="detalhe_DataSolicitacao">Criada em 14 de Abril</span><br>
+            //     <strong>Data do Recebimento: </strong><span id="detalhe_DataRecebimento">Entregue em 15 de Abril</span>
+            //     </p>
+            //     <p>
+            //     <strong>Equipamento: </strong> <span id="detalhe_Equipamento"></span><br>
+            //         </p>
+            //         <p>
+            //         <strong>Composição: </strong><br><span id="detalhe_Composicao"></span><br>
+            //         <strong>Tipo: </strong> <span id="detalhe_Tipo"></span><br>
+            //         </p>
+            //         <p>
+            //         <strong>2θ Inicial: </strong><br><span id="detalhe_2ThetaInicial"></span><br>
+            //         <strong>2θ Final: </strong><br><span id="detalhe_2ThetaFinal"></span><br>
+            //         <strong>Δθ: </strong><br><span id="detalhe_DeltaTheta"></span><br>
+            //         </p>
+            //         <p>
+            //         <strong>Segurança: </strong><br><span id="detalhe_Seguranca"></span><br>
+            //         <strong>Observações: </strong><br><span id="detalhe_Observacoes"></span><br>
+            //         </p>
+
+
+
+
                 $("#detalhe_Identificacao").html(r.solicitacao.identificacao);
-                //$("#detalhe_Status").html();
+                $("#detalhe_Solicitante").html(r.solicitacao.solicitante);
                 $("#detalhe_DataSolicitacao").html(dataPhpParaJs(r.solicitacao.data_solicitacao));
                 if (r.solicitacao.data_entrega === null) {
                     $("#detalhe_DataRecebimento").html("A Amostra ainda não foi entregue.");
                 } else {
                     $("#detalhe_DataRecebimento").html(dataPhpParaJs(r.solicitacao.data_entrega));
                 }
+                $("#detalhe_Equipamento").html(r.solicitacao.equipamento);
+                $("#detalhe_Composicao").html(r.solicitacao.composicao);
+
+                switch (r.solicitacao.tipo) {
+                    case 1:
+                        $("#detalhe_Tipo").html("Pó");
+                        break;
+                    case 2:
+                        $("#detalhe_Tipo").html("Filme");
+                        break;
+                    case 3:
+                        $("#detalhe_Tipo").html("Pastilha");
+                        break;
+                    case 4:
+                        $("#detalhe_Tipo").html("Eletrodo");
+                        break;
+                    case 5:
+                        $("#detalhe_Tipo").html(r.solicitacao.tipo_outro);
+                        break;
+                    default:
+                        $("#detalhe_Tipo").html("Não informado");
+                        break;
+
+                }
+
+                if (r.solicitacao.tipo_equipamento === "DRX") {
+                    $("#detelhe_Configuracao_FRX").hide();
+                    $("#detelhe_Configuracao_DRX").show();
+                    $("#detalhe_2ThetaInicial").html(r.solicitacao.configuracao.dois_theta_inicial);
+                    $("#detalhe_2ThetaFinal").html(r.solicitacao.configuracao.dois_theta_final);
+                    $("#detalhe_DeltaTheta").html(r.solicitacao.configuracao.delta_dois_theta);
+
+                } else if (r.solicitacao.tipo_equipamento == "FRX") {
+                    $("#detelhe_Configuracao_DRX").hide();
+                    $("#detelhe_Configuracao_FRX").show();
+                    $("#detalhe_TipoMedida").html(r.solicitacao.configuracao.medida === "semi-quantitativa" ? "Semi-quantitativa" : "Quantitativa");
+                    $("#detalhe_FormaResultado").html(r.solicitacao.configuracao.resultado === "elementos" ? "Elementos" : "Óxidos");
+
+
+                }
+
+                $("#detalhe_Seguranca").html("");
+                if(r.solicitacao.inflamavel) $("#detalhe_Seguranca").html("Inflamável");
+                if(r.solicitacao.toxico) $("#detalhe_Seguranca").html($("#detalhe_Seguranca").html() === "" ? "Tóxico" : $("#detalhe_Seguranca").html() + ", tóxico");
+                if(r.solicitacao.higroscopico) $("#detalhe_Seguranca").html($("#detalhe_Seguranca").html() === "" ? "Higroscópico" : $("#detalhe_Seguranca").html() + ", higroscópico");
+                if(r.solicitacao.corrosivo) $("#detalhe_Seguranca").html($("#detalhe_Seguranca").html() === "" ? "Corossivo" : $("#detalhe_Seguranca").html() + ", corrosivo");
+                if(r.solicitacao.radioativo) $("#detalhe_Seguranca").html($("#detalhe_Seguranca").html() === "" ? "Radioativo" : $("#detalhe_Seguranca").html() + ", radioativo");
+                if(r.solicitacao.seguranca_outro) $("#detalhe_Seguranca").html($("#detalhe_Seguranca").html() === "" ? r.solicitacao.seguranca_outro : $("#detalhe_Seguranca").html() + ", " + r.solicitacao.seguranca_outro);
+
+                if (r.solicitacao.observacoes) $("#detalhe_Observacoes").html(r.solicitacao.observacoes);
+                else $("#detalhe_Observacoes").html("-");
+
+
                 var detalhes_autorizar = $("#detalhe_Autorizar");
                 var upload_resultado = $("#UploadResultado");
 
@@ -436,8 +520,6 @@ function obterDetalhesSolicitacao(id) {
                     detalhes_autorizar.hide();
                 }
 
-                $("#detalhe_Tipo").html(r.solicitacao.tipo_equipamento);
-                $("#detalhe_Equipamento").html(r.solicitacao.equipamento);
                 var statusH4 = $("#detalhe_Status");
                 statusH4.removeClass("cinza amarelo laranja verde azul-claro azul vermelho");
                 switch (r.solicitacao.status) {
@@ -993,14 +1075,17 @@ function preencherSolicitacoes() {
                 var bandeiraDiv = document.createElement("div");
                 bandeiraDiv.classList.add("bandeiraEquipamento");
                 switch (_s.id_equipamento) {
-                    case 2:
-                        bandeiraDiv.classList.add("panalytical");
-                        break;
                     case 1:
-                        bandeiraDiv.classList.add("rigakudrx");
+                        bandeiraDiv.classList.add("dmaxb");
+                        break;
+                    case 2:
+                        bandeiraDiv.classList.add("xpertpro");
                         break;
                     case 3:
-                        // bandeiraDiv.classList.add("rigakufrx");
+                        bandeiraDiv.classList.add("zsx");
+                        break;
+                    case 3:
+                        bandeiraDiv.classList.add("axios");
                         break;
                 }
                 elementoLi.appendChild(bandeiraDiv);
@@ -1460,18 +1545,43 @@ function exibirSecao() {
         }
 
         case "RecuperarConta": {
-            if (obterParteDoHash(2) === "NovaSenha") {
-                $.ajax({
-                    url: "acao.php",
-                    type: "get",
-                    data: {
-                        q: "novaSenha",
-                        uid: obterParteDoHash(3)
-                    }
-                }).done(function (r) {
-                    apresentarErro(r);
+            if (obterParteDoHash(2) === "NovaSenha" && obterParteDoHash(3).length) {
+
+                estadoAtual.fadeOut("slow", function () {
+                    var frmNovaSenha = $("#frmNovaSenha");
+                    frmNovaSenha.trigger("reset");
+                    $(this).removeClass("estadoAtual");
+
+                    frmNovaSenha.off();
+
+                    frmNovaSenha.submit(function (evento) {
+                        evento.stopPropagation();
+                        evento.preventDefault();
+
+                        var shaObj = new jsSHA("SHA-1", "TEXT");
+                        shaObj.update($("#frm_nova_senha_senha").val());
+                        var _novaSenha = shaObj.getHash("HEX");
+
+                        $.ajax({
+                            url: "acao.php",
+                            type: "post",
+                            data: {
+                                q: "novaSenha",
+                                uid: obterParteDoHash(3),
+                                novaSenha: _novaSenha
+                            }
+                        }).done(function (r) {
+                            window.location.hash = "#/Inicio";
+                            apresentarErro(r);
+                        });
+                    });
+
+                    $("#NovaSenha").fadeIn("slow", function () {
+                        $(this).addClass("estadoAtual");
+                    });
                 });
-                window.location.hash = "#/Inicio";
+
+
             } else {
                 estadoAtual.fadeOut("slow", function () {
                     var frmRecuperarConta = $("#frmRecuperarConta");
@@ -1493,7 +1603,18 @@ function exibirSecao() {
                                 cpf: _cpf
                             }
                         }).done(function (r) {
-                            apresentarErro(r);
+
+                            console.log(r);
+
+                            if (r.codigo !== 200) {
+                                apresentarErro(r);
+                            } else {
+                                $("#RecuperarConta").removeClass("ativo").fadeOut("slow", function () {
+                                    $("#NovaSenhaEnviada p").html(r.mensagem);
+                                    $("#NovaSenhaEnviada").fadeIn("slow").addClass("ativo");
+                                });
+                            }
+
                         });
                     });
                     $("#RecuperarConta").fadeIn("slow", function () {
@@ -1750,7 +1871,7 @@ function enviarFormNovoUsuario(evento, _q) {
         if (r.codigo === 200) {
             window.console.log(r);
             $("#NovoUsuarioFinalh1").html("Cadastro concluído");
-            $("#NovoUsuarioFinalP").html("Sua solicitação de cadastro foi enviada com sucesso. Verifique seu email para informações adicionais.");
+            if (_q !== "cadastrarAluno") $("#NovoUsuarioFinalP").html("Sua solicitação de cadastro foi enviada com sucesso. Verifique seu email para informações adicionais.");
             $("#NovoUsuarioPassoFinal").append("<a href=\"#/Inicio\" title=\"Voltar à tela inicial\" class=\"botao vermelho\">Voltar à tela inicial</a>");
         } else {
             apresentarErro(r.mensagem);
@@ -1803,7 +1924,7 @@ $(document).ready(function () {
         onModulesLoaded: function () {
             $.setupValidation({
                 lang: "pt",
-                form: "#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3, #FormNovaSolicitacao, #FormLogin, #FormNovoAluno, #frmRecuperarConta, #frmUploadResultado",
+                form: "#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3, #FormNovaSolicitacao, #FormLogin, #FormNovoAluno, #frmRecuperarConta, #frmNovaSenha, #frmUploadResultado",
                 validate: {
                     "#frm_novo_usuario_documento": {
                         validation: "_cpf"
@@ -1831,6 +1952,16 @@ $(document).ready(function () {
                     },
                     "#frm_recuperar_conta_documento" : {
                         validation : "_cpf"
+                    },
+                    "#frm_nova_senha_senha": {
+                        validation: "length",
+                        length: "min8",
+                        "error-msg": "A senha deve conter no mínimo 8 dígitos"
+                    },
+                    "#frm_nova_senha_confirma_senha": {
+                        validation: "confirmation",
+                        confirm: "frm_nova_senha_senha",
+                        "error-msg": "As senhas não conferem"
                     },
                     "#arquivoUploadResultado" : {
                         validation: "size",
@@ -2172,11 +2303,11 @@ $(document).ready(function () {
         var _composicao = $("#frm_nova_solicitacao_composicao").val();
 
         // Segurança
-        var _inflamavel = $("#frm_nova_solicitacao_seguranca_inflamavel").is("checked");
-        var _corrosivo = $("#frm_nova_solicitacao_seguranca_corrosivo").is("checked");
-        var _toxico = $("#frm_nova_solicitacao_seguranca_toxico").is("checked");
-        var _higroscopico = $("#frm_nova_solicitacao_seguranca_higroscopico").is("checked");
-        var _radioativo = $("#frm_nova_solicitacao_seguranca_radioativo").is("checked");
+        var _inflamavel = $("#frm_nova_solicitacao_seguranca_inflamavel").prop("checked");
+        var _corrosivo = $("#frm_nova_solicitacao_seguranca_corrosivo").prop("checked");
+        var _toxico = $("#frm_nova_solicitacao_seguranca_toxico").prop("checked");
+        var _higroscopico = $("#frm_nova_solicitacao_seguranca_higroscopico").prop("checked");
+        var _radioativo = $("#frm_nova_solicitacao_seguranca_radioativo").prop("checked");
 
         // Apenas FRX
         var _tipo_medida = $("#frm_nova_solicitacao_tipo_medida_semi_quantitativa").is(":checked") ? "semi-quantitativa" : "quantitativa";
@@ -2212,6 +2343,7 @@ $(document).ready(function () {
                 observacoes: _observacoes
             }
         }).done(function (r) {
+            console.log(r);
             if (r.codigo !== 200) {
                 apresentarErro(r);
             } else {

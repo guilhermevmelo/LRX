@@ -384,7 +384,7 @@ if (isset($q) && $q == "novaSolicitacaoAcademica") {
             'tecnica' => 'drx',
             'dois_theta_inicial' => intval($_POST['dois_theta_inicial']),
             'dois_theta_final' => intval($_POST['dois_theta_final']),
-            'delta_dois_theta' => intval($_POST['delta_dois_theta']),
+            'delta_dois_theta' => floatval($_POST['delta_dois_theta']),
         ) :
         array(
             'tecnica' => 'frx',
@@ -394,11 +394,15 @@ if (isset($q) && $q == "novaSolicitacaoAcademica") {
 
     $solicitacao->setConfiguracao($config);
 
-    $solicitacao->setInflamavel(boolval($_POST['inflamavel']));
-    $solicitacao->setRadioativo(boolval($_POST['radioativo']));
-    $solicitacao->setHigroscopico(boolval($_POST['higroscopico']));
-    $solicitacao->setToxico(boolval($_POST['toxico']));
-    $solicitacao->setCorrosivo(boolval($_POST['corrosivo']));
+    $solicitacao->setInflamavel($_POST['inflamavel'] === "true" ? true : false);
+    $solicitacao->setRadioativo($_POST['radioativo'] === "true" ? true : false);
+    $solicitacao->setHigroscopico($_POST['higroscopico'] === "true" ? true : false);
+    $solicitacao->setToxico($_POST['toxico'] === "true" ? true : false);
+    $solicitacao->setCorrosivo($_POST['corrosivo'] === "true" ? true : false);
+
+    $solicitacao->setObservacoes($_POST['observacoes']);
+
+
 
     $saDAO = new SolicitacaoAcademicaDAO();
 
@@ -633,7 +637,6 @@ if (isset($q) && $q == "confirmarEmail") {
         $p->confirmarEmail();
         $uDAO->atualizar($p);
         header('Content-Type: application/json');
-        //print_r($u);
         echo json_encode(array("codigo" => 200, "mensagem" => "Seu email foi confirmado, " . $u->getNome()));
     }
 
@@ -643,10 +646,47 @@ if (isset($q) && $q == "confirmarEmail") {
  *
  */
 if (isset($q) && $q == "novaSenha") {
-    $uid = addslashes($_GET["uid"]);
-    $uid = strrev($uid);
+    $uid = addslashes($_POST["uid"]);
+    $senha = addslashes($_POST['novaSenha']);
 
-    // TODO: terminar
+    $u = UsuarioDAO::obterPorUid($uid);
+
+    if ($u === null) {
+        Erro::lancarErro(array("codigo" => 300, "mensagem" => "Usuário não encontrado."));
+    } else {
+        switch ($u->getNivelAcesso()) {
+            case 1:
+                $uDAO = new AlunoDAO();
+                break;
+
+            case 2:
+                $uDAO = new ProfessorDAO();
+                break;
+
+            case 3:
+                // TODO: Implementar Responsável por empresa
+                break;
+
+            case 4:
+                // TODO: Implementar Financeiro
+                break;
+
+            case 5:
+                $uDAO = new AlunoDAO();
+                break;
+
+            case 6:
+                $uDAO = new ProfessorDAO();
+
+                break;
+        }
+        $p = $uDAO->obter($u->getId());
+        $p->setSenha($senha);
+        $uDAO->atualizar($p);
+        header('Content-Type: application/json');
+        echo json_encode(array("codigo" => 200, "mensagem" => "Sua senha foi alterada com sucesso, " . $u->getNome()));
+    }
+
 }
 
 /**
@@ -694,6 +734,9 @@ if (isset($q) && $q == "novaSenhaEnviarEmail") {
             ';
     $correio = new Correio($u->getEmail(), $assunto, $corpo_da_mensagem);
     $correio->enviar();
+
+    header('Content-Type: application/json');
+    echo json_encode(array("codigo" => 200, "mensagem" => "Foi enviado um link de recuperação de senha para o seu e-mail. Por favor, verifique sua caixa de entrada."));
 
 }
 
@@ -767,6 +810,7 @@ if (isset($q) && $q == "vincularAluno") {
     $emailExiste = null;
     $mensagem = null;
     $documentoExiste = UsuarioDAO::nivelDeAcessoPorDocumento($cpf);
+    $r = null;
 
     if ($documentoExiste >= 2) {
         // documento já cadastrado com um nível de no mínimo professor
@@ -802,9 +846,8 @@ if (isset($q) && $q == "vincularAluno") {
             $pDAO = new ProfessorDAO();
             $professor = $pDAO->obter($id_professor);
 
-            $aluno = new Aluno($nome, $email, $cpf, $professor);
+            $aluno = new Aluno($nome, $email, $cpf, $professor, $vinculo);
             $aluno->setSenhaAberta("12345678");
-            $aluno->setVinculo($vinculo);
 
             $aDAO->criar($aluno);
 
@@ -969,18 +1012,19 @@ if (isset($q) && $q == "cadastrarAluno") {
     $a->setLaboratorio($laboratorio);
     $a->setEmailAlternativo($email_alternativo);
     $a->setIes($ies);
+    $a->confirmarEmail();
 
 
     try {
         $aDAO->atualizar($a);
 
-        $link = $host . "#/NovoUsuario/Confirmar/" . $a->getUid();
-        $assunto = '[Confirmação de Cadastro LRX] ' . $a->getNome();
+        //$link = $host . "#/NovoUsuario/Confirmar/" . $a->getUid();
+        //$assunto = '[Confirmação de Cadastro LRX] ' . $a->getNome();
 
-        $corpo_da_mensagem = '<p>Confirmar: <a href="' . $link . '">' . $link . '</a></p>';
+        //$corpo_da_mensagem = '<p>Confirmar: <a href="' . $link . '">' . $link . '</a></p>';
 
-        $correio = new Correio($email, $assunto, $corpo_da_mensagem);
-        $correio->enviar();
+        //$correio = new Correio($email, $assunto, $corpo_da_mensagem);
+        //$correio->enviar();
 
         $r = array(
             "codigo" => 200
