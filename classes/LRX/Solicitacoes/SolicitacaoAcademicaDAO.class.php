@@ -109,7 +109,7 @@ class SolicitacaoAcademicaDAO {
                 "corrosivo"         => boolval($tupla['corrosivo']),
                 "higroscopico"      => boolval($tupla['higroscopico']),
                 "seguranca_outro"   => boolval($tupla['seguranca_outro']),
-                "observacoes"       => boolval($tupla['observacoes']),
+                "observacoes"       => $tupla['observacoes'],
                 "resultados"        => $rDAO->obterTodosPorSolicitacao(intval($tupla['id_solicitacao']), true)
             );
         } else {

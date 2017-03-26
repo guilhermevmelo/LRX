@@ -410,17 +410,25 @@ ul#NenhumEquipamento {
     display: block;
 }
 
-.panalytical {
-    background: url("../imagens/bandeira_equipamento_panalytical.png") center no-repeat;
+.xpertpro {
+    background: url("../imagens/bandeira_equipamento_xpertpro@2x.png") center no-repeat;
+    background-size: 150px 50px;
 }
 
-.rigakudrx {
-    background: url("../imagens/bandeira_equipamento_rigakudrx.png") center no-repeat;
+.dmaxb {
+    background: url("../imagens/bandeira_equipamento_dmaxb@2x.png") center no-repeat;
+    background-size: 150px 50px;
 }
 
-/*.rigakufrx {*/
-/*background: url("../imagens/bandeira_equipamento_rigakufrx.png") center no-repeat;*/
-/*}*/
+.zsx {
+    background: url("../imagens/bandeira_equipamento_zsx@2x.png") center no-repeat;
+    background-size: 150px 50px;
+}
+
+.axios {
+    background: url("../imagens/bandeira_equipamento_axios@2x.png") center no-repeat;
+    background-size: 150px 50px;
+}
 
 /** Formulários **/
 label {
@@ -617,7 +625,8 @@ input[type="submit"]:hover,
 }
 
 #NovoUsuario .bloco,
-#RecuperarConta .bloco {
+#RecuperarConta .bloco,
+#NovaSenha .bloco {
     width: 50%;
     margin: 0 auto;
 }
@@ -766,18 +775,23 @@ input[type="submit"]:disabled:hover,
 }
 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    .panalytical {
-        background: url("../imagens/bandeira_equipamento_panalytical@2x.png") center no-repeat;
+    .xpertpro {
+        background: url("../imagens/bandeira_equipamento_xpertpro@2x.png") center no-repeat;
         background-size: 150px 50px;
     }
 
-    .rigakudrx {
-        background: url("../imagens/bandeira_equipamento_rigakudrx@2x.png") center no-repeat;
+    .dmaxb {
+        background: url("../imagens/bandeira_equipamento_dmaxb@2x.png") center no-repeat;
         background-size: 150px 50px;
     }
 
-    .rigakufrx {
-        background: url("../imagens/bandeira_equipamento_rigakufrx@2x.png") center no-repeat;
+    .zsx {
+        background: url("../imagens/bandeira_equipamento_zsx@2x.png") center no-repeat;
+        background-size: 150px 50px;
+    }
+
+    .axios {
+        background: url("../imagens/bandeira_equipamento_axios@2x.png") center no-repeat;
         background-size: 150px 50px;
     }
 }

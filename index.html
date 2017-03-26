@@ -101,8 +101,8 @@
                             </fieldset>
                         </div>
                         <p class="clear">
-                            <!--<a href="#/RecuperarConta">Recuperar senha</a><br>-->
-                            <a href="#/NovoUsuario">Novo Usuário</a>
+                            <a href="#/NovoUsuario">Novo Usuário</a><br>
+                            <a href="#/RecuperarConta">Recuperar senha</a>
                         </p>
                     </form>
                 </div>
@@ -135,6 +135,74 @@
                 controle de qualidade de produtos, na investigação e manufatura de uma variedade de materiais tais como:
                 cerâmicos, metálicos, farmacêuticos, minerais, corrosivos, pigmentos, gemas, soldas, etc.</p>
 
+                <h1>Recomendações na entrega das amostras e no preenchimento do formulário de solicitação</h1>
+
+                <p>
+                    <b>Rigaku (DMAXB) DRX-Difração de Raios-X</b>
+                <ul>
+                    <li>Pó (mínimo de 1 grama, leve o pó peneirado e/ou macerado, preferência 230 mesh)</li>
+                    <li>Filmes (devem ter máx. 15x15mm2, espessura máx. de 3mm e devem ser planos)</li>
+                    <li>Pastilhas (devem ter máx. 15x15mm2, espessura máx. de 3mm e devem ser planos)</li>
+                    <li>Eletrodo (devem ter máx. 15x15mm2, espessura máx. de 3mm e devem ser planos)</li>
+                </ul>
+                </p>
+
+                <p>
+                    <b>PANalytical (X'pert Pro MPD) DRX </b>(medidas mais rápidas)
+                <ul>
+                    <li>Pó (mínimo de 1 grama, leve o pó peneirado e/ou macerado, preferência 230 mesh)</li>
+                    <li>Filmes (devem ter máx. 15x15mm2, espessura máx. de 3mm e devem ser planos)</li>
+                    <li>Pastilhas (disco devem ter máx. 15mm de diâmetro ou quadrado 15x15mm2, devem ter espessura máx. de 3mm e devem ser planos)</li>
+                    <li>Eletrodo (disco devem ter máx. 15mm de diâmetro ou quadrado 15x15mm2, espessura máx. de 3mm e devem ser planos)</li>
+                </ul>
+                </p>
+
+
+                <p>
+                    <b>Possibilidades de medida</b>
+                <ul>
+                    <li>Difração em pó com alta resolução somente para refinamento de estrutura e identificação de fases</li>
+                    <li>Transformação de fases em amostras policristalinas</li>
+                    <li>Difração a baixo ângulo</li>
+                    <li>Espalhamento a baixo ângulo (distribuição de tamanho de partículas)</li>
+                    <li>Difração em filmes finos (identificação de fases e determinação de espessura)</li>
+                    <li>Difração em amostras condicionadas em capilar (resolução de estrutura)</li>
+                    <li>Difração em amostras (higroscópicas) por transmissão</li>
+                </ul>
+                </p>
+
+                <p>
+                    <b>Rigaku (ZSX-Mini) FRX-Fluorescência de Raios-X</b>
+                <ul>
+                    <li>Pó (leve o pó peneirado e/ou macerado)</li>
+                    <li>Filmes (devem ter máx. de 2x2 cm2 e devem ser planos)</li>
+                    <li>Pastilhas (diâmetro menor: 17-19,5 mm, diâmetro máx. 30-44mm)</li>
+                    <li>Eletrodo (devem ter máx. 2x2cm2 e devem ser planos)</li>
+                </ul>
+                </p>
+
+                <p>
+                    <b>Informar se a amostra é</b>
+                <ul>
+                    <li>Inflamável</li>
+                    <li>Radioativa</li>
+                    <li>Tóxica</li>
+                    <li>Corrosiva</li>
+                    <li>Higroscópica</li>
+                </ul>
+                </p>
+
+                <p>
+                    <b>Observações importantes</b>
+                <ul>
+                    <li>Nos trabalhos de divulgação científica (congressos, teses, dissertações e artigos) coloque um agradecimento especial ao CNPq (Processo: 402561/2007-4) Edital MCT/CNPq nº 10/2007.</li>
+                    <li>Enviar as referências dos trabalhos para o endereço lrxufc@gmail.com.</li>
+                    <li>No caso de dúvidas, entre em contato com o bolsista ou operador dos equipamentos.</li>
+                    <li>As medidas serão enviadas somente após a retirada das amostras.</li>
+                    <li>A amostra deve ser entregue em menos de 48 horas, caso contrário, a solicitação será cancelada automaticamente!</li>
+                </ul>
+                </p>
+
             </div>
         </section>
 
@@ -157,15 +225,32 @@
                     <h4 id="detalhe_Status"></h4>
                     <span id="detalhe_Autorizar"><a id="detalhe_linkAtualizacao"></a></span>
                     <p>
-                    <span id="detalhe_DataSolicitacao">Criada em 14 de Abril</span><br>
-                    <span id="detalhe_DataRecebimento">Entregue em 15 de Abril</span>
+                        <strong>Solicitante: </strong><span id="detalhe_Solicitante"></span><br>
                     </p>
                     <p>
-                        <strong>Tipo:</strong> <span id="detalhe_Tipo"></span><br>
-                        <strong>Equipamento:</strong> <span id="detalhe_Equipamento"></span>
+                        <strong>Data da Solicitação: </strong><span id="detalhe_DataSolicitacao">Criada em 14 de Abril</span><br>
+                        <strong>Data do Recebimento: </strong><span id="detalhe_DataRecebimento">Entregue em 15 de Abril</span>
                     </p>
-
-                    <p id="detalhe_Configuracao"></p>
+                    <p>
+                        <strong>Equipamento: </strong> <span id="detalhe_Equipamento"></span><br>
+                    </p>
+                    <p>
+                        <strong>Composição: </strong><span id="detalhe_Composicao"></span><br>
+                        <strong>Tipo: </strong> <span id="detalhe_Tipo"></span><br>
+                    </p>
+                    <p id="detelhe_Configuracao_DRX" hidden>
+                        <strong>2θ Inicial: </strong><span id="detalhe_2ThetaInicial"></span>°<br>
+                        <strong>2θ Final: </strong><span id="detalhe_2ThetaFinal"></span>°<br>
+                        <strong>Δθ: </strong><span id="detalhe_DeltaTheta"></span>°<br>
+                    </p>
+                    <p id="detelhe_Configuracao_FRX" hidden>
+                        <strong>Tipo de Medida: </strong><span id="detalhe_TipoMedida"></span><br>
+                        <strong>Forma do Resultado: </strong><span id="detalhe_FormaResultado"></span><br>
+                    </p>
+                    <p>
+                        <strong>Segurança: </strong><span id="detalhe_Seguranca">-</span><br>
+                        <strong>Observações: </strong><span id="detalhe_Observacoes"></span><br>
+                    </p>
 
                     <p id="detalhe_Download"><a id="detalhe_linkDownload">Download do Resultado</a></p>
                     <!--<p class="alignCenter"><span class="bandeiraEquipamentoDetalhe panalytical"></span></p>-->
@@ -941,7 +1026,7 @@
 
         <section id="RecuperarConta" class="secao">
             <div class="bloco">
-                <h1>Recuperar conta</h1>
+                <h1>Recuperar senha</h1>
                 <p>Caso tenha perdido acesso à sua conta, utilize o formulário abaixo para solicitar uma nova senha.
                 Será enviado para o email principal associado ao CPF informado, caso esteja cadastrado, um link com o
                 qual você será capaz de redefinir sua senha.</p>
@@ -957,6 +1042,36 @@
                 </form>
             </div>
         </section>
+
+        <section id="NovaSenhaEnviada" class="secao">
+            <div class="bloco">
+                <h1>Recuperar senha</h1>
+                <p></p>
+                <a href="#/Inicio" title="Voltar à tela inicial" class="botao vermelho">Voltar à tela inicial</a>
+            </div>
+        </section>
+
+        <section id="NovaSenha" class="secao">
+            <div class="bloco">
+                <h1>Nova senha</h1>
+                <p>Por favor, insira nos campos abaixo sua nova senha.</p>
+                <form id="frmNovaSenha" name="frmNovaSenha" method="post" action="#">
+                    <fieldset>
+                        <label for="frm_nova_senha_senha">Nova senha</label>
+                        <input type="password" name="frm_nova_senha_senha"  id="frm_nova_senha_senha" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="frm_nova_senha_confirma_senha">Confirme nova senha</label>
+                        <input type="password" name="frm_nova_senha_confirma_senha"  id="frm_nova_senha_confirma_senha" required>
+                    </fieldset>
+                    <fieldset>
+                        <a href="#/Inicio" title="Voltar à tela inicial" class="botao vermelho">Voltar à tela inicial</a>
+                        <input type="submit" value="Salvar nova senha" id="sbmtNovaSenha" name="sbmtNovaSenha">
+                    </fieldset>
+                </form>
+            </div>
+        </section>
+
         <div class="clear"> </div>
     </main>
     <footer role="contentinfo">
