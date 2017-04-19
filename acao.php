@@ -8,6 +8,7 @@
 
 use LRX\Correio\Correio;
 use LRX\Correio\MalaDireta;
+use function LRX\desformatarCNPJ;
 use LRX\Equipamentos\Equipamento;
 use LRX\Equipamentos\EquipamentoDAO;
 use LRX\Equipamentos\FendaDAO;
@@ -18,10 +19,13 @@ use LRX\Solicitacoes\SolicitacaoAcademica;
 use LRX\Solicitacoes\SolicitacaoAcademicaDAO;
 use LRX\Usuarios\Aluno;
 use LRX\Usuarios\AlunoDAO;
+use LRX\Usuarios\Empresa;
+use LRX\Usuarios\EmpresaDAO;
+use LRX\Usuarios\Pesquisador;
+use LRX\Usuarios\PesquisadorDAO;
 use LRX\Usuarios\Professor;
 use LRX\Usuarios\ProfessorDAO;
 use LRX\Usuarios\Usuario;
-use LRX\Usuarios\UsuarioAcademicoDAO;
 use LRX\Usuarios\UsuarioDAO;
 use function LRX\desformatarCPF;
 use function \LRX\obterExtensaoArquivo;
@@ -217,6 +221,10 @@ if (isset($q) && $q == "obterListaSolicitacoes") {
 
     } else if ($tipoSistema == 2) {
         // TODO: implementar comercial
+
+        $resposta = array();
+
+        echo json_encode(array("codigo" => 200, "solicitacoes" => $resposta));
     }
 }
 
@@ -250,7 +258,11 @@ if (isset($q) && $q == "obterListaSolicitacoesConcluidas") {
         echo json_encode(array("codigo" => 200, "solicitacoes" => $resposta));
 
     } else if ($tipoSistema == 2) {
-        // TODO: implementar comercial
+                // TODO: implementar comercial
+
+        $resposta = array();
+
+        echo json_encode(array("codigo" => 200, "solicitacoes" => $resposta));
     }
 }
 
@@ -402,11 +414,7 @@ if (isset($q) && $q == "novaSolicitacaoAcademica") {
 
     $solicitacao->setObservacoes($_POST['observacoes']);
 
-
-
     $saDAO = new SolicitacaoAcademicaDAO();
-
-    //print_p($s);
 
     $saDAO->criar($solicitacao);
 
@@ -414,6 +422,26 @@ if (isset($q) && $q == "novaSolicitacaoAcademica") {
         "codigo" => 200,
         "identificacao" => $solicitacao->getIdentificacaoDaAmostra()
     );
+
+    if (intval($_POST['nivel_acesso']) === 1) {
+
+        $aDAO = new AlunoDAO();
+        $a = $aDAO->obter($u->getId());
+        $p = $a->getProfessor();
+
+        $assunto = 'Autorização de Análise da Amostra';
+        $corpo_da_mensagem = '<p>Olá prof. '.$p->getNome().',<br> seu aluno ' . $a->getNome(). ' fez uma solicitação de análises de raios-x em nosso sistema. No entanto, é necessário que você
+                autorize as análises das amostras para que possamos recebê-las.</p>
+                <p>Para isso, acesse o <a href="http://csd.fisica.ufc.br/solicitacoes/" target="_blank">Sistema de Solicitação de Análises de Raios-X</a> e autorize as solicitações do seu aluno.</p>
+                <p>Caso possua alguma dúvida quanto ao cadastro ou ao sistema em si, por favor entre em contato com o Laboratório 
+                por meio do endereço de email lrxufc@gmail.com, ou pelo telefone 85 33669013.</p>
+                <p style="text-align:right;">Atenciosamente,<br>Laboratório de Raios-X</p>';
+
+
+        $correio = new Correio($p->getEmail(), $assunto, $corpo_da_mensagem);
+        $correio->enviar();
+
+    }
 
     echo json_encode($r);
 
@@ -521,6 +549,26 @@ if (isset($q) && $q == "alterarStatusSolicitacao") {
     }
     $solicitacao->setStatus($status);
     $saDAO->atualizar($solicitacao);
+
+    if ($status === 3) {
+
+        $uDAO = new UsuarioDAO();
+        $u = $uDAO->obter(intval($solicitacao->getSolicitante()));
+
+        $assunto = 'Análise da Amostra ' . $solicitacao->getIdentificacaoDaAmostra() . ' Autorizada';
+        $corpo_da_mensagem = '<p>Olá '. $u->getNome() . ',<br> sua solicitação de análise da amostra ' . $solicitacao->getIdentificacaoDaAmostra() . ' foi
+                aprovada pelo seu orientador e pelo laboratório. Portanto, <strong>estamos aguardando o recebimento da amostra para iniciarmos a análise.</strong></p>
+                <p>O horário de recibemento e entrega de amostras do Laboratório de Raios X é de <strong>segunda a quinta, de 9:00 a 11:30 e de 13:30 a 16:00 hrs</strong></p>.
+                <p>Lembre-se de etiquetar suas amostra usando o código de identificação da mesma.</p>
+                <p>Caso possua alguma dúvida quanto ao cadastro ou ao sistema em si, por favor entre em contato com o Laboratório 
+                por meio do endereço de email lrxufc@gmail.com, ou pelo telefone 85 33669013.</p>
+                <p style="text-align:right;">Atenciosamente,<br>Laboratório de Raios-X</p>';
+
+
+        $correio = new Correio($u->getEmail(), $assunto, $corpo_da_mensagem);
+        $correio->enviar();
+    }
+
     header('Content-Type: application/json');
     echo json_encode(array("codigo" => 200));
 }
@@ -583,6 +631,21 @@ if (isset($q) && $q == "enviarResultado") {
         $solicitacao->setStatus(6);
         $saDAO->atualizar($solicitacao);
 
+        $uDAO = new UsuarioDAO();
+        $u = $uDAO->obter(intval($solicitacao->getSolicitante()));
+
+        $assunto = 'Análise de Amostra Concluída';
+        $corpo_da_mensagem = '<p>Olá . '.$u->getNome().',<br> a análise da amostra ' . $solicitacao->getIdentificacaoDaAmostra(). ' foi concluída.</p>
+                <p>Para que os resultados sejam liberados para download em nosso sistema, é necessário que você faça o recolhimento da sua amostra.</p>
+                <p>O horário de recibemento e entrega de amostras do Laboratório de Raios X é de <strong>segunda a quinta, de 9:00 a 11:30 e de 13:30 a 16:00 hrs</strong></p>.
+                <p>Caso possua alguma dúvida quanto ao cadastro ou ao sistema em si, por favor entre em contato com o Laboratório 
+                por meio do endereço de email lrxufc@gmail.com, ou pelo telefone 85 33669013.</p>
+                <p style="text-align:right;">Atenciosamente,<br>Laboratório de Raios-X</p>';
+
+
+        $correio = new Correio($u->getEmail(), $assunto, $corpo_da_mensagem);
+        $correio->enviar();
+
         echo json_encode(array(
             "codigo" => 200
         ));
@@ -617,7 +680,7 @@ if (isset($q) && $q == "confirmarEmail") {
                 break;
 
             case 3:
-                // TODO: Implementar Responsável por empresa
+                $uDAO = new PesquisadorDAO();
                 break;
 
             case 4:
@@ -780,6 +843,7 @@ if (isset($q) && $q == "verificarDocumento") {
     $email = addslashes($_GET['email']);
     $cpf = addslashes($_GET['documento']);
     $cpf = desformatarCPF($cpf);
+    $tipo_usuario = addslashes($_GET['tipoUsuario']);
 
     $documentoExiste = UsuarioDAO::existeDocumento($cpf);
     $emailExiste = UsuarioDAO::existeEmail($email);
@@ -906,6 +970,7 @@ if (isset($q) && $q == "completarCadastroAluno") {
 if (isset($q) && $q == "cadastrarUsuario") {
     header('Content-Type: application/json');
 
+    $tipo = addslashes($_POST['tipo']);
     $email = addslashes($_POST['email']);
     $cpf = addslashes($_POST['documento']);
     $cpf = desformatarCPF($cpf);
@@ -915,35 +980,109 @@ if (isset($q) && $q == "cadastrarUsuario") {
     $cidade = addslashes($_POST['cidade']);
     $estado = addslashes($_POST['estado']);
     $telefone = addslashes($_POST['telefone']);
-    $ies = addslashes($_POST['ies']);
-    $departamento = addslashes($_POST['departamento']);
-    $laboratorio = addslashes($_POST['laboratorio']);
-    $area_de_pesquisa = addslashes($_POST['area_de_pesquisa']);
-    $titulo = addslashes(intval($_POST['titulo']));
     $senha = addslashes($_POST['senha']);
 
-    $p = new Professor($nome, $email, $cpf);
-    $p->setAreaDePesquisa($area_de_pesquisa);
-    $p->setCidade($cidade);
-    $p->setEstado($estado);
-    $p->setConfirmado(false);
-    $p->setEmailConfirmado(false);
-    $p->setGenero($genero == 'M' ? 1 : 2);
-    $p->setDepartamento($departamento);
-    $p->setSenha($senha);
-    $p->setTitulo(intval($titulo));
-    $p->setTelefone($telefone);
-    $p->setLaboratorio($laboratorio);
-    $p->setEmailAlternativo($email_alternativo);
-    $p->setIes($ies);
+    $r = null;
 
-    $pDAO = new ProfessorDAO();
-    try {
+    if ($tipo === "academico") {
+
+        $ies = addslashes($_POST['ies']);
+        $departamento = addslashes($_POST['departamento']);
+        $laboratorio = addslashes($_POST['laboratorio']);
+        $area_de_pesquisa = addslashes($_POST['area_de_pesquisa']);
+        $titulo = addslashes(intval($_POST['titulo']));
+
+        $p = new Professor($nome, $email, $cpf);
+        $p->setAreaDePesquisa($area_de_pesquisa);
+        $p->setCidade($cidade);
+        $p->setEstado($estado);
+        $p->setConfirmado(false);
+        $p->setEmailConfirmado(false);
+        $p->setGenero($genero == 'M' ? 1 : 2);
+        $p->setDepartamento($departamento);
+        $p->setSenha($senha);
+        $p->setTitulo(intval($titulo));
+        $p->setTelefone($telefone);
+        $p->setLaboratorio($laboratorio);
+        $p->setEmailAlternativo($email_alternativo);
+        $p->setIes($ies);
+
+        $pDAO = new ProfessorDAO();
+
+        try {
+            $pDAO->criar($p);
+
+            $link = $host . "#/NovoUsuario/Confirmar/" . $p->getUid();
+            $assunto = '[Confirmação de Cadastro LRX] ' . $p->getNome();
+            $corpo_da_mensagem = '<p>Olá prof(a). '.$p->getNome().',<br> foi solicitado um cadastro em seu nome no Sistema de 
+            Solicitações do Laboratório de Raios-X do departamento de Física da UFC. Para que possamos confirmar que este 
+            endereço de email de fato pertence a você, precisamos que utilize o link de confirmação abaixo.</p>
+            <p>Basta clicar no link abaixo que esta página será redirecionada para o sistema e a confirmação do email será 
+            executada. Link: <a href="' . $link . '">' . $link . '</a></p>
+            <p>Caso o(a) sr(a) não tenha requisitado uma conta no nosso sistema, fique tranquilo(a). Não utilizar o link acima 
+            implicará na não liberação do cadastro e quem quer que tenha utilizado seu endereço de email para cadastrar-se 
+            não terá acesso ao sistema.</p>
+            <p>Caso possua alguma dúvida quanto ao cadastro ou ao sistema em si, por favor entre em contato com o Laboratório 
+            por meio do endereço de email lrxufc@gmail.com, ou pelo telefone 85 33669013.</p>
+            <p style="text-align:right;">Atenciosamente,<br>Laboratório de Raios-X</p>';
+
+
+            $correio = new Correio($email, $assunto, $corpo_da_mensagem);
+            $correio->enviar();
+
+            $r = array(
+                "codigo" => 200
+            );
+        } catch (\Exception $ex) {
+            $r = array(
+                "codigo" => 3,
+                "mensagem" => $ex->getMessage()
+            );
+        }
+    } else if ($tipo === "empresarial") {
+
+        $cnpj = desformatarCNPJ($_POST['cnpj']);
+        $razao_nome = addslashes($_POST['razao_nome']);
+        $sigla = addslashes($_POST['sigla']);
+
+        $endereco = array(
+            'cep' => addslashes($_POST['cep']),
+            'rua' => addslashes($_POST['rua']),
+            'numero' => addslashes($_POST['rua_numero']),
+            'complemento' => addslashes($_POST['rua_complemento']),
+            'bairro' => addslashes($_POST['bairro']),
+            'cidade' => addslashes($_POST['cidade_emp']),
+            'estado' => addslashes($_POST['estado_emp'])
+
+        );
+
+        $inscricao_estadual = addslashes($_POST['inscricao_estadual']);
+        $inscricao_municipal = addslashes($_POST['inscricao_municipal']);
+        $site = addslashes($_POST['site']);
+
+        $e = new Empresa($cnpj, $razao_nome, $sigla, $endereco, $inscricao_estadual, $inscricao_municipal, $site);
+        $eDAO = new EmpresaDAO();
+        $eDAO->criar($e);
+
+        $e = $eDAO->obterPorCnpj($cnpj);
+
+        $p = new Pesquisador($nome, $email, $cpf);
+        $p->setCidade($cidade);
+        $p->setEstado($estado);
+        $p->setConfirmado(false);
+        $p->setEmailConfirmado(false);
+        $p->setGenero($genero == 'M' ? 1 : 2);
+        $p->setSenha($senha);
+        $p->setTelefone($telefone);
+        $p->setEmailAlternativo($email_alternativo);
+        $p->setEmpresa($e);
+
+        $pDAO = new PesquisadorDAO();
         $pDAO->criar($p);
 
         $link = $host . "#/NovoUsuario/Confirmar/" . $p->getUid();
         $assunto = '[Confirmação de Cadastro LRX] ' . $p->getNome();
-        $corpo_da_mensagem = '<p>Olá prof(a). '.$p->getNome().',<br> foi solicitado um cadastro em seu nome no Sistema de 
+        $corpo_da_mensagem = '<p>Olá Sr(a). '.$p->getNome().',<br> foi solicitado um cadastro em seu nome no Sistema de 
             Solicitações do Laboratório de Raios-X do departamento de Física da UFC. Para que possamos confirmar que este 
             endereço de email de fato pertence a você, precisamos que utilize o link de confirmação abaixo.</p>
             <p>Basta clicar no link abaixo que esta página será redirecionada para o sistema e a confirmação do email será 
@@ -962,12 +1101,10 @@ if (isset($q) && $q == "cadastrarUsuario") {
         $r = array(
             "codigo" => 200
         );
-    } catch (\Exception $ex) {
-        $r = array(
-            "codigo" => 3,
-            "mensagem" => $ex->getMessage()
-        );
+
+
     }
+
     echo json_encode($r);
 }
 

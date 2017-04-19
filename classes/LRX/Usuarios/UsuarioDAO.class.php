@@ -17,7 +17,7 @@ class UsuarioDAO {
 
     /**
      * @param $uid
-     * @return array|bool|Aluno|Professor|null
+     * @return array|bool|Aluno|Pesquisador|Professor|null
      */
     public static function obterPorUid($uid) {
         $conexao = new \PDO(DSN, USUARIO, SENHA);
@@ -45,7 +45,8 @@ class UsuarioDAO {
                 break;
 
             case 3:
-                // TODO: Implementar Responsável por empresa
+                $pDAO = new PesquisadorDAO();
+                return $pDAO->obter((int)$tupla['id_usuario']);
                 break;
 
             case 4:
@@ -200,7 +201,8 @@ class UsuarioDAO {
                 break;
 
             case 3:
-                // TODO: Implementar Responsável por empresa
+                $pDAO = new PesquisadorDAO();
+                return $pDAO->obter((int)$tupla['id_usuario']);
                 break;
 
             case 4:

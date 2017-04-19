@@ -128,6 +128,12 @@ function atualizarCampos() {
         $("#menuAlunos").show();
     }
 
+    if (usuario.nivel_acesso === 3) {
+        $("#linkNovaSolicitacao").hide();
+    } else {
+        $("#linkNovaSolicitacao").show();
+    }
+
     /* Exibir os menus de controle de usuários e de equipamentos apenas para administradores e operadores */
     if (usuario.nivel_acesso !== 5 && usuario.nivel_acesso !== 6) {
         $("#menuUsuarios").hide();
@@ -983,12 +989,12 @@ function preencherSolicitacoes() {
             tipoSistema: tipo_sistema
         }
     }).done(function (r) {
+        console.log(r);
         if (r.codigo !== 200) {
             apresentarErro(r);
         } else {
             window.console.log(r);
             var  n = 0;
-
             if (r.solicitacoes.length === 0) {
                 $("#NenhumaSolicitação").fadeIn("slow");
             }
@@ -1524,13 +1530,18 @@ function exibirSecao() {
                 estadoAtual.fadeOut("slow", function () {
                     $("#frmNovoUsuarioPasso1").trigger("reset");
                     $("#frmNovoUsuarioPasso2").trigger("reset");
-                    var frmNovoUsuario = $("#frmNovoUsuarioPasso3");
+                    var frmNovoUsuario = null;
+                    if ($('input[name="frm_novo_usuario_tipo"]:checked').val() === "academico") frmNovoUsuario = $("#frmNovoUsuarioPasso3Academico");
+                    else frmNovoUsuario = $("#frmNovoUsuarioPasso3Empresarial");
                     frmNovoUsuario.trigger("reset");
                     $(this).removeClass("estadoAtual");
 
                     $(".passoAtual").removeClass("passoAtual").hide();
 
                     $("#NovoUsuarioPasso1").addClass("passoAtual").show();
+
+                    $("#FormNovoUsuarioAcademicoContainer").hide();
+                    $("#FormNovoUsuarioEmpresarialContainer").hide();
 
                     frmNovoUsuario.off();
                     frmNovoUsuario.submit(function (evento) {
@@ -1641,7 +1652,7 @@ function exibirSecao() {
                 $("#frm_novo_usuario_uid").val(obterParteDoHash(2));
 
 
-                var frmNovoUsuario = $("#frmNovoUsuarioPasso3");
+                var frmNovoUsuario = $("#frmNovoUsuarioPasso3Academico");
                 frmNovoUsuario.off();
                 frmNovoUsuario.submit(function (evento) {
                     enviarFormNovoUsuario(evento, "cadastrarAluno");
@@ -1690,6 +1701,7 @@ function iniciarAplicacao() {
     var _uid = lerCookie("uid");
     if (_uid !== null) {
         tipo_sistema = lerCookie("tipoSistema");
+        console.log(tipo_sistema);
         $.ajax({
             url: "acao.php",
             type: "post",
@@ -1740,7 +1752,17 @@ function iniciarAplicacao() {
 }
 
 function definirMascaras() {
+    
+    // var documentoOptions = {onKeyPress: function (doc, e, field, options) {
+    //     var masks = ['000.000.000-00999', '00.000.000/0000-00'];
+    //     var mask = (doc.length<=14) ? masks[0] : masks[1];
+    //     $("#frm_novo_usuario_documento").mask(mask, options);
+    // }};
+    //
+    // $("#frm_novo_usuario_documento").mask("000.000.000-00", documentoOptions);
+
     $("#frm_novo_usuario_documento").mask("000.000.000-00", {reverse: true});
+    $("#frm_novo_usuario_empresarial_documento").mask("00.000.000/0000-00", {reverse: true});
     $("#frm_novo_aluno_convite_cpf").mask("000.000.000-00", {reverse: true});
     $("#frm_recuperar_conta_documento").mask("000.000.000-00", {reverse: true});
 
@@ -1792,6 +1814,123 @@ function validaCPF(cpf) {
         return false;
 }
 
+function validarCNPJ(cnpj) {
+
+    cnpj = cnpj.replace(/[^\d]+/g,'');
+
+    if(cnpj == '') return false;
+
+    if (cnpj.length != 14)
+        return false;
+
+    // LINHA 10 - Elimina CNPJs invalidos conhecidos
+    if (cnpj == "00000000000000" ||
+        cnpj == "11111111111111" ||
+        cnpj == "22222222222222" ||
+        cnpj == "33333333333333" ||
+        cnpj == "44444444444444" ||
+        cnpj == "55555555555555" ||
+        cnpj == "66666666666666" ||
+        cnpj == "77777777777777" ||
+        cnpj == "88888888888888" ||
+        cnpj == "99999999999999")
+        return false; // LINHA 21
+
+    // Valida DVs LINHA 23 -
+    tamanho = cnpj.length - 2
+    numeros = cnpj.substring(0,tamanho);
+    digitos = cnpj.substring(tamanho);
+    soma = 0;
+    pos = tamanho - 7;
+    for (i = tamanho; i >= 1; i--) {
+        soma += numeros.charAt(tamanho - i) * pos--;
+        if (pos < 2)
+            pos = 9;
+    }
+    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+    if (resultado != digitos.charAt(0))
+        return false;
+
+    tamanho = tamanho + 1;
+    numeros = cnpj.substring(0,tamanho);
+    soma = 0;
+    pos = tamanho - 7;
+    for (i = tamanho; i >= 1; i--) {
+        soma += numeros.charAt(tamanho - i) * pos--;
+        if (pos < 2)
+            pos = 9;
+    }
+    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+    if (resultado != digitos.charAt(1))
+        return false; // LINHA 49
+
+    return true; // LINHA 51
+
+}
+
+//https://viacep.com.br/exemplo/javascript/
+function pesquisaCep(valor) {
+
+    //Nova variável "cep" somente com dígitos.
+    var cep = valor.replace(/\D/g, '');
+
+    //Verifica se campo cep possui valor informado.
+    if (cep != "") {
+
+        //Expressão regular para validar o CEP.
+        var validacep = /^[0-9]{8}$/;
+
+        //Valida o formato do CEP.
+        if(validacep.test(cep)) {
+
+            //Preenche os campos com "..." enquanto consulta webservice.
+            document.getElementById('frm_novo_usuario_empresarial_rua').value="...";
+            document.getElementById('frm_novo_usuario_empresarial_bairro').value="...";
+            document.getElementById('frm_novo_usuario_empresarial_cidade').value="...";
+            document.getElementById('frm_novo_usuario_empresarial_estado').value="...";
+
+            $.getJSON("//viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+
+                if (!("erro" in dados)) {
+                    console.log(dados);
+                    //Atualiza os campos com os valores da consulta.
+                    document.getElementById('frm_novo_usuario_empresarial_rua').value = dados.logradouro;
+                    document.getElementById('frm_novo_usuario_empresarial_bairro').value = dados.bairro;
+                    document.getElementById('frm_novo_usuario_empresarial_cidade').value = dados.localidade;
+                    document.getElementById('frm_novo_usuario_empresarial_estado').value = dados.uf;
+
+                } //end if.
+                else {
+                    //CEP pesquisado não foi encontrado.
+                    document.getElementById('frm_novo_usuario_empresarial_rua').value = "";
+                    document.getElementById('frm_novo_usuario_empresarial_bairro').value = "";
+                    document.getElementById('frm_novo_usuario_empresarial_cidade').value = "";
+                    document.getElementById('frm_novo_usuario_empresarial_estado').value = "";
+                    alert("CEP não encontrado.");
+                }
+            });
+
+        } //end if.
+        else {
+            //cep é inválido.
+            document.getElementById('frm_novo_usuario_empresarial_rua').value = "";
+            document.getElementById('frm_novo_usuario_empresarial_bairro').value = "";
+            document.getElementById('frm_novo_usuario_empresarial_cidade').value = "";
+            document.getElementById('frm_novo_usuario_empresarial_estado').value = "";
+            alert("CEP não encontrado.");
+            alert("Formato de CEP inválido.");
+        }
+    } //end if.
+    else {
+        //cep sem valor, limpa formulário.
+        document.getElementById('frm_novo_usuario_empresarial_rua').value = "";
+        document.getElementById('frm_novo_usuario_empresarial_bairro').value = "";
+        document.getElementById('frm_novo_usuario_empresarial_cidade').value = "";
+        document.getElementById('frm_novo_usuario_empresarial_estado').value = "";
+        alert("CEP não encontrado.");
+    }
+};
+
 function exibeOpcoesDoEquipamentoSelecionado(equipamento, opcoesDRX, opcoesFRX) {
     switch (parseInt(equipamento)) {
         case 1: // Rigaku DMAXB
@@ -1820,8 +1959,11 @@ function enviarFormNovoUsuario(evento, _q) {
     evento.stopPropagation();
     evento.preventDefault();
 
-    var sbmtNovoUsuarioFinalizar = $("#btnNovoUsuarioFinalizar");
-    sbmtNovoUsuarioFinalizar.attr("disabled', 'disabled");
+    var sbmtNovoUsuarioAcademicoFinalizar = $("#btnNovoUsuarioAcademicoFinalizar");
+    sbmtNovoUsuarioAcademicoFinalizar.attr("disabled', 'disabled");
+
+    var sbmtNovoUsuarioEmpresarialFinalizar = $("#btnNovoUsuarioEmpresarialFinalizarFinalizar");
+    sbmtNovoUsuarioEmpresarialFinalizar.attr("disabled', 'disabled");
 
     $("#NovoUsuarioPasso3").fadeOut("slow", function () {
         $(".passoAtual").removeClass("passoAtual");
@@ -1830,6 +1972,7 @@ function enviarFormNovoUsuario(evento, _q) {
 
     var shaObj = new jsSHA("SHA-1", "TEXT");
     shaObj.update($("#frm_novo_usuario_senha").val());
+    var _tipo = $('input[name="frm_novo_usuario_tipo"]:checked').val();
     var _senha = shaObj.getHash("HEX");
     var _documento = $("#frm_novo_usuario_documento").val();
     var _email = $("#frm_novo_usuario_email").val();
@@ -1839,11 +1982,27 @@ function enviarFormNovoUsuario(evento, _q) {
     var _cidade = $("#frm_novo_usuario_cidade").val();
     var _estado = $("#frm_novo_usuario_estado").val();
     var _telefone = $("#frm_novo_usuario_telefone").val();
+
     var _ies = $("#frm_novo_usuario_ies").val();
     var _departamento = $("#frm_novo_usuario_departamento").val();
     var _laboratorio = $("#frm_novo_usuario_laboratorio").val();
     var _area_de_pesquisa = $("#frm_novo_usuario_area_de_pesquisa").val();
     var _titulo = $("#frm_novo_usuario_titulo").val();
+
+    var _cnpj = $("#frm_novo_usuario_empresarial_documento").val();
+    var _razao_nome = $("#frm_novo_usuario_empresarial_nome").val();
+    var _sigla = $("#frm_novo_usuario_empresarial_sigla").val();
+    var _cep = $("#frm_novo_usuario_empresarial_cep").val();
+    var _rua = $("#frm_novo_usuario_empresarial_rua").val();
+    var _rua_numero = $("#frm_novo_usuario_empresarial_rua_numero").val();
+    var _rua_complemento = $("#frm_novo_usuario_empresarial_rua_compelemto").val();
+    var _bairro = $("#frm_novo_usuario_empresarial_bairro").val();
+    var _cidade_emp = $("#frm_novo_usuario_empresarial_cidade").val();
+    var _estado_emp = $("#frm_novo_usuario_empresarial_estado").val();
+    var _inscricao_estadual = $("#frm_novo_usuario_empresarial_inscricao_estadual").val();
+    var _inscricao_municipal = $("#frm_novo_usuario_empresarial_inscricao_municipal").val();
+    var _site = $("#frm_novo_usuario_empresarial_site").val();
+
     var _uid = $("#frm_novo_usuario_uid").val();
 
     $.ajax({
@@ -1851,6 +2010,7 @@ function enviarFormNovoUsuario(evento, _q) {
         type: "post",
         data: {
             q: _q,
+            tipo: _tipo,
             documento: _documento,
             email: _email,
             nome : _nome,
@@ -1865,6 +2025,19 @@ function enviarFormNovoUsuario(evento, _q) {
             laboratorio:_laboratorio,
             area_de_pesquisa:_area_de_pesquisa,
             titulo:_titulo,
+            cnpj: _cnpj,
+            razao_nome: _razao_nome,
+            sigla: _sigla,
+            cep: _cep,
+            rua: _rua,
+            rua_numero: _rua_numero,
+            rua_complemento: _rua_complemento,
+            bairro: _bairro,
+            cidade_emp: _cidade_emp,
+            estado_emp: _estado_emp,
+            inscricao_estadual:_inscricao_estadual,
+            inscricao_municipal: _inscricao_municipal,
+            site: _site,
             uid: _uid
         }
     }).done(function (r) {
@@ -1908,12 +2081,39 @@ $(document).ready(function () {
             var bloco4 = value.substring(12, 14);
 
             var cpfNums = bloco1+bloco2+bloco3+bloco4;
-            //window.console.log(value, cpfNums);
 
             return validaCPF(cpfNums);
         },
         errorMessage : "CPF inválido",
         errorMessageKey: "badCPF"
+    });
+
+    $.formUtils.addValidator({
+        name : "_cnpj",
+        validatorFunction : function(value, $el, config, language, $form) {
+            return validarCNPJ(value);
+        },
+        errorMessage : "CNPJ inválido",
+        errorMessageKey: "badCNPJ"
+    });
+
+    $.formUtils.addValidator({
+        name : "cpfOuCnpj",
+        validatorFunction : function(value, $el, config, language, $form) {
+            if (value.length < 15) {
+                var bloco1 = value.substring(0, 3);
+                var bloco2 = value.substring(4, 7);
+                var bloco3 = value.substring(8, 11);
+                var bloco4 = value.substring(12, 14);
+
+                var cpfNums = bloco1+bloco2+bloco3+bloco4;
+
+                return validaCPF(cpfNums);
+            } else
+                return validarCNPJ(value);
+        },
+        errorMessage : "Documento inválido.",
+        errorMessageKey: "badDocumento"
     });
 
     /**
@@ -1924,10 +2124,13 @@ $(document).ready(function () {
         onModulesLoaded: function () {
             $.setupValidation({
                 lang: "pt",
-                form: "#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3, #FormNovaSolicitacao, #FormLogin, #FormNovoAluno, #frmRecuperarConta, #frmNovaSenha, #frmUploadResultado",
+                form: "#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3Empresarial, #frmNovoUsuarioPasso3, #FormNovaSolicitacao, #FormLogin, #FormNovoAluno, #frmRecuperarConta, #frmNovaSenha, #frmUploadResultado",
                 validate: {
                     "#frm_novo_usuario_documento": {
                         validation: "_cpf"
+                    },
+                    "#frm_novo_usuario_empresarial_documento": {
+                        validation: "_cnpj"
                     },
                     "#frm_novo_usuario_senha": {
                         validation: "length",
@@ -1997,7 +2200,6 @@ $(document).ready(function () {
         var _senha = shaObj.getHash("HEX");
         var _email = $("#frm_login_email").val();
         var _permanecer = $("#frm_login_manter_logado").is(":checked");
-        tipo_sistema = $("#frm_login_tipo_academico").is(":checked") ? 1 : 2;
 
         $.ajax({
             url: "acao.php",
@@ -2005,10 +2207,10 @@ $(document).ready(function () {
             data: {
                 q: "login",
                 email: _email,
-                senha: _senha,
-                tipoSistema: tipo_sistema
+                senha: _senha
             }
         }).done(function (r) {
+            console.log(r);
             $("#frm_login_sbmt").prop("disabled", false);
             if (r.codigo !== 200) {
                 apresentarErro(r);
@@ -2030,6 +2232,8 @@ $(document).ready(function () {
                 usuario.mensagens = r.mensagens;
                 usuario.estado = r.estado;
                 usuario.cidade = r.cidade;
+
+                tipo_sistema = (usuario.nivel_acesso === 3) ? 2 : 1;
 
                 atualizarTokens();
                 atualizarCampos();
@@ -2060,18 +2264,24 @@ $(document).ready(function () {
         var sbmtNovoUsuarioPasso1 = $("#sbmtNovoUsuarioPasso1");
         sbmtNovoUsuarioPasso1.attr("disabled', 'disabled");
 
+        var _tipo = $("#frm_novo_usuario_documento").val().length > 14 ? "empresarial" : $('input[name="frm_novo_usuario_tipo"]:checked').val();
         var _documento = $("#frm_novo_usuario_documento").val();
         var _email = $("#frm_novo_usuario_email").val();
+
+        if (_tipo === "empresarial" && document.getElementById("frm_novo_usuario_tipo_empresarial").checked === false)
+            document.getElementById("frm_novo_usuario_tipo_empresarial").checked = true;
 
         $.ajax({
             url: "acao.php",
             type: "get",
             data: {
                 q: "verificarDocumento",
+                tipoUsuario: _tipo,
                 documento: _documento,
                 email: _email
             }
         }).done(function (r) {
+            console.log(r);
             if (r.codigo === 200) {
                 window.console.log(r);
                 if (r.existeDocumento || r.existeEmail) {
@@ -2093,8 +2303,20 @@ $(document).ready(function () {
 
         $("#NovoUsuarioPasso2").fadeOut("slow", function () {
             $(".passoAtual").removeClass("passoAtual");
+
+            if (document.getElementById("frm_novo_usuario_tipo_academico").checked)
+                $("#FormNovoUsuarioAcademicoContainer").show();
+            else
+                $("#FormNovoUsuarioEmpresarialContainer").show();
+
             $("#NovoUsuarioPasso3").fadeIn("slow").addClass("passoAtual");
+
         });
+    });
+
+    $("#frm_novo_usuario_empresarial_cep").blur(function () {
+        var valor = $(this).val();
+        pesquisaCep(valor);
     });
 
     /**

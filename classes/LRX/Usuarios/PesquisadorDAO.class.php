@@ -1,0 +1,121 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: romulo
+ * Date: 27/03/17
+ * Time: 15:54
+ */
+
+namespace LRX\Usuarios;
+use const LRX\DSN;
+use const LRX\USUARIO;
+use const LRX\SENHA;
+
+
+class PesquisadorDAO {
+
+    private $conexao;
+    private $ucDAO;
+
+    public function __construct() {
+        $this->conexao = new \PDO(DSN, USUARIO, SENHA);
+        $this->ucDAO = new UsuarioComercialDAO();
+    }
+
+    public function criar(Pesquisador $pesquisador, bool $novo_usuario = true) {
+        if ($this->existeDocumento($pesquisador->getDocumento()))
+            return false;
+
+        try {
+            if ($novo_usuario)
+                $this->ucDAO->criar($pesquisador);
+
+            $this->conexao->beginTransaction();
+
+            $sql = sprintf("INSERT INTO pesquisadores VALUES (:id_pesquisador, :id_empresa)");
+            $consulta = $this->conexao->prepare($sql);
+
+            $consulta->bindValue(':id_pesquisador', $pesquisador->getId());
+            $consulta->bindValue(':id_empresa', $pesquisador->getEmpresa()->getId());
+            $consulta->execute();
+
+            \LRX\print_p($consulta->errorInfo());
+            $this->conexao->commit();
+
+            return $pesquisador;
+        } catch (\Exception $pdoe) {
+            $this->conexao->rollBack();
+            Erro::lancarErro(array('codigo' => $pdoe->getCode(),
+                'mensagem' => $pdoe->getMessage()));
+            return false;
+        }
+    }
+
+    public function existeDocumento($documento) {
+        $sql = sprintf("select * from usuarios u, pesquisadores p where u.cpf = :documento and p.id_pesquisador = u.id_usuario");
+        $consulta = $this->conexao->prepare($sql);
+        $consulta->bindValue(':documento', $documento);
+
+        $consulta->execute();
+
+        if ($consulta->fetch() === false)
+            return false;
+        return true;
+    }
+
+    public function obter(int $id, $em_array = false) : Pesquisador {
+        $sql = sprintf("select u.*, p.id_empresa from usuarios u, pesquisadores p where u.id_usuario = :id_usuario and p.id_pesquisador = u.id_usuario limit 1");
+
+        $consulta = $this->conexao->prepare($sql);
+        $consulta->bindValue(':id_usuario', $id);
+
+        $consulta->execute();
+
+        $tupla = $consulta->fetch(\PDO::FETCH_ASSOC);
+
+        if ($tupla === false)
+            return false;
+
+        if ($em_array) {
+            $p = array();
+            // TODO: Terminar essa implementação
+        } else {
+            $p = new Pesquisador($tupla['nome'], $tupla['email'], $tupla['cpf'], (int) $tupla['id_usuario'], $tupla['uid'],
+                (int)$tupla['limite']);
+            $p->setConfirmado(intval($tupla['confirmado']) == 1 ? true : false);
+            $p->setEmailConfirmado(intval($tupla['email_confirmado']) == 1 ? true : false);
+            $p->setCidade($tupla['cidade']);
+            $p->setEstado($tupla['estado']);
+            $p->setSenha($tupla['senha']);
+            $p->setEmailAlternativo($tupla['email_alternativo']);
+            $p->setNivelAcesso((int) $tupla['nivel_acesso']);
+            $p->setGenero((int) $tupla['genero']);
+            $p->setTelefone($tupla['telefone']);
+            $p->setSaudacao((int) $tupla['saudacao']);
+
+            $eDAO = new EmpresaDAO();
+            $e = $eDAO->obter($tupla['id_empresa']);
+            $p->setEmpresa($e);
+
+        }
+
+        return $p;
+    }
+
+    public function atualizar(Pesquisador $pesquisador) {
+        $pesquisador_antigo = $this->obter($pesquisador->getId());
+        if ($pesquisador_antigo === false)
+            return false;
+
+        try {
+            $this->ucDAO->atualizar($pesquisador);
+
+            return true;
+        } catch (\Exception $pdoe) {
+            Erro::lancarErro(array('codigo'    =>  $pdoe->getCode(),
+                'mensagem'  =>  $pdoe->getMessage()));
+            return false;
+        }
+    }
+
+}

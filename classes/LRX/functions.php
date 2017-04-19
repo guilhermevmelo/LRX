@@ -62,6 +62,22 @@ function desformatarCPF($cpf)  {
     return $numeros;
 }
 
+function desformatarCNPJ($cnpj) : String {
+
+    //Separa da barra
+    $arr = explode('/', $cnpj);
+    //Separa os números principais
+    $num1 = explode('.', $arr[0]);
+    $num2 = explode('-', $arr[1]);
+    //Combina todos em um único array
+    $num = array_merge($num1, $num2);
+    //Combina todos os elementos do array de números em uma string
+    $numeros = implode("", $num);
+
+    return $numeros;
+
+}
+
 /**
  * Recebe um nome de arquivo e extrai apenas a extensão.
  *

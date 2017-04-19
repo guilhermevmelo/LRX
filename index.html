@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="estilos/all.css" media="all">
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 
-    <script   src="https://code.jquery.com/jquery-3.1.1.js"   integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="   crossorigin="anonymous"></script>
+    <script src="js/jquery-3.1.1.js"   integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="   crossorigin="anonymous"></script>
     <script src="js/jquery-ui.js"></script>
     <script src="js/jquery.mask.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
@@ -74,6 +74,12 @@
             <div id="DivLogin" class="bloco">
                 <div class="conteiner">
                     <form id="FormLogin" name="FormLogin" action="#/Login" method="post">
+                        <!--<fieldset>-->
+                            <!--<input type="radio" name="frm_login_tipo" id="frm_login_tipo_academico" checked>-->
+                            <!--<label for="frm_login_tipo_academico">Acadêmico</label>-->
+                            <!--<input type="radio" name="frm_login_tipo" id="frm_login_tipo_empresarial">-->
+                            <!--<label for="frm_login_tipo_empresarial">Empresarial</label>-->
+                        <!--</fieldset>-->
                         <fieldset>
                             <label for="frm_login_email">Email</label>
                             <input type="email" name="frm_login_email" id="frm_login_email" required>
@@ -83,14 +89,6 @@
                             <input type="password" name="frm_login_senha" id="frm_login_senha" required>
                         </fieldset>
                         <div>
-
-                            <fieldset class="floatLeft">
-                                <input type="radio" name="frm_login_tipo" id="frm_login_tipo_academico" checked>
-                                <label for="frm_login_tipo_academico">Acadêmico</label>
-                                <br>
-                                <input type="radio" name="frm_login_tipo" id="frm_login_tipo_comercial" disabled>
-                                <label for="frm_login_tipo_comercial">Comercial</label>
-                            </fieldset>
                             <fieldset class="floatLeft">
                                 <input type="checkbox" name="frm_login_manter_logado" id="frm_login_manter_logado"
                                        value="1" checked>
@@ -749,9 +747,16 @@
                 <form name="frmNovoUsuarioPasso1" id="frmNovoUsuarioPasso1">
                     <p>Verificaremos se seu <span id="_documento">CPF</span> já está cadastrado no sistema.</p>
                     <fieldset>
+                        <label>Perfil de usuário</label>
+                        <input type="radio" name="frm_novo_usuario_tipo" id="frm_novo_usuario_tipo_academico" value="academico" required>
+                        <label for="frm_novo_usuario_tipo_academico">Acadêmico</label>
+                        <input type="radio" name="frm_novo_usuario_tipo" id="frm_novo_usuario_tipo_empresarial" value="empresarial">
+                        <label for="frm_novo_usuario_tipo_empresarial">Empresarial</label>
+                    </fieldset>
+                    <fieldset>
                         <label for="frm_novo_usuario_documento">CPF</label>
                         <input type="text" id="frm_novo_usuario_documento" name="frm_novo_usuario_documento"
-                               placeholder="000.000.000-00" size="15" maxlength="15" required>
+                               placeholder="000.000.000-00" required>
                     </fieldset>
                     <fieldset>
                         <label for="frm_novo_usuario_email">Email</label>
@@ -845,51 +850,133 @@
             </div>
 
             <div id="NovoUsuarioPasso3" class="bloco">
-                <h1>Informações Acadêmicas</h1>
-                <form name="frmNovoUsuarioPasso3" id="frmNovoUsuarioPasso3">
-                    <fieldset>
-                        <label for="frm_novo_usuario_ies">IES</label>
-                        <input type="text" id="frm_novo_usuario_ies" name="frm_novo_usuario_ies"
-                               placeholder="UFC" value="UFC" required>
-                    </fieldset>
-                    <fieldset>
-                        <label for="frm_novo_usuario_departamento">Departamento</label>
-                        <input type="text" id="frm_novo_usuario_departamento" name="frm_novo_usuario_departamento"
-                               placeholder="Física" value="Física" required>
-                    </fieldset>
+                <div id="FormNovoUsuarioAcademicoContainer" hidden>
+                    <h1>Informações Acadêmicas</h1>
+                    <form name="frmNovoUsuarioPasso3Academico" id="frmNovoUsuarioPasso3Academico">
+                        <fieldset>
+                            <label for="frm_novo_usuario_ies">IES</label>
+                            <input type="text" id="frm_novo_usuario_ies" name="frm_novo_usuario_ies"
+                                   placeholder="UFC" value="UFC" required>
+                        </fieldset>
+                        <fieldset>
+                            <label for="frm_novo_usuario_departamento">Departamento</label>
+                            <input type="text" id="frm_novo_usuario_departamento" name="frm_novo_usuario_departamento"
+                                   placeholder="Física" value="Física" required>
+                        </fieldset>
 
-                    <fieldset>
-                        <label for="frm_novo_usuario_laboratorio">Laboratório (sigla)</label>
-                        <input type="text" id="frm_novo_usuario_laboratorio" name="frm_novo_usuario_laboratorio"
-                               placeholder="LRX" value="LRX" required>
-                    </fieldset>
-                    <fieldset>
-                        <label for="frm_novo_usuario_area_de_pesquisa">Área de pesquisa</label>
-                        <input type="text" id="frm_novo_usuario_area_de_pesquisa" name="frm_novo_usuario_area_de_pesquisa"
-                               required>
-                    </fieldset>
-                    <fieldset>
-                        <label for="frm_novo_usuario_titulo">Título</label>
-                        <select id="frm_novo_usuario_titulo" name="frm_novo_usuario_titulo">
-                            <option value="0">Graduando</option>
-                            <option value="1">Graduado</option>
-                            <option value="2">Especializando</option>
-                            <option value="3">Especialista</option>
-                            <option value="4">Mestrando</option>
-                            <option value="5">Mestre</option>
-                            <option value="6">Doutorando</option>
-                            <option value="7">Doutor</option>
-                       </select>
-                    </fieldset>
-                    <fieldset>
-                        <input type="hidden" id="frm_novo_usuario_uid" name="frm_novo_usuario_uid">
-                    </fieldset>
+                        <fieldset>
+                            <label for="frm_novo_usuario_laboratorio">Laboratório (sigla)</label>
+                            <input type="text" id="frm_novo_usuario_laboratorio" name="frm_novo_usuario_laboratorio"
+                                   placeholder="LRX" value="LRX" required>
+                        </fieldset>
+                        <fieldset>
+                            <label for="frm_novo_usuario_area_de_pesquisa">Área de pesquisa</label>
+                            <input type="text" id="frm_novo_usuario_area_de_pesquisa" name="frm_novo_usuario_area_de_pesquisa"
+                                   required>
+                        </fieldset>
+                        <fieldset>
+                            <label for="frm_novo_usuario_titulo">Título</label>
+                            <select id="frm_novo_usuario_titulo" name="frm_novo_usuario_titulo">
+                                <option value="0">Graduando</option>
+                                <option value="1">Graduado</option>
+                                <option value="2">Especializando</option>
+                                <option value="3">Especialista</option>
+                                <option value="4">Mestrando</option>
+                                <option value="5">Mestre</option>
+                                <option value="6">Doutorando</option>
+                                <option value="7">Doutor</option>
+                            </select>
+                        </fieldset>
+                        <fieldset>
+                            <input type="hidden" id="frm_novo_usuario_academico_uid" name="frm_novo_usuario_academico_uid">
+                        </fieldset>
 
-                    <fieldset>
-                        <a href="#/Inicio" title="Voltar à tela inicial" class="botao vermelho">Voltar à tela inicial</a>
-                        <input type="submit" value="Finalizar" id="btnNovoUsuarioFinalizar" name="btnNovoUsuarioFinalizar">
-                    </fieldset>
-                </form>
+                        <fieldset>
+                            <a href="#/Inicio" title="Voltar à tela inicial" class="botao vermelho">Voltar à tela inicial</a>
+                            <input type="submit" value="Finalizar" id="btnNovoUsuarioAcademicoFinalizar" name="btnNovoUsuarioAcademicoFinalizar">
+                        </fieldset>
+                    </form>
+                </div>
+
+                <div id="FormNovoUsuarioEmpresarialContainer" hidden>
+                    <h1>Informações Empresariais</h1>
+                    <form name="frmNovoUsuarioPasso3Empresarial" id="frmNovoUsuarioPasso3Empresarial">
+                        <fieldset>
+                            <label for="frm_novo_usuario_empresarial_documento">CNPJ</label>
+                            <input type="text" id="frm_novo_usuario_empresarial_documento" name="frm_novo_usuario_empresarial_documento"
+                                   placeholder="00.000.000/0000-00" required>
+                        </fieldset>
+
+                        <fieldset>
+                            <label for="frm_novo_usuario_empresarial_nome">Razão Social ou Nome Fantasia</label>
+                            <input type="text" id="frm_novo_usuario_empresarial_nome" name="frm_novo_usuario_empresarial_nome" required>
+                        </fieldset>
+
+                        <fieldset>
+                            <label for="frm_novo_usuario_empresarial_sigla">Sigla</label>
+                            <input type="text" id="frm_novo_usuario_empresarial_sigla" name="frm_novo_usuario_empresarial_sigla">
+                        </fieldset>
+
+                        <fieldset>
+                            <label for="frm_novo_usuario_empresarial_cep">CEP</label>
+                            <input type="text" id="frm_novo_usuario_empresarial_cep" name="frm_novo_usuario_empresarial_cep">
+                        </fieldset>
+
+                        <fieldset>
+                            <label for="frm_novo_usuario_empresarial_rua">Rua</label>
+                            <input type="text" id="frm_novo_usuario_empresarial_rua" name="frm_novo_usuario_empresarial_rua">
+                        </fieldset>
+
+                        <fieldset>
+                            <label for="frm_novo_usuario_empresarial_rua_numero">Nº</label>
+                            <input type="text" id="frm_novo_usuario_empresarial_rua_numero" name="frm_novo_usuario_empresarial_rua_numero">
+                        </fieldset>
+
+                        <fieldset>
+                            <label for="frm_novo_usuario_empresarial_rua_compelemto">Complemento</label>
+                            <input type="text" id="frm_novo_usuario_empresarial_rua_compelemto" name="frm_novo_usuario_empresarial_rua_compelemto">
+                        </fieldset>
+
+                        <fieldset>
+                            <label for="frm_novo_usuario_empresarial_bairro">Bairro</label>
+                            <input type="text" id="frm_novo_usuario_empresarial_bairro" name="frm_novo_usuario_empresarial_bairro">
+                        </fieldset>
+
+                        <fieldset>
+                            <label for="frm_novo_usuario_empresarial_cidade">Cidade</label>
+                            <input type="text" id="frm_novo_usuario_empresarial_cidade" name="frm_novo_usuario_empresarial_cidade">
+                        </fieldset>
+
+                        <fieldset>
+                            <label for="frm_novo_usuario_empresarial_estado">Estado</label>
+                            <input type="text" id="frm_novo_usuario_empresarial_estado" name="frm_novo_usuario_empresarial_estado">
+                        </fieldset>
+
+                        <fieldset>
+                            <label for="frm_novo_usuario_empresarial_inscricao_estadual">Inscrição Estadual</label>
+                            <input type="text" id="frm_novo_usuario_empresarial_inscricao_estadual" name="frm_novo_usuario_empresarial_inscricao_estadual">
+                        </fieldset>
+
+                        <fieldset>
+                            <label for="frm_novo_usuario_empresarial_inscricao_municipal">Inscrição Municipal</label>
+                            <input type="text" id="frm_novo_usuario_empresarial_inscricao_municipal" name="frm_novo_usuario_empresarial_inscricao_municipal">
+                        </fieldset>
+
+                        <fieldset>
+                            <label for="frm_novo_usuario_empresarial_site">Site</label>
+                            <input type="text" id="frm_novo_usuario_empresarial_site" name="frm_novo_usuario_empresarial_site">
+                        </fieldset>
+
+                        <fieldset>
+                            <input type="hidden" id="frm_novo_usuario_empresarial_uid" name="frm_novo_usuario_empresarial_uid">
+                        </fieldset>
+
+                        <fieldset>
+                            <a href="#/Inicio" title="Voltar à tela inicial" class="botao vermelho">Voltar à tela inicial</a>
+                            <input type="submit" value="Finalizar" id="btnNovoUsuarioEmpresarialFinalizar" name="btnNovoUsuarioEmpresarialFinalizar">
+                        </fieldset>
+                    </form>
+                </div>
             </div>
 
             <div id="NovoUsuarioPassoFinal" class="bloco">
@@ -1094,11 +1181,6 @@
                 CEP 60455-970
             </p>
         </address>
-        <!--<nav id="MenuRodape">-->
-            <!--<ul>-->
-                <!--<li><a href="#">Conheça os equipamentos</a></li>-->
-            <!--</ul>-->
-        <!--</nav>-->
         <p class="copyright">&copy; 2016 Laboratório de Raios X</p>
     </footer>
 </div>
