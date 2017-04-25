@@ -672,7 +672,7 @@ function obterDetalhesAluno(id) {
     });
 }
 
-function preencherUsuarios(professores, alunos, apenasOperadores, apenasNaoConfirmados) {
+function preencherUsuarios(professores, alunos, pesquisadores, apenasOperadores, apenasNaoConfirmados) {
     $("#ListaUsuarios").empty();
     $("#ListaUsuarios").show();
     $("#DetalheUsuario").fadeOut("slow");
@@ -687,6 +687,7 @@ function preencherUsuarios(professores, alunos, apenasOperadores, apenasNaoConfi
             nivel_acesso: usuario.nivel_acesso,
             professores: professores?1:0,
             alunos: alunos?1:0,
+            pesquisadores: pesquisadores?1:0,
             operadores: apenasOperadores?1:0,
             nao_confirmados: apenasNaoConfirmados?1:0
         }
@@ -751,7 +752,10 @@ function preencherUsuarios(professores, alunos, apenasOperadores, apenasNaoConfi
                                 break;
                         }
                         statusH4.innerHTML += " - ";
-                    }
+                    } else if (_s.nivel_acesso === 3) {
+                        statusH4.innerHTML = _s.nome_empresa;
+                        statusH4.innerHTML += " - ";
+                    } 
                     statusH4.innerHTML += _s.em_andamento + " solicitações em andamento.";
                 } else {
                     statusH4.classList.add("vermelho");
@@ -768,7 +772,7 @@ function preencherUsuarios(professores, alunos, apenasOperadores, apenasNaoConfi
                         $("#detalheUsuario_Identificacao").html(_s.nome);
 
                         if (!_s.confirmado) {
-                            if (_s.nivel_acesso === 2) {
+                            if (_s.nivel_acesso === 2 || _s.nivel_acesso === 3) {
                                 $("#detalheUsuario_Status").html("Usuario ainda não foi confirmado").show();
                                 var detLinkConfirmar = $("#detalheUsuario_linkConfirmar");
                                 detLinkConfirmar.off();
@@ -793,8 +797,37 @@ function preencherUsuarios(professores, alunos, apenasOperadores, apenasNaoConfi
                                             $("#detalheUsuario_Confirmar").slideUp("fast");
                                             apresentarErro(q);
                                         }
+                                        preencherUsuarios(professores, alunos, pesquisadores, apenasOperadores, apenasNaoConfirmados);
+                                    });
+                                    
+                                });
+
+                                var detLinkCancelar = $("#detalheUsuario_linkCancelar");
+                                detLinkCancelar.off();
+                                detLinkCancelar.click(function(evento) {
+                                    evento.stopPropagation();
+                                    evento.preventDefault();
+
+                                    $.ajax({
+                                        url: "acao.php",
+                                        type: "get",
+                                        data: {
+                                            q: "cancelarUsuario",
+                                            id: _s.id_usuario,
+                                            id_operador: usuario.id,
+                                            nivel_acesso: usuario.nivel_acesso
+                                        }
+                                    }).done(function (q) {
+                                        if (q.codigo !== 200) {
+                                            apresentarErro(q);
+                                        } else {
+                                            $("#detalheUsuario_Status").slideUp("fast");
+                                            $("#detalheUsuario_Confirmar").slideUp("fast");
+                                            apresentarErro(q);
+                                        }
                                         preencherUsuarios(professores, alunos, apenasOperadores, apenasNaoConfirmados);
                                     });
+                                    
                                 });
                                 $("#detalheUsuario_Confirmar").show();
                             } else {
@@ -836,8 +869,19 @@ function preencherUsuarios(professores, alunos, apenasOperadores, apenasNaoConfi
                         }
                         $("#detalheUsuario_CPF").html(montarCpf(_s.cpf));
                         $("#detalheUsuario_Telefone").html(_s.telefone);
-                        $("#detalheUsuario_Area").html(_s.area_de_pesquisa);
                         $("#detalheUsuario_Email").html(_s.email);
+
+                        if (_s.nivel_acesso === 2) {
+                            $("#detalheUsuarioAcademico").show();
+                            $("#detalheUsuarioEmpresarial").hide();
+                            $("#detalheUsuario_Area").html(_s.area_de_pesquisa);
+                        } else if (_s.nivel_acesso === 3) {
+                            $("#detalheUsuarioAcademico").hide();
+                            $("#detalheUsuarioEmpresarial").show();
+                            $("#detalheUsuario_Empresa").html(_s.nome_empresa);
+                            $("#detalheUsuario_CNPJ").html(_s.cnpj);
+                        }
+                        
                         $("#detalheUsuario_NumeroSolicitacoes").html(_s.em_andamento + "/" + _s.limite);
 
                         $("#DetalheUsuario").fadeIn("slow").addClass("ativo");
@@ -1463,7 +1507,7 @@ function exibirSecao() {
                     $("#Usuarios").fadeIn("slow", function () {
                         $(this).addClass("estadoAtual");
                         $("#ListaUsuarios").addClass("ativo");
-                        preencherUsuarios(true, false, false, true);
+                        preencherUsuarios(true, false, true, false, true);
                     });
                 });
             }
@@ -1503,10 +1547,9 @@ function exibirSecao() {
                 estadoAtual.fadeOut("slow", function () {
                     $("#frmNovoUsuarioPasso1").trigger("reset");
                     $("#frmNovoUsuarioPasso2").trigger("reset");
-                    var frmNovoUsuario = null;
-                    if ($('input[name="frm_novo_usuario_tipo"]:checked').val() === "academico") frmNovoUsuario = $("#frmNovoUsuarioPasso3Academico");
-                    else frmNovoUsuario = $("#frmNovoUsuarioPasso3Empresarial");
-                    frmNovoUsuario.trigger("reset");
+                    $("#frmNovoUsuarioPasso3Academico").trigger("reset");
+                    $("#frmNovoUsuarioPasso3Empresarial").trigger("reset");
+
                     $(this).removeClass("estadoAtual");
 
                     $(".passoAtual").removeClass("passoAtual").hide();
@@ -1516,10 +1559,6 @@ function exibirSecao() {
                     $("#FormNovoUsuarioAcademicoContainer").hide();
                     $("#FormNovoUsuarioEmpresarialContainer").hide();
 
-                    frmNovoUsuario.off();
-                    frmNovoUsuario.submit(function (evento) {
-                        enviarFormNovoUsuario(evento, "cadastrarUsuario");
-                    });
                     $("#NovoUsuario").fadeIn("slow", function () {
                         $(this).addClass("estadoAtual");
                     });
@@ -2097,7 +2136,7 @@ $(document).ready(function () {
         onModulesLoaded: function () {
             $.setupValidation({
                 lang: "pt",
-                form: "#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3Empresarial, #frmNovoUsuarioPasso3, #FormNovaSolicitacao, #FormLogin, #FormNovoAluno, #frmRecuperarConta, #frmNovaSenha, #frmUploadResultado",
+                form: "#frmNovoUsuarioPasso1, #frmNovoUsuarioPasso2, #frmNovoUsuarioPasso3Empresarial, #frmNovoUsuarioPasso3Academico, #FormNovaSolicitacao, #FormLogin, #FormNovoAluno, #frmRecuperarConta, #frmNovaSenha, #frmUploadResultado",
                 validate: {
                     "#frm_novo_usuario_documento": {
                         validation: "_cpf"
@@ -2279,10 +2318,22 @@ $(document).ready(function () {
 
             if (document.getElementById("frm_novo_usuario_tipo_academico").checked)
                 $("#FormNovoUsuarioAcademicoContainer").show();
-            else
+            else if (document.getElementById("frm_novo_usuario_tipo_empresarial").checked)
                 $("#FormNovoUsuarioEmpresarialContainer").show();
 
             $("#NovoUsuarioPasso3").fadeIn("slow").addClass("passoAtual");
+
+            var frmNovoUsuario = null;
+            if (document.getElementById("frm_novo_usuario_tipo_academico").checked) {
+                frmNovoUsuario = $("#frmNovoUsuarioPasso3Academico");
+            } else if (document.getElementById("frm_novo_usuario_tipo_empresarial").checked) {
+                frmNovoUsuario = $("#frmNovoUsuarioPasso3Empresarial");
+            }
+
+            frmNovoUsuario.off();
+            frmNovoUsuario.submit(function (evento) {
+                enviarFormNovoUsuario(evento, "cadastrarUsuario");
+            });
 
         });
     });
@@ -2340,28 +2391,35 @@ $(document).ready(function () {
     $("#linkListarUsuarios").click(function () {
         $(".ativo").removeClass("ativo").fadeOut("slow", function () {
             $("#ListaUsuarios").addClass("ativo").fadeIn("slow");
-            preencherUsuarios(true, true, false, false);
+            preencherUsuarios(true, true, true, false, false);
         });
     });
 
     $("#linkListarProfessores").click(function () {
         $(".ativo").removeClass("ativo").fadeOut("slow", function () {
             $("#ListaUsuarios").addClass("ativo").fadeIn("slow");
-            preencherUsuarios(true, false, false, false);
+            preencherUsuarios(true, false, false, false, false);
         });
     });
 
     $("#linkListarAlunosCadastrados").click(function () {
         $(".ativo").removeClass("ativo").fadeOut("slow", function () {
             $("#ListaUsuarios").addClass("ativo").fadeIn("slow");
-            preencherUsuarios(false, true, false, false);
+            preencherUsuarios(false, true, false, false, false);
+        });
+    });
+
+    $("#linkListarPesquisadoresCadastrados").click(function () {
+        $(".ativo").removeClass("ativo").fadeOut("slow", function () {
+            $("#ListaUsuarios").addClass("ativo").fadeIn("slow");
+            preencherUsuarios(false, false, true, false, false);
         });
     });
 
     $("#linkListarUsuariosPendentes").click(function () {
         $(".ativo").removeClass("ativo").fadeOut("slow", function () {
             $("#ListaUsuarios").addClass("ativo").fadeIn("slow");
-            preencherUsuarios(true, false, false, true);
+            preencherUsuarios(true, false, true, false, true);
         });
     });
 

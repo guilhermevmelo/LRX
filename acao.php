@@ -35,9 +35,9 @@ session_save_path("/tmp");
 session_start();
 
 
-/** @var  $q string A operação a ser executada. Será o conteúdo de uma reqisição GET ou POST; NULL caso não haja
+/** @var $q string A operação a ser executada. Será o conteúdo de uma reqisição GET ou POST; NULL caso não haja
  * requisição */
-//$q = isset($_GET["q"])? $_GET["q"] : (isset($_POST["q"]) ? $_POST["q"] : NULL);
+
 $q = $_GET["q"] ?? $_POST["q"] ?? null;
 
 $host = "http://csd.fisica.ufc.br/solicitacoes/";
@@ -51,7 +51,7 @@ if (isset($q) && $q == "login") {
     $senha = addslashes($_POST['senha']);
 
     $u = UsuarioDAO::login($email, $senha);
-    //TODO: Mensagens diferentes para email e para senha não encontrados.
+    
     if ($u === null) {
         Erro::lancarErro(array("codigo" => 1001, "mensagem" => "Usuário não encontrado."));
     } else if ($u === false) {
@@ -61,6 +61,7 @@ if (isset($q) && $q == "login") {
     } else if ($u->confirmado() != 2) {
         Erro::lancarErro(array("codigo" => 1002, "mensagem" => "Usuário ainda não teve cadastro liberado por um operador."));
     } else {
+
         header('Content-Type: application/json');
         $resposta = array(
             "codigo" => 200,
@@ -84,15 +85,6 @@ if (isset($q) && $q == "login") {
 
         echo json_encode($resposta);
     }
-
-    //print_p($u);
-
-    //$tipo = $_POST["frm_login_tipo"];
-
-    // $uDAO = new UsuarioAcademicoDAO();
-
-    /** @var  $u Usuario caso dê certo; null caso não dê */
-    //$u = $uDAO->login();
 }
 
 /**
@@ -166,6 +158,7 @@ if (isset($q) && $q == "obterListaUsuarios") {
     $professores = boolval($_GET['professores']);
     $alunos = boolval($_GET['alunos']);
     $operadores = boolval($_GET['operadores']);
+    $pesquisadores = boolval($_GET['pesquisadores']);
     $nao_confirmados = boolval($_GET['nao_confirmados']);
 
     if ($nivel_acesso !== UsuarioDAO::nivelDeAcessoPorId($id)) {
@@ -183,6 +176,11 @@ if (isset($q) && $q == "obterListaUsuarios") {
     if ($alunos) {
         $aDAO = new AlunoDAO();
         $resposta = array_merge($resposta, $aDAO->obterTodos(true, $nao_confirmados));
+    }
+
+    if ($pesquisadores) {
+        $peDAO = new PesquisadorDAO();
+        $resposta = array_merge($resposta, $peDAO->obterTodos(true, $nao_confirmados));
     }
 
     if ($operadores) {
@@ -1195,12 +1193,22 @@ if (isset($q) && $q == "confirmarUsuario") {
         die();
     }
 
-    $nivel_acesso_professor = UsuarioDAO::nivelDeAcessoPorId($id);
-    if ($nivel_acesso_professor != 2) {
-        Erro::lancarErro(array("codigo" => 5000, "mensagem" => "Não é possível confirmar um usuário que não seja professor"));
+    $nivel_acesso = UsuarioDAO::nivelDeAcessoPorId($id);
+    if ($nivel_acesso == 1) {
+        Erro::lancarErro(array("codigo" => 5000, "mensagem" => "Não é possível confirmar um usuário aluno"));
         die();
     }
-    $uDAO = new ProfessorDAO();
+
+    $uDAO = null;
+    switch ($nivel_acesso) {
+        case 2:
+            $uDAO = new ProfessorDAO();
+            break;
+        case 3:
+            $uDAO = new PesquisadorDAO();
+            break;
+    }
+
     $u = $uDAO->obter($id, false);
 
     if ($u === null) {
@@ -1211,9 +1219,9 @@ if (isset($q) && $q == "confirmarUsuario") {
 
         $assunto = "[LRX] Liberação de cadastro";
         $link = $host;
-        $mensagem = "<p>Olá professor " . $u->getNome() . ",<br>confirmamos seu cargo de professor e liberamos seu cadastro 
+        $mensagem = "<p>Olá " . $u->getNome() . ",<br>confirmamos seu cargo e liberamos seu cadastro 
             para solicitações.</p>
-            <p>Acesse o sistema em <a href='" . $link . "' target='_blank'>" . $link . "</a> e cadastre individualmente seus alunos
+            <p>Se você for professor, acesse o sistema em <a href='" . $link . "' target='_blank'>" . $link . "</a> e cadastre individualmente seus alunos
             na opção <strong>Vincular Aluno</strong> do menu <strong>Alunos</strong> para que também possam fazer solicitações.</p>
             <p>Observe que todas as solicitações, tanto suas quanto de seus alunos, <span style='color:red;'>devem ser aprovadas pelo senhor</span> 
             antes de serem enviadas ao laboratório. Observe também que cada professor possui um limite todal de vinte solicitações
@@ -1224,7 +1232,50 @@ if (isset($q) && $q == "confirmarUsuario") {
         $correio->enviar();
 
         header('Content-Type: application/json');
-        echo json_encode(array("codigo" => 200, "mensagem" => "O professor " . $u->getNome() . " foi confirmado"));
+        echo json_encode(array("codigo" => 200, "mensagem" => "O usuário " . $u->getNome() . " foi confirmado"));
+    }
+}
+
+if (isset($q) && $q == "cancelarUsuario") {
+    $id = intval(addslashes($_GET["id"]));
+    $id_operador = intval(addslashes($_GET["id_operador"]));
+
+    $nivel_acesso_operador = UsuarioDAO::nivelDeAcessoPorId($id_operador);
+
+    if ($nivel_acesso_operador < 5) {
+        Erro::lancarErro(array("codigo" => 303, "mensagem" => "Você não tem permissão para executar essa ação"));
+        die();
+    }
+
+    $nivel_acesso_professor = UsuarioDAO::nivelDeAcessoPorId($id);
+    if ($nivel_acesso_professor != 2) {
+        Erro::lancarErro(array("codigo" => 5000, "mensagem" => "Não é possível cancelar um usuário que não seja professor"));
+        die();
+    }
+    $uDAO = new ProfessorDAO();
+    $u = $uDAO->obter($id, false);
+
+    if ($u === null) {
+        Erro::lancarErro(array("codigo" => 300, "mensagem" => "Usuário não encontrado."));
+    } else {
+        $uDAO->deletar($u->getId(), true);
+
+        // $assunto = "[LRX] Cadastro não autorizado";
+        // $link = $host;
+        // $mensagem = "<p>Olá professor " . $u->getNome() . ",<br>confirmamos seu cargo de professor e liberamos seu cadastro 
+        //     para solicitações.</p>
+        //     <p>Acesse o sistema em <a href='" . $link . "' target='_blank'>" . $link . "</a> e cadastre individualmente seus alunos
+        //     na opção <strong>Vincular Aluno</strong> do menu <strong>Alunos</strong> para que também possam fazer solicitações.</p>
+        //     <p>Observe que todas as solicitações, tanto suas quanto de seus alunos, <span style='color:red;'>devem ser aprovadas pelo senhor</span> 
+        //     antes de serem enviadas ao laboratório. Observe também que cada professor possui um limite todal de vinte solicitações
+        //     simultâneas em andamento, somadas as suas e a de seus alunos. Contamos, portanto, com sua colaboração para que não forneça
+        //     seus dados de login arbitrariamente para seus alunos, deixe que tenham cada qual seu próprio cadastro.</p>
+        //     <p>Agradecemos a compreensão e seja bem vindo!<br>Equipe LRX</p>";
+        // $correio = new Correio($u->getEmail(), $assunto, $mensagem);
+        // $correio->enviar();
+
+        header('Content-Type: application/json');
+        echo json_encode(array("codigo" => 200, "mensagem" => "O professor " . $u->getNome() . " foi deletado."));
     }
 }
 

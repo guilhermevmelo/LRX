@@ -7,6 +7,8 @@
  */
 
 namespace LRX\Usuarios;
+use LRX\Erro;
+use LRX\Solicitacoes\SolicitacaoAcademicaDAO;
 use const LRX\DSN;
 use const LRX\USUARIO;
 use const LRX\SENHA;
@@ -116,6 +118,53 @@ class PesquisadorDAO {
                 'mensagem'  =>  $pdoe->getMessage()));
             return false;
         }
+    }
+
+    public function obterTodos($em_array = false, $apenas_nao_confirmados = false) : array {
+        $sql = $apenas_nao_confirmados ?
+            sprintf("select u.*, p.*, e.id_empresa, e.tipo, e.documento, e.nome AS nome_empresa, e.sigla, e.endereco, e.inscricao_estadual, e.inscricao_municipal, e.site from usuarios u, pesquisadores p, empresas e where p.id_pesquisador = u.id_usuario AND p.id_empresa = e.id_empresa AND u.confirmado = 0 order by id_usuario desc") :
+            sprintf("select u.*, p.*, e.id_empresa, e.tipo, e.documento, e.nome AS nome_empresa, e.sigla, e.endereco, e.inscricao_estadual, e.inscricao_municipal, e.site from usuarios u, pesquisadores p, empresas e where p.id_pesquisador = u.id_usuario AND p.id_empresa = e.id_empresa order by id_usuario desc");
+        $pesquisadores = array();
+        $saDAO = new SolicitacaoAcademicaDAO();
+        $eDAO = new EmpresaDAO();
+        foreach ($this->conexao->query($sql) as $tupla) {
+            if ($em_array) {
+                $p = array();
+                $p["id_usuario"] = intval($tupla["id_usuario"]);
+                $p["nome"] = $tupla["nome"];
+                $p["email"] = $tupla["email"];
+                $p["cpf"] = $tupla["cpf"];
+                $p["uid"] = $tupla["uid"];
+                $p["confirmado"] = $tupla["confirmado"] == 1 ? true : false;
+                $p["cidade"] = $tupla["cidade"];
+                $p["estado"] = $tupla["estado"];
+                $p["limite"] = intval($tupla["limite"]);
+                $p["genero"] = intval($tupla["genero"]);
+                $p["telefone"] = $tupla["telefone"];
+                $p["nivel_acesso"] = intval($tupla["nivel_acesso"]);
+                $p["em_andamento"] = $saDAO->obterNumeroSolicitacoesEmAndamento(intval($tupla["id_usuario"]))["aprovadas"];
+                $p["id_empresa"] = $tupla["id_empresa"];
+                $p["nome_empresa"] = $tupla["nome_empresa"];
+                $p["cnpj"] = $tupla["documento"]; 
+            } else {
+                $p = new Pesquisador($tupla['nome'], $tupla['email'], $tupla['cpf'], (int) $tupla['id_usuario'], $tupla['uid'],
+                    (int)$tupla['limite']);
+                $p->setConfirmado($tupla['confirmado'] == 1 ? true : false);
+                $p->setCidade($tupla['cidade']);
+                $p->setEstado($tupla['estado']);
+                $p->setSenha($tupla['senha']);
+                $p->setEmailAlternativo($tupla['email_alternativo']);
+                $p->setNivelAcesso((int) $tupla['nivel_acesso']);
+                $p->setGenero((int) $tupla['genero']);
+                $p->setTelefone($tupla['telefone']);
+                $p->setSaudacao((int) $tupla['saudacao']);
+                $p->setEmpresa($eDAO->obter(intval($tupla["id_empresa"])));
+            }
+
+            array_push($pesquisadores, $p);
+        }
+
+        return $pesquisadores;
     }
 
 }
