@@ -176,18 +176,22 @@ class UsuarioDAO {
      */
     public static function login($email, $senha) {
         $conexao = new \PDO(DSN, USUARIO, SENHA);
-        $sql = sprintf("SELECT id_usuario, nivel_acesso FROM usuarios WHERE email = :email AND senha = :senha LIMIT 1");
+        $sql = sprintf("SELECT id_usuario, senha, nivel_acesso FROM usuarios WHERE email = :email LIMIT 1");
 
         $consulta = $conexao->prepare($sql);
         $consulta->bindValue(':email', $email);
-        $consulta->bindValue(':senha', $senha);
 
         $consulta->execute();
 
         $tupla = $consulta->fetch(\PDO::FETCH_ASSOC);
 
+        // Usuário não encontrado
         if ($tupla === false)
             return null;
+
+        // Senha incorreta
+        if ($tupla['senha'] !== $senha)
+            return false;
 
         switch ((int)$tupla['nivel_acesso']) {
             case 1:

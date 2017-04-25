@@ -128,6 +128,7 @@ function atualizarCampos() {
         $("#menuAlunos").show();
     }
 
+    /* Usuários empresariais não podem fazer solicitação de análises pelo sistema AINDA, apenas acompanhar */
     if (usuario.nivel_acesso === 3) {
         $("#linkNovaSolicitacao").hide();
     } else {
@@ -204,34 +205,6 @@ function obterDetalhesSolicitacao(id) {
                 apresentarErro(r);
             } else {
                 console.log(r.solicitacao);
-
-            //
-            // <p>
-            //     <strong>Solicitante: </strong><span id="detalhe_Solicitante"></span><br>
-            //         </p>
-            //         <p>
-            //         <strong>Data da Solicitação: </strong><span id="detalhe_DataSolicitacao">Criada em 14 de Abril</span><br>
-            //     <strong>Data do Recebimento: </strong><span id="detalhe_DataRecebimento">Entregue em 15 de Abril</span>
-            //     </p>
-            //     <p>
-            //     <strong>Equipamento: </strong> <span id="detalhe_Equipamento"></span><br>
-            //         </p>
-            //         <p>
-            //         <strong>Composição: </strong><br><span id="detalhe_Composicao"></span><br>
-            //         <strong>Tipo: </strong> <span id="detalhe_Tipo"></span><br>
-            //         </p>
-            //         <p>
-            //         <strong>2θ Inicial: </strong><br><span id="detalhe_2ThetaInicial"></span><br>
-            //         <strong>2θ Final: </strong><br><span id="detalhe_2ThetaFinal"></span><br>
-            //         <strong>Δθ: </strong><br><span id="detalhe_DeltaTheta"></span><br>
-            //         </p>
-            //         <p>
-            //         <strong>Segurança: </strong><br><span id="detalhe_Seguranca"></span><br>
-            //         <strong>Observações: </strong><br><span id="detalhe_Observacoes"></span><br>
-            //         </p>
-
-
-
 
                 $("#detalhe_Identificacao").html(r.solicitacao.identificacao);
                 $("#detalhe_Solicitante").html(r.solicitacao.solicitante);

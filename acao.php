@@ -46,6 +46,7 @@ $host = "http://csd.fisica.ufc.br/solicitacoes/";
  *
  */
 if (isset($q) && $q == "login") {
+
     $email = addslashes($_POST['email']);
     $senha = addslashes($_POST['senha']);
 
@@ -53,6 +54,8 @@ if (isset($q) && $q == "login") {
     //TODO: Mensagens diferentes para email e para senha não encontrados.
     if ($u === null) {
         Erro::lancarErro(array("codigo" => 1001, "mensagem" => "Usuário não encontrado."));
+    } else if ($u === false) {
+        Erro::lancarErro(array("codigo" => 1001, "mensagem" => "Senha incorreta."));
     } else if (!$u->emailConfirmado()) {
         Erro::lancarErro(array("codigo" => 1002, "mensagem" => "Email não confirmado."));
     } else if ($u->confirmado() != 2) {
