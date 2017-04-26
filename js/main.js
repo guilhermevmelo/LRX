@@ -879,7 +879,7 @@ function preencherUsuarios(professores, alunos, pesquisadores, apenasOperadores,
                             $("#detalheUsuarioAcademico").hide();
                             $("#detalheUsuarioEmpresarial").show();
                             $("#detalheUsuario_Empresa").html(_s.nome_empresa);
-                            $("#detalheUsuario_CNPJ").html(_s.cnpj);
+                            $("#detalheUsuario_CNPJ").html(montarCnpj(_s.cnpj));
                         }
                         
                         $("#detalheUsuario_NumeroSolicitacoes").html(_s.em_andamento + "/" + _s.limite);
@@ -2073,6 +2073,16 @@ function montarCpf(numero) {
     var bloco4 = numero.substring(9, 11);
 
     return bloco1+"."+bloco2+"."+bloco3+"-"+bloco4;
+}
+
+function montarCnpj(numero) {
+    var bloco1 = numero.substring(0, 2);
+    var bloco2 = numero.substring(2, 5);
+    var bloco3 = numero.substring(5, 8);
+    var bloco4 = numero.substring(8, 12);
+    var bloco5 = numero.substring(12, 14);
+
+    return bloco1+"."+bloco2+"."+bloco3+"/"+bloco4+"-"+bloco5;
 }
 
 $(document).ready(function () {
