@@ -1247,12 +1247,20 @@ if (isset($q) && $q == "cancelarUsuario") {
         die();
     }
 
-    $nivel_acesso_professor = UsuarioDAO::nivelDeAcessoPorId($id);
-    if ($nivel_acesso_professor != 2) {
-        Erro::lancarErro(array("codigo" => 5000, "mensagem" => "Não é possível cancelar um usuário que não seja professor"));
+    $nivel_acesso = UsuarioDAO::nivelDeAcessoPorId($id);
+    if ($nivel_acesso == 1) {
+        Erro::lancarErro(array("codigo" => 5000, "mensagem" => "Não é possível cancelar um usuário aluno"));
         die();
     }
-    $uDAO = new ProfessorDAO();
+
+    $uDAO = null;
+
+    if ($nivel_acesso == 2) {
+        $uDAO = new ProfessorDAO();
+    } else if ($nivel_acesso == 3) {
+        $uDAO = new PesquisadorDAO();
+    }
+
     $u = $uDAO->obter($id, false);
 
     if ($u === null) {
@@ -1275,7 +1283,7 @@ if (isset($q) && $q == "cancelarUsuario") {
         // $correio->enviar();
 
         header('Content-Type: application/json');
-        echo json_encode(array("codigo" => 200, "mensagem" => "O professor " . $u->getNome() . " foi deletado."));
+        echo json_encode(array("codigo" => 200, "mensagem" => "O usuário " . $u->getNome() . " foi deletado."));
     }
 }
 

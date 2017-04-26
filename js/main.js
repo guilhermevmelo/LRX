@@ -1713,7 +1713,6 @@ function iniciarAplicacao() {
     var _uid = lerCookie("uid");
     if (_uid !== null) {
         tipo_sistema = lerCookie("tipoSistema");
-        console.log(tipo_sistema);
         $.ajax({
             url: "acao.php",
             type: "post",

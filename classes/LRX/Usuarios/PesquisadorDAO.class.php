@@ -167,4 +167,28 @@ class PesquisadorDAO {
         return $pesquisadores;
     }
 
+    public function deletar(int $id, bool $deletar_usuario = false) {
+
+        try {
+            $this->conexao->beginTransaction();
+            $sql = sprintf("delete from pesquisadores where id_pesquisador = :id_pesquisador limit 1");
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue("id_pesquisador", $id);
+            $consulta->execute();
+
+            if ($deletar_usuario) {
+                $sql2 = sprintf("delete from usuarios where id_usuario = :id_pesquisador limit 1");
+                $consulta = $this->conexao->prepare($sql2);
+                $consulta->bindValue("id_pesquisador", $id);
+                $consulta->execute();
+            }
+
+            $this->conexao->commit();
+        } catch (\Exception $pdoe) {
+            $this->conexao->rollBack();
+            Erro::lancarErro(array('codigo'    =>  $pdoe->getCode(),
+                                   'mensagem'  =>  $pdoe->getMessage()));
+        }
+    }
+
 }
