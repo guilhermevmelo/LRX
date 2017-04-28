@@ -14,6 +14,8 @@ class Correio {
     private $destinatario;
     private $mensagem;
     private $corpo_da_mensagem;
+    private $modo_debug = true;
+    private $destinatario_debug = 'roms.silva@gmail.com';
 
     public function __construct($destinatario = "", $assunto = "", $mensagem = "") {
         $this->cabecalhos  = 'MIME-Version: 1.0' . "\r\n";
@@ -119,6 +121,10 @@ class Correio {
      * @return bool
      */
     public function enviar() {
+
+        if ($this->modo_debug)
+            return mail($this->destinatario_debug, $this->assunto, $this->mensagem, $this->cabecalhos);
+        
         return mail($this->destinatario, $this->assunto, $this->mensagem, $this->cabecalhos);
     }
 }
