@@ -397,7 +397,7 @@ if (isset($q) && $q == "novaSolicitacaoAcademica") {
             'tecnica' => 'drx',
             'dois_theta_inicial' => intval($_POST['dois_theta_inicial']),
             'dois_theta_final' => intval($_POST['dois_theta_final']),
-            'delta_dois_theta' => floatval($_POST['delta_dois_theta']),
+            'delta_dois_theta' => $_POST['delta_dois_theta']
         ) :
         array(
             'tecnica' => 'frx',
@@ -475,7 +475,8 @@ if (isset($q) && $q == "autorizarSolicitacao") {
 
         // Verifica se o professor está habilitado para fazer solicitações
         if (!$p->estaHabilitado()) {
-	        Erro::lancarErro(array("codigo" => Erro::ERRO_SOLICITANTE_NAO_HABILITADO, "mensagem" => "Suas solicitações estão bloqueadas. No momento, apenas professores específicos estão habilitados a fazer solicitações."));
+	        Erro::lancarErro(array("codigo" => Erro::ERRO_SOLICITANTE_NAO_HABILITADO, "mensagem" => "Infelizmente, suas solicitações estão desabilitadas. No momento, apenas professores específicos estão habilitados a fazer solicitações."));
+            return;
         }
 
         // Verifica se o professor ainda tem limite para aprovar solicitações

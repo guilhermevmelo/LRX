@@ -23,6 +23,11 @@ class Professor extends UsuarioAcademico {
         $this->nivel_acesso = 2;
         $this->habilitado = false;
     }
+	
+	public function confirmar() {
+        $this->confirmado = true;
+		$this->setHabilitado(true);
+    }
 
 	/**
 	 * @return bool
