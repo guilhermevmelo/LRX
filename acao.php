@@ -710,7 +710,7 @@ if (isset($q) && $q == "confirmarEmail") {
  *
  */
 if (isset($q) && $q == "novaSenha") {
-    $uid = addslashes($_POST["uid"]);
+    $uid = addslashes(strrev($_POST["uid"]));
     $senha = addslashes($_POST['novaSenha']);
 
     $u = UsuarioDAO::obterPorUid($uid);
@@ -1155,14 +1155,6 @@ if (isset($q) && $q == "cadastrarAluno") {
 
     try {
         $aDAO->atualizar($a);
-
-        //$link = $host . "#/NovoUsuario/Confirmar/" . $a->getUid();
-        //$assunto = '[Confirmação de Cadastro LRX] ' . $a->getNome();
-
-        //$corpo_da_mensagem = '<p>Confirmar: <a href="' . $link . '">' . $link . '</a></p>';
-
-        //$correio = new Correio($email, $assunto, $corpo_da_mensagem);
-        //$correio->enviar();
 
         $r = array(
             "codigo" => 200

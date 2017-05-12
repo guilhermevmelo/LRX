@@ -685,11 +685,11 @@ function preencherUsuarios(professores, alunos, pesquisadores, apenasOperadores,
             q: "obterListaUsuarios",
             id: usuario.id,
             nivel_acesso: usuario.nivel_acesso,
-            professores: professores?1:0,
-            alunos: alunos?1:0,
-            pesquisadores: pesquisadores?1:0,
-            operadores: apenasOperadores?1:0,
-            nao_confirmados: apenasNaoConfirmados?1:0
+            professores: professores ? 1 : 0,
+            alunos: alunos ? 1 : 0,
+            pesquisadores: pesquisadores ? 1 : 0,
+            operadores: apenasOperadores ? 1 : 0,
+            nao_confirmados: apenasNaoConfirmados ? 1 : 0
         }
     }).done(function (r) {
         if (r.codigo !== 200) {
