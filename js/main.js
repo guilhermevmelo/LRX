@@ -300,7 +300,7 @@ function obterDetalhesSolicitacao(id) {
                             }
                         });
                     });
-                    detalhes_autorizar.show();
+                    detalhes_autorizar.show().css("display", "block");
                 }
                 else if (usuario.nivel_acesso >= 5 && r.solicitacao.status === 2) {
                     /**
@@ -332,7 +332,7 @@ function obterDetalhesSolicitacao(id) {
                             }
                         });
                     });
-                    detalhes_autorizar.show();
+                    detalhes_autorizar.show().css("display", "block");
                 }
                 else if (usuario.nivel_acesso >= 5 && r.solicitacao.status === 3) {
                     /**
@@ -364,7 +364,7 @@ function obterDetalhesSolicitacao(id) {
                             }
                         });
                     });
-                    detalhes_autorizar.show();
+                    detalhes_autorizar.show().css("display", "block");
                 }
                 else if (usuario.nivel_acesso >= 5 && r.solicitacao.status === 4) {
                     /**
@@ -396,7 +396,7 @@ function obterDetalhesSolicitacao(id) {
                             }
                         });
                     });
-                    detalhes_autorizar.show();
+                    detalhes_autorizar.show().css("display", "block");
 
                 }
                 else if (usuario.nivel_acesso >= 5 && r.solicitacao.status === 5) {
@@ -493,7 +493,7 @@ function obterDetalhesSolicitacao(id) {
                             }
                         });
                     });
-                    detalhes_autorizar.show();
+                    detalhes_autorizar.show().css("display", "block");
                 }
                 else {
                     detalhes_autorizar.hide();
@@ -582,7 +582,7 @@ function obterDetalhesSolicitacao(id) {
 
                 if (((r.solicitacao.status === 6 && usuario.nivel_acesso >= 5) || r.solicitacao.status === 7) && r.solicitacao.resultados.length > 0) {
                     $("#detalhe_linkDownload").attr("href", "download.php?arquivo="+encodeURIComponent(r.solicitacao.resultados[0].url_arquivo));
-                    $("#detalhe_Download").show();
+                    $("#detalhe_Download").show().css("display", "block");
                 } else {
                     $("#detalhe_linkDownload").attr("href", "");
                     $("#detalhe_Download").hide();

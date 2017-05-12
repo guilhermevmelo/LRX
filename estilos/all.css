@@ -63,7 +63,6 @@ footer {
     clear: both;
     background-color: rgba(255, 255, 255, 0.75);
     border-top: 2px solid #46b4ac;
-    z-index: -1;
 
     /*
     background: -moz-linear-gradient(left,  rgba(0,0,0,0) 0%, rgba(0,0,0,0) 34%, rgba(0,0,0,0.84) 100%); //Firefox
@@ -81,6 +80,7 @@ footer {
     height: 170px;
     width: 100%;
     font-size: 0.8em;
+    z-index: -100;
     /*text-shadow: 1px 1px 1px #000;*/
 }
 
@@ -411,25 +411,17 @@ ul#NenhumEquipamento {
     display: block;
 }
 
-.xpertpro {
-    background: url("../imagens/bandeira_equipamento_xpertpro@2x.png") center no-repeat;
-    background-size: 150px 50px;
+.panalytical {
+    background: url("../imagens/bandeira_equipamento_panalytical.png") center no-repeat;
 }
 
-.dmaxb {
-    background: url("../imagens/bandeira_equipamento_dmaxb@2x.png") center no-repeat;
-    background-size: 150px 50px;
+.rigakudrx {
+    background: url("../imagens/bandeira_equipamento_rigakudrx.png") center no-repeat;
 }
 
-.zsx {
-    background: url("../imagens/bandeira_equipamento_zsx@2x.png") center no-repeat;
-    background-size: 150px 50px;
-}
-
-.axios {
-    background: url("../imagens/bandeira_equipamento_axios@2x.png") center no-repeat;
-    background-size: 150px 50px;
-}
+/*.rigakufrx {*/
+/*background: url("../imagens/bandeira_equipamento_rigakufrx.png") center no-repeat;*/
+/*}*/
 
 /** Formulários **/
 label {
@@ -543,6 +535,13 @@ input[type="reset"]:hover,
 input[type="submit"]:hover,
 .botao:hover {
     cursor: pointer;
+}
+.botao.botao-cancelar,
+.botao.botao-download,
+.botao.botao-aprovar {
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
 }
 
 .uploadResultado {
@@ -776,23 +775,18 @@ input[type="submit"]:disabled:hover,
 }
 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    .xpertpro {
-        background: url("../imagens/bandeira_equipamento_xpertpro@2x.png") center no-repeat;
+    .panalytical {
+        background: url("../imagens/bandeira_equipamento_panalytical@2x.png") center no-repeat;
         background-size: 150px 50px;
     }
 
-    .dmaxb {
-        background: url("../imagens/bandeira_equipamento_dmaxb@2x.png") center no-repeat;
+    .rigakudrx {
+        background: url("../imagens/bandeira_equipamento_rigakudrx@2x.png") center no-repeat;
         background-size: 150px 50px;
     }
 
-    .zsx {
-        background: url("../imagens/bandeira_equipamento_zsx@2x.png") center no-repeat;
-        background-size: 150px 50px;
-    }
-
-    .axios {
-        background: url("../imagens/bandeira_equipamento_axios@2x.png") center no-repeat;
+    .rigakufrx {
+        background: url("../imagens/bandeira_equipamento_rigakufrx@2x.png") center no-repeat;
         background-size: 150px 50px;
     }
 }
