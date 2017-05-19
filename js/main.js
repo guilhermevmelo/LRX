@@ -1662,13 +1662,7 @@ function exibirSecao() {
                 $("#frm_novo_usuario_email").val(r.aluno.email);
                 $("#frm_novo_usuario_nome").val(r.aluno.nome);
                 $("#frm_novo_usuario_uid").val(obterParteDoHash(2));
-
-
-                var frmNovoUsuario = $("#frmNovoUsuarioPasso3Academico");
-                frmNovoUsuario.off();
-                frmNovoUsuario.submit(function (evento) {
-                    enviarFormNovoUsuario(evento, "cadastrarAluno");
-                });
+                document.getElementById("frm_novo_usuario_tipo_academico").checked = true;
 
                 $(".passoAtual").removeClass("passoAtual", function () {
                     $("#NovoUsuarioPasso2").addClass("passoAtual");
@@ -2014,7 +2008,11 @@ function enviarFormNovoUsuario(evento, _q) {
     var _inscricao_municipal = $("#frm_novo_usuario_empresarial_inscricao_municipal").val();
     var _site = $("#frm_novo_usuario_empresarial_site").val();
 
-    var _uid = $("#frm_novo_usuario_uid").val();
+    var _uid = $("#frm_novo_usuario_uid").length == 0 ? obterParteDoHash(2) : $("#frm_novo_usuario_uid").val();
+
+    console.log(_uid);
+
+    console.log(_q);
 
     $.ajax({
         url: "acao.php",
@@ -2339,9 +2337,11 @@ $(document).ready(function () {
                 frmNovoUsuario = $("#frmNovoUsuarioPasso3Empresarial");
             }
 
+
             frmNovoUsuario.off();
             frmNovoUsuario.submit(function (evento) {
-                enviarFormNovoUsuario(evento, "cadastrarUsuario");
+                var acao = obterParteDoHash(1) === "NovoAluno" ? "cadastrarAluno" : "cadastrarUsuario";
+                enviarFormNovoUsuario(evento, acao);
             });
 
         });

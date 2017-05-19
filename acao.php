@@ -1158,7 +1158,8 @@ if (isset($q) && $q == "cadastrarAluno") {
         $aDAO->atualizar($a);
 
         $r = array(
-            "codigo" => 200
+            "codigo" => 200,
+            "foi" => "sim"
         );
     } catch (\Exception $ex) {
         Erro::lancarErro($ex->getMessage());
