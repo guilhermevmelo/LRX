@@ -183,6 +183,8 @@ function dataPhpParaJs(data) {
     return dataString;
 }
 
+//DOING!
+
 function obterDetalhesSolicitacao(id) {
     $("#Detalhe").fadeOut("slow", function () {
         $.ajax({
@@ -314,11 +316,11 @@ function obterDetalhesSolicitacao(id) {
                             window.console.log(r);
                             if (r.codigo !== 200) {
                                 apresentarErro(r);
-                            } else {
+                            } /*else {
                                 //TODO: apresentar notificação
                                 preencherSolicitacoes();
                                 obterDetalhesSolicitacao(id);
-                            }
+                            }*/
                         });
                     });
                     detalhes_autorizar.show();
@@ -346,11 +348,11 @@ function obterDetalhesSolicitacao(id) {
                             window.console.log(r);
                             if (r.codigo !== 200) {
                                 apresentarErro(r);
-                            } else {
+                            } /*else {
                                 //TODO: apresentar notificação
                                 preencherSolicitacoes();
                                 obterDetalhesSolicitacao(id);
-                            }
+                            }*/
                         });
                     });
                     detalhes_autorizar.show();
@@ -378,11 +380,11 @@ function obterDetalhesSolicitacao(id) {
                             window.console.log(r);
                             if (r.codigo !== 200) {
                                 apresentarErro(r);
-                            } else {
+                            } /*else {
                                 //TODO: apresentar notificação
                                 preencherSolicitacoes();
                                 obterDetalhesSolicitacao(id);
-                            }
+                            }*/
                         });
                     });
                     detalhes_autorizar.show();
@@ -410,11 +412,11 @@ function obterDetalhesSolicitacao(id) {
                             window.console.log(r);
                             if (r.codigo !== 200) {
                                 apresentarErro(r);
-                            } else {
+                            } /*else {
                                 //TODO: apresentar notificação
                                 preencherSolicitacoes();
                                 obterDetalhesSolicitacao(id);
-                            }
+                            }*/
                         });
                     });
                     detalhes_autorizar.show();
@@ -474,12 +476,12 @@ function obterDetalhesSolicitacao(id) {
                         }).done(function (resposta, status, jqxhr) {
                             if (resposta.codigo !== 200) {
                                 apresentarErro(r);
-                            } else {
+                            }/*else {
                                 upload_resultado.fadeOut("slow", function() {
                                     preencherSolicitacoes();
                                     obterDetalhesSolicitacao(id);
                                 });
-                            }
+                            }*/
                         });
                     });
                 }
@@ -507,11 +509,11 @@ function obterDetalhesSolicitacao(id) {
                             window.console.log(r);
                             if (r.codigo !== 200) {
                                 apresentarErro(r);
-                            } else {
+                            } /*else {
                                 //TODO: apresentar notificação
                                 preencherSolicitacoes();
                                 obterDetalhesSolicitacao(id);
-                            }
+                            }*/
                         });
                     });
                     detalhes_autorizar.show();
@@ -968,10 +970,49 @@ function preencherAlunos() {
 }
 
 // TODO: Juntar as duas funções abaixo em uma só
+
+// DOING!
+// Fazer alteracao que faca varias amostras serem selecionadas simuntaneamente, seguindo esquema do phpmyadmin ou do aws
+
+/*
+    adiciona um botao que ficarah no topo de todos os elementos da ListaSolicitacoes. Ele possui um parametro para
+    diferenciar entre a aba de Solicitacoes e SolicitacoesConcluidas e Outro que eh a lista de solicitacoes.
+
+*/
+
+function criarBotaoTopo(tipo)
+{
+    var elementoLi = document.createElement("li");
+    elementoLi.classList.add("bloco");
+    elementoLi.classList.add("relativo");
+
+    /*criar html em index.html e estilos em all.css para os pequenos botoes dentro deste botao.
+    Cada botao possuirah uma cor e uma descricao ao passarmos o mouse por cima. 
+    Ao clicar num botao, todos os elementos da lista com aquela cor sao selecionados.
+    */
+
+    var listaMiniBotoes = document.createElement("h3");
+    listaMiniBotoes.classList.add("controladorDeSolicitacoes");
+    listaMiniBotoes.innerHTML = "Botao";
+    //listaMiniBotoes.innerHTML = "Botao2";
+    elementoLi.appendChild(listaMiniBotoes);
+
+    $("#ListaSolicitacoes").append(elementoLi);
+}
+
 function preencherSolicitacoes() {
     $("#ListaSolicitacoes").empty();
     $("#Detalhe").fadeOut("slow");
     $("#NenhumaSolicitação").fadeOut("slow");
+
+    /*
+        a variavel ajax envia um arquivo json para solicitar um GET de acao.php, do
+        "metodo"  obterListaSolicitacoes. Ao casar esses padroes, acao.php retorna um 
+        json contendo, no caso, as seguintes informacoes: codigo e solicitacoes.
+        Essas informacoes do json sao armazenadas na funcao r, criada durante o metodo
+        done, que identifica que o GET funcionou.
+    */
+
     $.ajax({
         url: "acao.php",
         type: "get",
@@ -992,6 +1033,8 @@ function preencherSolicitacoes() {
             if (r.solicitacoes.length === 0) {
                 $("#NenhumaSolicitação").fadeIn("slow");
             }
+
+            criarBotaoTopo(1);
 
             r.solicitacoes.forEach(function(_s) {
 
@@ -1446,7 +1489,7 @@ function exibirSecao() {
                     $("#Dashboard").fadeIn("slow", function () {
                         $(this).addClass("estadoAtual");
                         $("#ListaSolicitacoes").addClass("ativo");
-                        preencherSolicitacoes();
+                        //preencherSolicitacoes();  desnecessario
                     });
                 });
             }

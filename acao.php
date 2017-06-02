@@ -186,8 +186,10 @@ if (isset($q) && $q == "obterListaUsuarios") {
     echo json_encode(array("codigo" => 200, "usuarios" => $resposta));
 }
 
-/**
- *
+/*
+ *  este metodo eh camado em preencherSolicitacoes() de maijn.js
+    tudo que estiver dentro do comando echo json_encode() serah
+    enviado ao solicitante atraves da operacao GET no caso.
  */
 if (isset($q) && $q == "obterListaSolicitacoes") {
     $id = addslashes($_GET["id"]);
